@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			type="text/css"
+			content="width=device-width, initial-scale=1.0"
+		/>
+		<title>STYLiSH</title>
+		<script src="/socket.io/socket.io.js"></script>
+	</head>
+
+	<body>
+		<h1>Thank you!</h1>
+		<script>
+			//const socket = io('https://white-100.online');
+			const socket = io()
+			socket.emit('NewOrder')
+		</script>
+	</body>
+</html>

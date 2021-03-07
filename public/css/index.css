@@ -1,0 +1,34 @@
+@import './sliders.css';
+
+.products {
+	display: flex;
+	flex-wrap: wrap;
+	width: 100%;
+
+	justify-content: center;
+}
+
+.product {
+	margin: 10px;
+	display: inline-block;
+	width: 25%;
+}
+
+.products img {
+	width: 100%;
+}
+
+.colors {
+	display: flex;
+}
+
+.color {
+	margin: 10px 8px 10px 0;
+	width: 20px;
+	height: 20px;
+	border-radius: 2px;
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+	-ms-border-radius: 2px;
+	-o-border-radius: 2px;
+}

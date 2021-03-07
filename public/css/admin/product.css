@@ -1,0 +1,80 @@
+* {
+	font-family: 'Noto Sans TC', '微軟正黑體', '新細明體', arial, sans-serif;
+	color: #3f3a3a;
+}
+
+body {
+	background: rgb(235, 235, 235);
+}
+
+main {
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+	align-items: center;
+}
+
+form {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.formContainer {
+	width: 70%;
+}
+
+body {
+	margin: 30px;
+}
+
+textarea {
+	width: 400px;
+	height: 100px;
+	padding: 5px;
+}
+
+select,
+input[type='text'],
+textarea {
+	width: 70%;
+	height: 30px;
+	outline: none;
+	border: 1px solid #ddd;
+	padding: 0 10px;
+	border-radius: 2px;
+	color: #333;
+	font-size: 0.8rem;
+	justify-self: stretch;
+}
+
+textarea {
+	height: 50px;
+}
+
+.formColumn {
+	display: flex;
+	width: 100%;
+	margin: 10px;
+}
+
+.columnTitle {
+	margin: 5px;
+	width: 22%;
+}
+
+.submitButton {
+	padding: 5px 8px;
+	border-radius: 2px;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	margin: 20px 0 0 0;
+	cursor: pointer;
+	box-sizing: border-box;
+	width: calc(75%);
+	height: 45px;
+	background-color: #524c4c;
+	border: none;
+	outline: none;
+	color: #fff;
+}

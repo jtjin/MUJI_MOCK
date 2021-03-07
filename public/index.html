@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>STYLiSH</title>
+		<link rel="stylesheet" type="text/css" href="./css/index.css" />
+		<link rel="stylesheet" type="text/css" href="./css/main.css" />
+		<link rel="stylesheet" type="text/css" href="./css/Tappay.css" />
+
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"
+			defer
+		></script>
+
+		<script src="../js/index.js" defer type="module"></script>
+		<script src="./js/components/header.js" defer></script>
+		<script src="./js/components/footer.js" defer></script>
+	</head>
+
+	<body>
+		<stylish-nav></stylish-nav>
+
+		<template>
+			<div class="mainSliders">
+				<a class="visual" href="/product.html?id=1">
+					<div class="story"></div>
+				</a>
+			</div>
+		</template>
+
+		<div class="slideContainer">
+			<div class="sliderContent"></div>
+			<div class="slideController">
+				<ul class="slideControllerUL"></ul>
+			</div>
+		</div>
+
+		<template>
+			<a class="product" href="/product.html?id=">
+				<img src="" />
+				<div class="colors">
+					<div class="color" style="background-color: #cccccc;"></div>
+				</div>
+				<div class="name"></div>
+				<div class="price"></div>
+			</a>
+		</template>
+
+		<main>
+			<div class="view">
+				<div class="products"></div>
+			</div>
+		</main>
+
+		<stylish-footer></stylish-footer>
+	</body>
+</html>

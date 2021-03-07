@@ -1,0 +1,28 @@
+body {
+	margin: 0px;
+	font-size: 16px;
+	font-family: 'Noto Sans TC', '微軟正黑體', '新細明體', arial, sans-serif;
+	color: #3f3a3a;
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+}
+
+a {
+	text-decoration: none;
+	color: #3f3a3a;
+	letter-spacing: 4px;
+	line-height: 32px;
+	font-size: 18px;
+}
+
+.view {
+	margin: 40px 0;
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	width: 100%;
+}
+.member {
+	margin-top: 10px;
+}

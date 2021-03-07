@@ -1,0 +1,79 @@
+.slideContainer {
+	margin-bottom: 50px;
+	display: block;
+	height: 500px;
+	position: relative;
+}
+
+.sliderContent {
+	padding: 0;
+	margin: 0;
+}
+
+.mainSliders {
+	width: 100%;
+	height: 500px;
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-size: cover;
+	position: absolute;
+	top: 0px;
+	overflow: hidden;
+	opacity: 0;
+	background-color: #ffffff;
+	transition: opacity 1s linear;
+	-webkit-transition: opacity 1s linear;
+	-moz-transition: opacity 1s linear;
+	-ms-transition: opacity 1s linear;
+	-o-transition: opacity 1s linear;
+}
+
+.slideController {
+	position: absolute;
+	bottom: 30px;
+	left: 45%;
+}
+
+.slideController .slideControllerUL {
+	display: flex;
+	list-style: none;
+}
+
+.slideController ul li {
+	margin: 0px 10px;
+	width: 10px;
+	height: 10px;
+	background-color: rgb(255, 255, 255);
+	border-radius: 50%;
+	-webkit-border-radius: 50%;
+	-moz-border-radius: 50%;
+	-ms-border-radius: 50%;
+	-o-border-radius: 50%;
+	z-index: 1;
+}
+
+.story {
+	padding: 10% 40% 40% 10%;
+	font-size: 20px;
+	line-height: 40px;
+	text-shadow: 0px 0px 5px #ffffff;
+}
+
+#top {
+	z-index: 1;
+	opacity: 1;
+	transition: opacity 1s linear;
+	-webkit-transition: opacity 1s linear;
+	-moz-transition: opacity 1s linear;
+	-ms-transition: opacity 1s linear;
+	-o-transition: opacity 1s linear;
+}
+
+#topDot {
+	background-color: rgb(30, 30, 30);
+	transition: all 1s linear;
+	-webkit-transition: all 1s linear;
+	-moz-transition: all 1s linear;
+	-ms-transition: all 1s linear;
+	-o-transition: all 1s linear;
+}

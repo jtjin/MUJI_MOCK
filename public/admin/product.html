@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>STYLiSH</title>
+		<link rel="stylesheet" href="../css/admin/product.css" />
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+
+		<script src="../js/admin/product.js" type="module" defer></script>
+	</head>
+
+	<body>
+		<main>
+			<h1>Product management</h1>
+			<div class="formContainer">
+				<form class="productCreateFrom" enctype="multipart/form-data">
+					<div class="formColumn">
+						<span class="columnTitle">Title</span>
+						<input type="text" name="title" class="title" />
+					</div>
+					<div class="formColumn">
+						<span class="columnTitle">Description</span>
+						<input type="text" name="description" class="description" />
+					</div>
+					<div class="formColumn">
+						<span class="columnTitle">Price</span>
+						<input type="text" name="price" class="price" />
+					</div>
+					<div class="formColumn">
+						<span class="columnTitle">Texture</span>
+						<input type="text" name="texture" class="texture" />
+					</div>
+					<div class="formColumn">
+						<span class="columnTitle">Wash</span>
+						<input type="text" name="wash" class="wash" />
+					</div>
+					<div class="formColumn">
+						<span class="columnTitle">Place</span>
+						<input type="text" name="place" class="place" />
+					</div>
+					<div class="formColumn">
+						<span class="columnTitle">Note</span>
+						<input type="text" name="note" class="note" />
+					</div>
+					<div class="formColumn">
+						<span class="columnTitle">Story</span>
+						<textarea name="story" cols="30" rows="10" class="story"></textarea>
+					</div>
+					<div class="formColumn">
+						<span class="columnTitle">Product Category</span>
+						<select name="tag">
+							<option value="women">Women</option>
+							<option value="men">Men</option>
+							<option value="accessories">Accessories</option>
+						</select>
+					</div>
+					<div class="formColumn">
+						<span class="columnTitle">Colors</span>
+						<input
+							type="text"
+							name="colors"
+							placeholder="58166846, FFFdfe, SERHTH..."
+							class="colors"
+						/>
+					</div>
+					<div class="formColumn">
+						<span class="columnTitle">Colors Name</span>
+						<input
+							type="text"
+							name="colorsName"
+							placeholder="Red, Blue, Green..."
+							class="colorsName"
+						/>
+					</div>
+					<div class="formColumn">
+						<span class="columnTitle">Sizes</span>
+						<input
+							type="text"
+							name="sizes"
+							placeholder="S,M,L,XL,XXL,..."
+							class="sizes"
+						/>
+					</div>
+					<div class="formColumn">
+						<span class="columnTitle">Main image</span>
+						<input
+							type="file"
+							name="main_image"
+							class="main_image"
+							required="required"
+						/>
+					</div>
+					<div class="formColumn">
+						<span class="columnTitle">Images</span>
+						<input
+							type="file"
+							name="images"
+							class="images"
+							multiple
+							required="required"
+						/>
+					</div>
+					<button type="submit" class="submitButton">Create</button>
+				</form>
+			</div>
+		</main>
+	</body>
+</html>

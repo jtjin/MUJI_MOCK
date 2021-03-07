@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>STYLiSH</title>
+		<link rel="stylesheet" type="text/css" href="./css/product.css" />
+		<link rel="stylesheet" type="text/css" href="./css/main.css" />
+		<link rel="stylesheet" type="text/css" href="/css/tapPay.css" />
+		<script src="/socket.io/socket.io.js"></script>
+		<script defer src="./js/socket_script.js"></script>
+		<style>
+			.paymentForm {
+				display: none;
+				background-color: rgba(255, 255, 255, 0.9);
+				z-index: 1;
+				height: 100%;
+				width: 100%;
+				position: fixed;
+				left: 0;
+				top: 0;
+				justify-content: center;
+			}
+
+			.form-group {
+				border: #dfdfdf 1px solid;
+				margin: 10px;
+				padding: 5px;
+			}
+
+			.form-group label {
+				display: inline-block;
+				padding: 10px 0 20px 10px;
+				margin-right: 15px;
+				width: 130px;
+				height: 10px;
+				border-right: black 1px solid;
+			}
+
+			#exampleInputEmail1 {
+				border: none;
+			}
+
+			.text-left {
+				text-align: left;
+			}
+
+			.container {
+				display: flex;
+				background-color: rgba(255, 255, 255);
+				position: relative;
+				top: 150px;
+				box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1),
+					0 3px 6px rgba(0, 0, 0, 0.08);
+				height: 500px;
+				padding-bottom: 30px;
+			}
+
+			h1 {
+				text-align: center;
+				letter-spacing: 4px;
+				margin-bottom: 20;
+			}
+
+			.TapPayFrom {
+				margin: auto;
+				padding: 40px;
+				display: flex;
+				align-self: center;
+				flex-direction: column;
+				justify-content: center;
+				align-items: stretch;
+			}
+
+			.form-control {
+				display: inline-block;
+				height: 20px;
+			}
+
+			input {
+				height: 15px;
+			}
+
+			.btn-default {
+				background-color: black;
+				color: #ffffff;
+				padding: 10px;
+				margin: 10px;
+				letter-spacing: 4px;
+			}
+
+			.tappay-field-focus {
+				border-color: #66afe9;
+				outline: 0;
+				-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),
+					0 0 8px rgba(102, 175, 233, 0.6);
+				box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),
+					0 0 8px rgba(102, 175, 233, 0.6);
+			}
+
+			.has-error .tappay-field-focus {
+				border-color: #843534;
+				-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),
+					0 0 6px #ce8483;
+				box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #ce8483;
+			}
+
+			.has-success .tappay-field-focus {
+				border-color: #2b542c;
+				-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),
+					0 0 6px #67b168;
+				box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #67b168;
+			}
+		</style>
+		<script
+			src="https://code.jquery.com/jquery-3.2.1.min.js"
+			integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+			crossorigin="anonymous"
+		></script>
+		<script src="https://js.tappaysdk.com/tpdirect/v5.1.0"></script>
+		<script src="../js/TPD.js" defer></script>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"
+			defer
+		></script>
+
+		<script src="./js/components/header.js" defer></script>
+		<script src="./js/components/footer.js" defer></script>
+
+		<script src="./js/productDetails.js" type="module" defer></script>
+	</head>
+
+	<body>
+		<stylish-nav></stylish-nav>
+
+		<main>
+			<div class="view">
+				<div class="products">
+					<img class="main_image" src="" alt="" />
+					<div class="info">
+						<div class="name"></div>
+						<div class="id"></div>
+						<br />
+						<div class="price"></div>
+
+						<div class="infoDetails colors">
+							<div class="itenTitle">
+								顏色 &nbsp; |
+								<template>
+									<a> <div class="color"></div> </a>
+								</template>
+							</div>
+						</div>
+
+						<div class="infoDetails sizes">
+							<div class="itenTitle">
+								尺寸 &nbsp; |
+								<template>
+									<a><div class="size"></div></a>
+								</template>
+							</div>
+						</div>
+
+						<div class="infoDetails">
+							<div class="itenTitle">數量 &nbsp; |</div>
+							<div class="count">
+								<a href="#" class="minus">
+									<div class="op">-</div>
+								</a>
+								<div class="value">1</div>
+								<a href="#" class="add">
+									<div class="op">+</div>
+								</a>
+							</div>
+						</div>
+
+						<div>剩餘庫存：<span class="remainStock"></span></div>
+
+						<div class="addchart">
+							<button id="product-add-cart-btn">加入購物車</button>
+						</div>
+
+						<div class="summary">
+							<div class="description"></div>
+							<br />
+							<div class="texture"></div>
+							<br />
+							<div class="wash"></div>
+							<div class="place"></div>
+						</div>
+					</div>
+				</div>
+
+				<div class="productMainInfo">
+					<div class="separator">
+						<div class="title">更多產品資訊</div>
+						<div class="line"></div>
+					</div>
+					<div class="story"></div>
+				</div>
+			</div>
+		</main>
+
+		<!-- 結帳 -->
+		<div class="paymentForm">
+			<div class="container">
+				<form class="TapPayFrom">
+					<h1>結帳區</h1>
+					<div class="form-group">
+						<label for="exampleInputEmail1">Email address</label>
+						<input
+							type="email"
+							class="form-control"
+							id="exampleInputEmail1"
+							placeholder="Email"
+						/>
+					</div>
+					<div class="form-group card-number-group">
+						<label for="card-number" class="control-label"
+							><span id="cardtype"></span>卡號</label
+						>
+						<div class="form-control card-number"></div>
+					</div>
+					<div class="form-group expiration-date-group">
+						<label for="expiration-date" class="control-label"
+							>卡片到期日</label
+						>
+						<div
+							class="form-control expiration-date"
+							id="tappay-expiration-date"
+						></div>
+					</div>
+					<div class="form-group cvc-group">
+						<label for="cvc" class="control-label">卡片後三碼</label>
+						<div class="form-control cvc"></div>
+					</div>
+					<button type="submit" class="btn btn-default" value="">Pay</button>
+				</form>
+				<br />
+				<pre class="jumbotron text-left" id="curl"></pre>
+			</div>
+		</div>
+
+		<stylish-footer></stylish-footer>
+	</body>
+</html>

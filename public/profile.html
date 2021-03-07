@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>STYLiSH</title>
+		<link rel="stylesheet" type="text/css" href="./css/profile.css" />
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"
+			defer
+		></script>
+
+		<script
+			src="./js/components/registerSystem.js"
+			type="module"
+			defer
+		></script>
+		<script src="./js/components/header.js" defer></script>
+		<script src="./js/components/footer.js" defer></script>
+
+		<meta
+			name="google-signin-client_id"
+			content="9667045798-hqlk9m2i4dtuqpimohdtmlnibm35p1i9.apps.googleusercontent.com.apps.googleusercontent.com"
+		/>
+
+		<script src="../js/profile.js" type="module" defer></script>
+	</head>
+
+	<body>
+		<stylish-nav></stylish-nav>
+
+		<sign-form></sign-form>
+
+		<main>
+			<h1>會員基本資訊</h1>
+			<hr />
+			<div class="userInfo">
+				<img src="" alt="" class="img" id="userImage" />
+				<div class="user">ID : <span class="id"></span></div>
+				<div class="user">NAME : <span class="name"></span></div>
+				<div class="user">EMAIL : <span class="email"></span></div>
+			</div>
+		</main>
+		<stylish-footer></stylish-footer>
+	</body>
+</html>

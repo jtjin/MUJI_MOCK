@@ -1,0 +1,66 @@
+button {
+	padding: 5px 8px;
+	border-radius: 2px;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	margin: 10px 0 0 0;
+	cursor: pointer;
+	box-sizing: border-box;
+	width: calc(75%);
+	height: 45px;
+	background-color: #524c4c;
+	border: none;
+	outline: none;
+	color: #fff;
+	font-size: 14px;
+}
+
+button:hover {
+	animation: flicker2 0.1s infinite alternate;
+	color: #fff;
+	background: #2c2929;
+	border: 0.01px #ffffff solid;
+	box-sizing: border-box;
+	transition: width 0.1s;
+	-webkit-transition: width 0.1s;
+	-moz-transition: width 0.1s;
+	-ms-transition: width 0.1s;
+	-o-transition: width 0.1s;
+	-webkit-animation: flicker2 0.1s infinite alternate;
+}
+
+button:active {
+	font-weight: bold;
+	background-color: rgb(255, 255, 255);
+	color: black;
+	transition: width 0.1s;
+	-webkit-transition: width 0.1s;
+	-moz-transition: width 0.1s;
+	-ms-transition: width 0.1s;
+	-o-transition: width 0.1s;
+}
+
+.submit {
+	position: relative;
+	top: 0;
+}
+
+.facebookLogInBtn {
+	background-color: #5376b8;
+	width: calc(36%);
+}
+
+.facebookLogInBtn:hover {
+	background-color: #285094;
+}
+
+.googleLogInBtn {
+	background-color: #cc6504;
+	width: calc(36%);
+	margin-left: 5px;
+}
+
+.googleLogInBtn:hover {
+	color: #ffffff;
+	background-color: #e98c34;
+}
