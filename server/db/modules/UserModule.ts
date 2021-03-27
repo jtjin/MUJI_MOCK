@@ -1,27 +1,37 @@
-import { Connection, InsertResult, UpdateResult } from 'typeorm'
+import {
+	Connection,
+	EntityManager,
+	InsertResult,
+	Repository,
+	UpdateResult,
+} from 'typeorm'
 import { User } from '../entities/User'
 
 export class UserModule {
-	client: Connection
+	client?: Connection
 	tag: string
+	Repo: Repository<User>
 
-	constructor(client: Connection) {
+	constructor(opt: { client?: Connection; transaction?: EntityManager }) {
+		const { client, transaction } = opt
 		this.client = client
+
+		if (transaction) {
+			this.Repo = transaction.getRepository(User)
+		} else if (this.client) {
+			this.Repo = this.client.getRepository(User)
+		}
 		this.tag = 'userModule/'
 	}
 
 	async getUserByEmail(userEmail: string): Promise<User | undefined> {
-		return await this.client
-			.getRepository(User)
-			.createQueryBuilder('user')
+		return await this.Repo.createQueryBuilder('user')
 			.where('user.email = :userEmail', { userEmail })
 			.getOne()
 	}
 
 	async getUserByAccessToken(accessToken: string): Promise<User | undefined> {
-		return await this.client
-			.getRepository(User)
-			.createQueryBuilder('user')
+		return await this.Repo.createQueryBuilder('user')
 			.where('user.access_token= :accessToken', { accessToken })
 			.getOne()
 	}
@@ -30,8 +40,7 @@ export class UserModule {
 		email: string,
 		accessToken: string,
 	): Promise<UpdateResult> {
-		return await this.client
-			.createQueryBuilder()
+		return await this.Repo.createQueryBuilder()
 			.update(User)
 			.set({ access_token: accessToken })
 			.where('email = :email', { email })
@@ -46,8 +55,7 @@ export class UserModule {
 		picture: string
 		provider: string
 	}): Promise<InsertResult> {
-		return await this.client
-			.createQueryBuilder()
+		return await this.Repo.createQueryBuilder()
 			.insert()
 			.into(User)
 			.values([values])

@@ -12,32 +12,34 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserModule = void 0;
 const User_1 = require("../entities/User");
 class UserModule {
-    constructor(client) {
+    constructor(opt) {
+        const { client, transaction } = opt;
         this.client = client;
+        if (transaction) {
+            this.Repo = transaction.getRepository(User_1.User);
+        }
+        else if (this.client) {
+            this.Repo = this.client.getRepository(User_1.User);
+        }
         this.tag = 'userModule/';
     }
     getUserByEmail(userEmail) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.client
-                .getRepository(User_1.User)
-                .createQueryBuilder('user')
+            return yield this.Repo.createQueryBuilder('user')
                 .where('user.email = :userEmail', { userEmail })
                 .getOne();
         });
     }
     getUserByAccessToken(accessToken) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.client
-                .getRepository(User_1.User)
-                .createQueryBuilder('user')
+            return yield this.Repo.createQueryBuilder('user')
                 .where('user.access_token= :accessToken', { accessToken })
                 .getOne();
         });
     }
     updateAccessToken(email, accessToken) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.client
-                .createQueryBuilder()
+            return yield this.Repo.createQueryBuilder()
                 .update(User_1.User)
                 .set({ access_token: accessToken })
                 .where('email = :email', { email })
@@ -46,8 +48,7 @@ class UserModule {
     }
     createNewUser(values) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.client
-                .createQueryBuilder()
+            return yield this.Repo.createQueryBuilder()
                 .insert()
                 .into(User_1.User)
                 .values([values])

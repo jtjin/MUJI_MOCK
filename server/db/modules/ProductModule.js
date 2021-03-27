@@ -11,9 +11,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProductModule = void 0;
 const Product_1 = require("../entities/Product");
-const Tags_1 = require("../../infra/enums/Tags");
 class ProductModule {
-    constructor(client, transaction) {
+    constructor(opt) {
+        const { client, transaction } = opt;
         this.client = client;
         if (transaction) {
             this.Repo = transaction.getRepository(Product_1.Product);
@@ -42,15 +42,14 @@ class ProductModule {
     }
     getProductsByTag(opt) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { tag, titleLike, pagination, orderBy } = opt;
-            const tags = Tags_1.TagsEnum[tag];
+            const { tagId, titleLike, pagination, orderBy } = opt;
             let query = this.Repo.createQueryBuilder('product')
                 .leftJoinAndSelect('product.variants', 'variants')
                 .leftJoinAndSelect('product.images', 'images')
                 .leftJoinAndSelect('product.main_image', 'main_image');
-            if (tags) {
+            if (tagId && tagId > 0) {
                 query = query.where('product.tag_id = :tagId', {
-                    tagId: tags,
+                    tagId,
                 });
             }
             if (titleLike) {
@@ -63,11 +62,12 @@ class ProductModule {
                 query = query.orderBy(sort, order);
             }
             if (pagination) {
+                console.log('pagination=>', pagination);
                 const { limit, offset } = pagination;
                 if (limit)
                     query = query.take(limit);
                 if (offset)
-                    query = query.offset(offset);
+                    query = query.take(limit).skip(offset);
             }
             const result = yield query.getMany();
             return result;
@@ -78,7 +78,7 @@ class ProductModule {
             return yield this.Repo.createQueryBuilder()
                 .insert()
                 .into(Product_1.Product)
-                .values([values])
+                .values(values)
                 .execute();
         });
     }

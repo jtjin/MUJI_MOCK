@@ -78,3 +78,7 @@ textarea {
 	outline: none;
 	color: #fff;
 }
+
+fieldset {
+	width: 100%;
+}

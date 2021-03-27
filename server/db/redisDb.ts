@@ -26,6 +26,8 @@ export const disconnectRedis = async () => {
 }
 
 redisClient.on('error', (error: Error) => {
+	console.log(error)
+
 	logger.error({
 		tag,
 		error: JSON.stringify(error, Object.getOwnPropertyNames(error)),

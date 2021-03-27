@@ -2,12 +2,14 @@ import { Connection, EntityManager, InsertResult, Repository } from 'typeorm'
 import { ProductDetails } from '../entities/ProductDetails'
 
 export class ProductDetailsModule {
-	client: Connection | undefined
+	client?: Connection
 	tag: string
 	Repo: Repository<ProductDetails>
 
-	constructor(client?: Connection, transaction?: EntityManager | undefined) {
+	constructor(opt: { client?: Connection; transaction?: EntityManager }) {
+		const { client, transaction } = opt
 		this.client = client
+
 		if (transaction) {
 			this.Repo = transaction.getRepository(ProductDetails)
 		} else if (this.client) {

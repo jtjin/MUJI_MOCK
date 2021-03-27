@@ -30,5 +30,5 @@ export class Images {
 	@JoinColumn({
 		name: 'product_id',
 	})
-	product_id!: Product
+	product_id!: Product | string
 }

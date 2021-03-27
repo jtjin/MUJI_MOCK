@@ -3,13 +3,8 @@ import {
 	Entity,
 	PrimaryGeneratedColumn,
 	Column,
-	CreateDateColumn,
-	UpdateDateColumn,
-	OneToMany,
 	ManyToOne,
 	JoinColumn,
-	Index,
-	OneToOne,
 } from 'typeorm'
 import { Product } from './Product'
 
@@ -47,5 +42,5 @@ export class ProductDetails {
 	@JoinColumn({
 		name: 'product_id',
 	})
-	product_id: Product
+	product_id: Product | string
 }

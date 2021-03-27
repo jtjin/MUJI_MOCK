@@ -1,4 +1,10 @@
-import { Connection, EntityManager, InsertResult, Repository } from 'typeorm'
+import {
+	Connection,
+	EntityManager,
+	InsertResult,
+	Repository,
+	UpdateResult,
+} from 'typeorm'
 import { MainImages } from '../entities/MainImages'
 
 export class MainImagesModule {
@@ -6,7 +12,11 @@ export class MainImagesModule {
 	tag: string
 	Repo: Repository<MainImages>
 
-	constructor(client?: Connection, transaction?: EntityManager | undefined) {
+	constructor(opt: {
+		client?: Connection
+		transaction?: EntityManager | undefined
+	}) {
+		const { client, transaction } = opt
 		this.client = client
 		if (transaction) {
 			this.Repo = transaction.getRepository(MainImages)
@@ -33,6 +43,18 @@ export class MainImagesModule {
 			.insert()
 			.into(MainImages)
 			.values(values)
+			.execute()
+	}
+
+	async updateMainImageById(opt: {
+		id: string
+		url: string
+	}): Promise<UpdateResult> {
+		const { id, url } = opt
+		return await this.Repo.createQueryBuilder()
+			.update(MainImages)
+			.set({ url: url })
+			.where('id = :id', { id })
 			.execute()
 	}
 }

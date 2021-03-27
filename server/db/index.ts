@@ -5,6 +5,8 @@ import { MainImagesModule } from './modules/MainImagesModule'
 import { ImagesModule } from './modules/ImagesModule'
 import { CampaignModule } from './modules/CampaignModule'
 import { UserModule } from './modules/UserModule'
+import { MessagesModule } from './modules/MessagesModules'
+import { PinMessagesModule } from './modules/PinMessagesModule'
 import config from 'config'
 import logger from '../utils/logger'
 
@@ -15,7 +17,6 @@ const Entities = Array.from(
 	{ length: 26 },
 	(v, i) => `${__dirname}/entities/${String.fromCharCode(i + 65)}*.js`,
 )
-
 class StylishRDB {
 	client: Connection
 	productModule: ProductModule
@@ -24,6 +25,8 @@ class StylishRDB {
 	userModule: UserModule
 	imagesModule: ImagesModule
 	mainImagesModule: MainImagesModule
+	messagesModule: MessagesModule
+	pinMessagesModule: PinMessagesModule
 
 	async initDb() {
 		const connectionConfig: ConnectionOptions = {
@@ -44,12 +47,16 @@ class StylishRDB {
 			console.log(`--- Stylish DB Connected ---`)
 		}
 
-		this.productModule = new ProductModule(this.client)
-		this.userModule = new UserModule(this.client)
-		this.campaignModule = new CampaignModule(this.client)
-		this.productDetailsModule = new ProductDetailsModule(this.client)
-		this.imagesModule = new ImagesModule(this.client)
-		this.mainImagesModule = new MainImagesModule(this.client)
+		this.productModule = new ProductModule({ client: this.client })
+		this.userModule = new UserModule({ client: this.client })
+		this.campaignModule = new CampaignModule({ client: this.client })
+		this.productDetailsModule = new ProductDetailsModule({
+			client: this.client,
+		})
+		this.imagesModule = new ImagesModule({ client: this.client })
+		this.mainImagesModule = new MainImagesModule({ client: this.client })
+		this.messagesModule = new MessagesModule({ client: this.client })
+		this.pinMessagesModule = new PinMessagesModule({ client: this.client })
 		dbConnection = this.client
 		return this.client
 	}

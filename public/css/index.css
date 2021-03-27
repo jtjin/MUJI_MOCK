@@ -32,3 +32,61 @@
 	-ms-border-radius: 2px;
 	-o-border-radius: 2px;
 }
+
+.pagination {
+	min-width: 30%;
+	vertical-align: middle;
+	padding: 1px 2px 4px 2px;
+}
+
+.pagination ul {
+	display: flex;
+	justify-content: center;
+}
+
+.pagination ul li:first-child a,
+.pagination ul li:last-child a {
+	background-color: #e6e6e6;
+	width: 80px;
+}
+.pagination ul li:first-child a::after {
+	font-size: 14px;
+	content: '<Prev';
+}
+
+.pagination ul li:last-child a::after {
+	font-size: 14px;
+	content: 'Next>';
+}
+
+.pagination a,
+.pagination li {
+	display: inline-block;
+	vertical-align: middle;
+	font-size: 12px;
+	padding: 3px 0 2px 0;
+	user-select: none;
+}
+
+.pagination ul li a:hover {
+	background-color: #3f3a3a;
+	color: white;
+}
+
+.pagination a {
+	text-align: center;
+	border-radius: 4px;
+	width: 30px;
+	height: 30px;
+	margin: 2px;
+	cursor: pointer;
+	background-color: #f4f4f4;
+}
+.pagination li {
+	margin: 0 3px 0 3px;
+}
+
+.pagination a.currentPaging {
+	background-color: #3f3a3a;
+	color: white;
+}

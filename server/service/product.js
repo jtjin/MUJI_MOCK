@@ -31,16 +31,81 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 const index_1 = __importDefault(require("../db/index"));
-const { dbConnection } = require('../db/index');
 const ProductModule_1 = require("../db/modules/ProductModule");
 const ProductDetailsModule_1 = require("../db/modules/ProductDetailsModule");
+const ImagesModule_1 = require("../db/modules/ImagesModule");
+const MainImagesModule_1 = require("../db/modules/MainImagesModule");
 const R = __importStar(require("ramda"));
 const typeorm_1 = require("typeorm");
 const Tags_1 = require("../infra/enums/Tags");
+const redisDb_1 = require("../db/redisDb");
+const safeAsync_1 = require("../utils/safeAsync");
+const tag = 'server/product';
 class ProductService {
-    createProduct(reqVO) {
+    constructor() {
+        this.tag = 'ProductService';
+    }
+    getProductsListByTag(opt) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log('TagsEnum[reqVO.tag]==>', Tags_1.TagsEnum[reqVO.tag]);
+            const { tagId, titleLike, page = 1 } = opt;
+            console.log(tagId, titleLike, page);
+            try {
+                const [_error, resultCache] = yield safeAsync_1.safeAwait(redisDb_1.redisClient.get(`product:${tagId}:${titleLike}:${page}`), tag + this.tag + '/getProductsListByTag/redis');
+                if (resultCache)
+                    return JSON.parse(String(resultCache));
+                const productPO = yield index_1.default.productModule.getProductsByTag({
+                    tagId,
+                    titleLike,
+                    pagination: {
+                        offset: (Number(page) - 1) * 6,
+                        limit: 6 + 1,
+                    },
+                });
+                const result = {};
+                if (productPO.length === 6 + 1) {
+                    productPO.pop();
+                    result.next_paging = Number(page) + 1;
+                }
+                result.data = this._formatProductList(productPO);
+                if (!result.data)
+                    return;
+                yield safeAsync_1.safeAwait(redisDb_1.redisClient.set(`product:${tagId}:${titleLike}:${page}`, JSON.stringify(result)), tag + this.tag + '/getProductsListByTag/redis');
+                return result;
+            }
+            catch (error) { }
+        });
+    }
+    getProductDetailById(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const resultCache = yield redisDb_1.redisClient.get(`product:detail:${id}`);
+                if (resultCache)
+                    return JSON.parse(String(resultCache));
+                const productPO = yield index_1.default.productModule.getProductDetailById(id);
+                yield redisDb_1.redisClient.set(`product:detail:${id}`, JSON.stringify(productPO));
+                const result = { data: this._formatProductList(productPO)[0] };
+                return result;
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
+    getPhotosByProductId(productId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                return {
+                    images: yield index_1.default.imagesModule.getImagesById(productId),
+                    main_image: yield index_1.default.mainImagesModule.getMainImagesById(productId),
+                };
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
+    createProduct(reqVO, files) {
+        return __awaiter(this, void 0, void 0, function* () {
             const productVO = Object.assign({ tag_id: Tags_1.TagsEnum[reqVO.tag] }, R.pick([
                 'title',
                 'description',
@@ -52,115 +117,145 @@ class ProductService {
                 'story',
             ], reqVO));
             let productId;
-            yield typeorm_1.getConnection('stylish').transaction((trans) => __awaiter(this, void 0, void 0, function* () {
-                const productModule = new ProductModule_1.ProductModule(undefined, trans);
-                const insertedResult = yield productModule.createProduct(productVO);
-                productId = insertedResult.raw.insertId;
-                if (typeof productId === 'number') {
-                    const result = yield this.createProductDetails(Object.assign({ transaction: trans, productId }, R.pick(['colors', 'colorsName', 'sizes'], reqVO)));
-                }
-            }));
-            return productId;
-        });
-    }
-    createdPhotos(files, body) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const { main_image, images } = files;
-            const { productId } = body;
-            const mainImagesValueArr = [];
-            const imagesValueArr = [];
-            main_image.forEach((image, index) => {
-                mainImagesValueArr[index] = {
-                    product_id: productId,
-                    name: image.key.split('/')[1],
-                    url: '/' + image.key,
-                };
-            });
-            images.forEach((image, index) => {
-                imagesValueArr[index] = {
-                    product_id: productId,
-                    name: image.key.split('/')[1],
-                    url: '/' + image.key,
-                };
-            });
-            yield index_1.default.imagesModule.createImages(imagesValueArr);
-            yield index_1.default.mainImagesModule.createMainImages(mainImagesValueArr);
-        });
-    }
-    createProductDetails(opt) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const { transaction, productId, colors, colorsName, sizes } = opt;
-            const productDetailModule = new ProductDetailsModule_1.ProductDetailsModule(undefined, transaction);
-            const colorsArr = colors.split(',');
-            const colorsNameArr = colorsName.split(',');
-            const sizesArr = sizes.split(',');
-            let productDetailVariants = [];
-            colorsArr.forEach((color, colorsArrIndex) => {
-                let temp = {
-                    color_code: color,
-                    name: colorsNameArr[colorsArrIndex],
-                };
-                sizesArr.forEach((size) => {
-                    const detailVariant = Object.assign({}, temp);
-                    detailVariant.size = size;
-                    detailVariant.product_id = productId;
-                    productDetailVariants.push(detailVariant);
-                });
-            });
-            return yield productDetailModule.createProductDetails(productDetailVariants);
-        });
-    }
-    getProductsListByTag(opt) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const { tag, titleLike, page = 1 } = opt;
-            const productPO = yield index_1.default.productModule.getProductsByTag({
-                tag,
-                titleLike,
-                pagination: {
-                    offset: (Number(page) - 1) * 6,
-                    limit: 6 + 1,
-                },
-            });
-            // TODO: 存一份到 Redis
-            const result = {};
-            if (productPO.length === 6 + 1) {
-                productPO.pop();
-                result.next_paging = Number(page) + 1;
+            try {
+                yield typeorm_1.getConnection('stylish').transaction((trans) => __awaiter(this, void 0, void 0, function* () {
+                    const productModule = new ProductModule_1.ProductModule({ transaction: trans });
+                    const insertedResult = yield productModule.createProduct(productVO);
+                    productId = insertedResult.raw.insertId;
+                    if (productId) {
+                        yield this._createProductDetails(Object.assign({ transaction: trans, productId }, R.pick(['colors', 'colorsName', 'sizes'], reqVO)));
+                    }
+                    yield this._createdPhotos({ transaction: trans, productId, files });
+                }));
+                this._delProductCacheByTag(Tags_1.TagsEnum[reqVO.tag]);
+                return productId;
             }
-            result.data = this._formatProductList(productPO);
-            return result;
+            catch (error) {
+                throw error;
+            }
+        });
+    }
+    _createdPhotos(opt) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { transaction, productId, files } = opt;
+                const { main_image, images } = files;
+                const mainImagesValueArr = [];
+                const imagesValueArr = [];
+                main_image.forEach((image, index) => {
+                    mainImagesValueArr[index] = {
+                        product_id: productId,
+                        name: 'main_image-' + index + '.' + image.key.split('.')[1],
+                        url: '/' + image.key,
+                    };
+                });
+                images.forEach((image, index) => {
+                    imagesValueArr[index] = {
+                        product_id: productId,
+                        name: 'images-' + index + '.' + image.key.split('.')[1],
+                        url: '/' + image.key,
+                    };
+                });
+                const imagesModule = new ImagesModule_1.ImagesModule({ transaction });
+                const mainImagesModule = new MainImagesModule_1.MainImagesModule({ transaction });
+                yield imagesModule.createImages(imagesValueArr);
+                yield mainImagesModule.createMainImages(mainImagesValueArr);
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
+    _createProductDetails(opt) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { transaction, productId, colors, colorsName, sizes } = opt;
+                const productDetailModule = new ProductDetailsModule_1.ProductDetailsModule({ transaction });
+                const colorsArr = colors.split(',');
+                const colorsNameArr = colorsName.split(',');
+                const sizesArr = sizes.split(',');
+                let productDetailVariants = [];
+                colorsArr.forEach((color, colorsArrIndex) => {
+                    let temp = {
+                        color_code: color.trim(),
+                        name: colorsNameArr[colorsArrIndex].trim(),
+                    };
+                    sizesArr.forEach((size) => {
+                        const detailVariant = Object.assign({}, temp);
+                        detailVariant.size = size.trim();
+                        detailVariant.product_id = productId;
+                        productDetailVariants.push(detailVariant);
+                    });
+                });
+                return yield productDetailModule.createProductDetails(productDetailVariants);
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
+    _delProductCacheByTag(tag) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const productCacheKeys = yield redisDb_1.redisClient.keys(`product:${tag}:*`);
+                // @ts-ignore
+                productCacheKeys.forEach((key) => {
+                    redisDb_1.redisClient.del(key);
+                });
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
+    updateMainImageById(opt) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                yield index_1.default.mainImagesModule.updateMainImageById(opt);
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
+    updateImageById(opt) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                yield index_1.default.imagesModule.updateImageById(opt);
+            }
+            catch (error) {
+                throw error;
+            }
         });
     }
     _formatProductList(productPO) {
-        return productPO.map((productPO) => {
-            const formatPO = Object.assign(Object.assign({}, productPO), { colors: [], sizes: [] });
-            const colorsMapped = {};
-            const sizeMapped = {};
-            formatPO.images = productPO.images.map((image) => image.url);
-            formatPO.main_image = productPO.main_image.url;
-            formatPO.variants = productPO.variants.map((variant) => {
-                if (!colorsMapped[variant.color_code]) {
-                    formatPO.colors.push({
-                        code: variant.color_code,
-                        name: variant.name,
-                    });
-                    colorsMapped[variant.color_code] = variant.color_code;
-                }
-                if (!sizeMapped[variant.size]) {
-                    formatPO.sizes.push(variant.size);
-                    sizeMapped[variant.size] = variant.size;
-                }
-                return R.pick(['color_code', 'size', 'stock'], variant);
+        try {
+            return productPO.map((productPO) => {
+                const formatPO = Object.assign(Object.assign({}, productPO), { colors: [], sizes: [] });
+                const colorsMapped = {};
+                const sizeMapped = {};
+                formatPO.images = productPO.images.map((image) => image.url);
+                formatPO.main_image = productPO.main_image.url;
+                formatPO.variants = productPO.variants.map((variant) => {
+                    if (!colorsMapped[variant.color_code]) {
+                        formatPO.colors.push({
+                            code: variant.color_code,
+                            name: variant.name,
+                        });
+                        colorsMapped[variant.color_code] = variant.color_code;
+                    }
+                    if (!sizeMapped[variant.size]) {
+                        formatPO.sizes.push(variant.size);
+                        sizeMapped[variant.size] = variant.size;
+                    }
+                    return R.pick(['color_code', 'size', 'stock'], variant);
+                });
+                return formatPO;
             });
-            return formatPO;
-        });
-    }
-    getProductDetailById(id) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const productPO = yield index_1.default.productModule.getProductDetailById(id);
-            const result = { data: this._formatProductList(productPO)[0] };
-            return result;
-        });
+        }
+        catch (error) {
+            throw error;
+        }
     }
 }
 module.exports = new ProductService();

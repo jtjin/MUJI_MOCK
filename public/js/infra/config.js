@@ -6,10 +6,13 @@ const config = {
 	api: {
 		admin: {
 			product: globalVersion + 'admin/product',
+			chatRoomList: globalVersion + 'admin/chatRoomList',
+			canMessage: globalVersion + 'admin/chatRoom/pin',
 		},
 		user: {
 			signUp: globalVersion + 'user/register',
 			signIn: globalVersion + 'user/logIn',
+			chatRoomHistory: globalVersion + 'chatRoom/history',
 		},
 		globalVersion: globalVersion,
 		product: {

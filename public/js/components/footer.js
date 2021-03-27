@@ -25,15 +25,15 @@ class Footer extends HTMLElement {
 				<div class="social">
 					<a href=""></a>
 					<img
-						src="https://d3v1bp9kjdtski.cloudfront.net/images/line.png"
+						src="https://s3-ap-northeast-1.amazonaws.com/white-100.online/Stylish/images/line.png"
 						alt="line"
 					/>
 					<img
-						src="https://d3v1bp9kjdtski.cloudfront.net/images/twitter.png"
+						src="https://s3-ap-northeast-1.amazonaws.com/white-100.online/Stylish/images/twitter.png"
 						alt="twitter"
 					/>
 					<img
-						src="https://d3v1bp9kjdtski.cloudfront.net/images/facebook.png"
+						src="https://s3-ap-northeast-1.amazonaws.com/white-100.online/Stylish/images/facebook.png"
 						alt="facebook"
 					/>
 				</div>

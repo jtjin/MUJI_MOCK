@@ -40,6 +40,7 @@ export const handleError: ErrorRequestHandler = (err, _req, res, _next) => {
 			error: { type: errorType || returnCustomError.type, data },
 		})
 	} catch (err) {
+		console.log(err)
 		logger.error({ tag: 'server/utils/handleError', error: err })
 	}
 }

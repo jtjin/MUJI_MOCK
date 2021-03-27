@@ -3,26 +3,75 @@ import config from './infra/config.js'
 
 class ProductListManager {
 	productCategory
-	constructor() {
-		const key = window.location.search.split('?')[1]
+	paging = 1
+	next_paging
 
-		let productCategory
-		if (!key) {
-			productCategory = 'all'
-		} else if (key.split('=')[0] == 'tag') {
-			productCategory = key.split('=')[1]
-		} else {
-			productCategory = 'search?' + key
+	constructor() {
+		const requestLocation = window.location.search.split('?')
+		const key = requestLocation[1]
+		if (requestLocation[2]) {
+			this.paging = requestLocation[2].split('=')[1]
 		}
 
-		this.renderProducts(productCategory)
+		if (key && key.split('=')[0] == 'search') {
+			this.productCategory = 'search?' + key
+		} else if (key && key.split('=')[0] == 'tag') {
+			this.productCategory = key.split('=')[1]
+		} else {
+			this.productCategory = 'all'
+		}
+		this.renderProducts(this.paging)
 	}
 
-	async renderProducts(productCategory) {
-		const { data } = (
-			await publicApi.get(config.api.product.list + productCategory)
-		).data
+	async renderProducts(paging) {
+		this.paging = paging
+		console.log('renderProducts paging->', paging)
+		let requestUrl = config.api.product.list
+		requestUrl += this.productCategory ? this.productCategory : 'all'
+		if (paging) requestUrl = requestUrl + '?paging=' + paging
+		const { data, next_paging } = (await publicApi.get(requestUrl)).data
+
+		if (next_paging) {
+			this.next_paging = next_paging
+			this.createPaging(this.next_paging)
+		} else {
+			this.next_paging = undefined
+			this.createPaging(this.paging)
+		}
 		this.createProductElements(data)
+	}
+
+	createPaging(paging) {
+		const paginationList = document.querySelector('.paginationList')
+		paginationList.innerHTML = ''
+		let pageCount = 0
+		while (pageCount < paging + 2) {
+			const li = document.createElement('li')
+			const a = document.createElement('a')
+			if (pageCount !== 0 && paging !== pageCount - 1) {
+				let pageNumber = pageCount
+				a.innerText = pageCount
+				a.addEventListener('click', () => this.renderProducts(pageNumber))
+			}
+			if (pageCount === 0) {
+				a.addEventListener('click', () => this.renderProducts(this.paging - 1))
+			} else if (pageCount - 1 === paging) {
+				console.log('this.next_paging==>', this.next_paging)
+				if (this.next_paging) {
+					a.addEventListener('click', () =>
+						this.renderProducts(this.paging + 1),
+					)
+				} else {
+					a.addEventListener('click', () => alert('There is no other page...'))
+				}
+			}
+			console.log('this.paging--->', this.paging)
+			if (pageCount === this.paging) a.classList.add('currentPaging')
+			li.appendChild(a)
+			paginationList.appendChild(li)
+			console.log(paging, pageCount)
+			pageCount++
+		}
 	}
 
 	createProductElements(productsInfo) {

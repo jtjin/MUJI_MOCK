@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+		<link rel="stylesheet" href="../css/admin/chatroom.css" />
+		<script src="/socket.io/socket.io.js"></script>
+		<script src="../js/admin/chatroom.js" type="module" defer></script>
+		<title>STYLiSH</title>
+	</head>
+
+	<body>
+		<div class="chatContainer">
+			<header class="chatHeader">
+				<h1>STYLiSH</h1>
+				<h3>User:</h3>
+				<h2 id="currentUserName"></h2>
+			</header>
+			<main class="chatMain">
+				<div class="chatSidebar">
+					<h3>Rooms</h3>
+					<ul id="roomsContainer">
+						<div>
+							<template class="roomListTemplate">
+								<li>
+									<a href="">
+										<span class="roomIcon">🔸 </span>
+										<span class="roomName"></span>
+									</a>
+								</li>
+							</template>
+						</div>
+					</ul>
+				</div>
+				<div class="messagesContainer">
+					<template class="userMessageTemplate">
+						<div class="message">
+							<p class="meta">
+								<span class="userName">User</span>
+								<span class="timeStamp"></span>
+							</p>
+							<p class="text"></p>
+						</div>
+					</template>
+				</div>
+			</main>
+			<div class="canMessageContainer">
+				<ul class="canMessagesWrap">
+					<template class="pinMessageTemplate">
+						<li>
+							<span class="deletePinButton">x</span>
+							<span class="canMessage">canMessage</span>
+						</li>
+					</template>
+				</ul>
+			</div>
+			<div class="messageInputBoxContainer">
+				<div id="messageInputForm">
+					<input
+						class="messageInput"
+						type="text"
+						placeholder="Type message..."
+						required
+						autocomplete="off"
+					/>
+					<button class="messageInputSubmitButton pinMsgBtn">Pin</button>
+					<button class="messageInputSubmitButton sendMsgBtn">Send</button>
+					<div class="submitBroadcastBtn">Broadcast</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

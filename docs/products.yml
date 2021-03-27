@@ -1,0 +1,63 @@
+openapi: '3.0.2'
+info:
+  title: STYLiSH - Products API DOCs
+  version: '1.0'
+servers:
+  - url: http://localhost:5000/api/1.0
+paths:
+  /products/all:
+    get:
+      tags:
+        - products
+      description: products
+      responses:
+        '200':
+          description: OK
+
+      parameters:
+        - name: paging
+          in: query
+          schema:
+            type: integer
+  /products/women:
+    get:
+      tags:
+        - products
+      description: products
+      responses:
+        '200':
+          description: OK
+      parameters:
+        - name: paging
+          in: query
+          schema:
+            type: integer
+  /products/men:
+    get:
+      tags:
+        - products
+      description: products
+      responses:
+        '200':
+          description: OK
+  /products/accessories:
+    get:
+      tags:
+        - products
+      description: products
+      responses:
+        '200':
+          description: OK
+      parameters:
+        - name: paging
+          in: query
+          schema:
+            type: integer
+  /admin/product:
+    post:
+      tags:
+        - admin
+      description: products
+      responses:
+        '200':
+          description: OK

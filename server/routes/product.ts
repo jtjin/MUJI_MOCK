@@ -6,13 +6,17 @@ import path from 'path'
 import { Router } from 'express'
 const router = Router()
 
-router.post('/admin/product', Product.uploadImg, Product.createdPhotos)
+router.get('/products/:bodyTag', Product.getProductsListByTag)
+// router.use(authorization)
 
-router.get(
-	'/products/:bodyTag',
-	Product.getProductCache,
-	Product.getProductsListByTag,
-)
+// TODO: Move this to admin folder
+router.post('/admin/product', Product.uploadImg, Product.createProduct)
+
+// TODO: Add edit product function
+// router.put('/admin/product', Product.uploadImg, Product.createProduct)
+
+// TODO: Add delete product function
+// router.delete('/admin/product/:productId', Product.deleteProduct)
 
 module.exports = router
 

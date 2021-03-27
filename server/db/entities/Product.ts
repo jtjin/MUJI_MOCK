@@ -67,13 +67,13 @@ export class Product {
 	@JoinColumn({
 		name: 'tag_id',
 	})
-	tag_id?: Tag
+	tag_id: Tag | string
 
 	@ManyToOne((type) => Hot)
 	@JoinColumn({
 		name: 'hot_id',
 	})
-	hot_id?: Hot
+	hot_id: Hot | string
 
 	@OneToMany(
 		(type) => ProductDetails,

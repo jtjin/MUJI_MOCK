@@ -57,6 +57,7 @@ const disconnectRedis = () => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.disconnectRedis = disconnectRedis;
 exports.redisClient.on('error', (error) => {
+    console.log(error);
     logger_1.default.error({
         tag,
         error: JSON.stringify(error, Object.getOwnPropertyNames(error)),

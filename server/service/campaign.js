@@ -15,13 +15,23 @@ const index_1 = __importDefault(require("../db/index"));
 class CampaignService {
     getCampaigns() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield index_1.default.campaignModule.getCampaigns();
+            try {
+                return yield index_1.default.campaignModule.getCampaigns();
+            }
+            catch (error) {
+                throw error;
+            }
         });
     }
     createCampaign(opt) {
         return __awaiter(this, void 0, void 0, function* () {
             const { id, story, url } = opt;
-            return yield index_1.default.campaignModule.createCampaign(id, story, url);
+            try {
+                return yield index_1.default.campaignModule.createCampaign(id, story, url);
+            }
+            catch (error) {
+                throw error;
+            }
         });
     }
 }

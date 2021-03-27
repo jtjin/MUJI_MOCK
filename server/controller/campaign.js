@@ -14,17 +14,27 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 const campaign_1 = __importDefault(require("../service/campaign"));
 class Campaign {
     constructor() {
-        this.getCampaigns = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const result = { data: yield campaign_1.default.getCampaigns() };
-            res.send(result);
+        this.getCampaigns = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const result = { data: yield campaign_1.default.getCampaigns() };
+                res.send(result);
+            }
+            catch (error) {
+                next(error);
+            }
         });
-        this.createCampaign = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        this.createCampaign = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             const { id, story } = req.body;
-            yield campaign_1.default.createCampaign({
-                id,
-                story,
-                url: `/${req.files.image[0].key}`,
-            });
+            try {
+                yield campaign_1.default.createCampaign({
+                    id,
+                    story,
+                    url: `/${req.files.image[0].key}`,
+                });
+            }
+            catch (error) {
+                next(error);
+            }
         });
     }
 }

@@ -1,4 +1,4 @@
-@import './bounce.css';
+@import './animations/bounce.css';
 @import './button.css';
 @import './input.css';
 
@@ -65,7 +65,7 @@ h2 {
 	position: fixed;
 	left: 0;
 	right: 0;
-	z-index: 9999999999999;
+	z-index: 10;
 	position: fixed;
 	background-color: #fff;
 	padding: 10px;
@@ -156,7 +156,7 @@ h2 {
 	padding-top: 80px;
 	color: #fff;
 	background-color: rgba(172, 172, 172, 0.865);
-	z-index: 99999;
+	z-index: 9;
 }
 
 .postFormHeader {

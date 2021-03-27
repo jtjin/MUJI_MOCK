@@ -1,6 +1,7 @@
 import config from 'config'
 import logger from './server/utils/logger'
 import path from 'path'
+import http from 'http'
 import express from 'express'
 import bodyParser from 'body-parser'
 import StylishRDB from './server/db'
@@ -8,8 +9,9 @@ import { handleError } from './server/utils/middleWares/errorHandler'
 import { Server } from 'http'
 import cookieParser from 'cookie-parser'
 import { disconnectRedis } from './server/db/redisDb'
-
-const { init: socketIoInit } = require('./server/webSocket/index')
+import ErrorController from './server/controller/error'
+import { socketIoInit } from './server/webSocket/index'
+import { rootPath } from './server/utils'
 
 const env = process.env.NODE_ENV || 'development'
 const app = express()
@@ -28,7 +30,6 @@ const initServer = async () => {
 			coredump: false,
 			timeout: 500,
 		})
-
 		// parse application/x-www-form-urlencoded
 		app.use(
 			bodyParser.urlencoded({
@@ -39,11 +40,9 @@ const initServer = async () => {
 		app.use(bodyParser.json())
 
 		app.use(cookieParser())
-		app.set('views', '../client')
 		app.set('json spaces', 2)
 		app.use(express.json())
 		app.use(express.urlencoded())
-		app.use(express.static(path.join(__dirname, '../client')))
 
 		/// CORS Control
 		app.use('/api/', function (req, res, next) {
@@ -61,15 +60,17 @@ const initServer = async () => {
 		app.use('/api/' + config.get('api.version'), [
 			require('./server/routes/user'),
 			require('./server/routes/product'),
+			require('./server/routes/chatRoom'),
 			require('./server/routes/campaign'),
 			// require('./server/routes/checkout'),
-			// require('./server/routes/home'),
 			// require('./server/routes/store_order_dta'),
 		])
 
 		app.set('view engine', 'html')
-		app.set('views', __dirname + '/public/')
-		app.use(express.static(path.join(__dirname, '/public')))
+		app.set('views', rootPath + '/public/')
+		app.use(express.static(rootPath + '/public'))
+
+		app.use(ErrorController.get404)
 
 		app.use(handleError)
 

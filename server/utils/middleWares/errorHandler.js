@@ -31,6 +31,7 @@ const handleError = (err, _req, res, _next) => {
         });
     }
     catch (err) {
+        console.log(err);
         logger_1.default.error({ tag: 'server/utils/handleError', error: err });
     }
 };

@@ -12,7 +12,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProductDetailsModule = void 0;
 const ProductDetails_1 = require("../entities/ProductDetails");
 class ProductDetailsModule {
-    constructor(client, transaction) {
+    constructor(opt) {
+        const { client, transaction } = opt;
         this.client = client;
         if (transaction) {
             this.Repo = transaction.getRepository(ProductDetails_1.ProductDetails);

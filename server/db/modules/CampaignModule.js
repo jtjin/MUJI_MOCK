@@ -12,23 +12,27 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CampaignModule = void 0;
 const Campaign_1 = require("../entities/Campaign");
 class CampaignModule {
-    constructor(client) {
+    constructor(opt) {
+        const { client, transaction } = opt;
         this.client = client;
+        if (transaction) {
+            this.Repo = transaction.getRepository(Campaign_1.Campaign);
+        }
+        else if (this.client) {
+            this.Repo = this.client.getRepository(Campaign_1.Campaign);
+        }
         this.tag = 'campaignModule/';
     }
     getCampaigns() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.client
-                .getRepository(Campaign_1.Campaign)
-                .createQueryBuilder('c')
+            return yield this.Repo.createQueryBuilder('c')
                 .select('c.id , c.story, c.url AS picture')
                 .getRawMany();
         });
     }
     createCampaign(id, story, url) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.client
-                .createQueryBuilder()
+            return yield this.Repo.createQueryBuilder()
                 .insert()
                 .into(Campaign_1.Campaign)
                 .values([{ id, story, url }])

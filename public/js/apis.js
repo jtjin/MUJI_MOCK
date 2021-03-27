@@ -5,6 +5,7 @@ const publicApi = axios.create({
 })
 
 const privateApi = axios.create({
+	// TODO: add authorization to header
 	baseURL: baseUrl,
 })
 

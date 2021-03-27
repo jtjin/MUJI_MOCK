@@ -35,15 +35,44 @@ class CreateProductFrom {
 
 	async _postCreateProductForm() {
 		const formData = new FormData(this.productCreateFrom)
+		console.log('formData=>', formData)
 		try {
-			await privateApi({
-				url: config.api.admin.product,
-				method: 'POST',
-				data: formData,
-			})
+			const { result } = (
+				await privateApi({
+					url: config.api.admin.product,
+					method: 'POST',
+					data: formData,
+				})
+			).data
+			if (result === 'success') {
+				this._cleanProductInfo()
+				Swal.fire({
+					// Reference Links: https://sweetalert2.github.io/
+					position: 'top-end',
+					icon: 'success',
+					title: 'Your work has been saved',
+					showConfirmButton: false,
+					timer: 1500,
+				})
+			}
 		} catch (error) {
 			console.log(error)
 		}
+	}
+	_cleanProductInfo() {
+		this.title.value = ''
+		this.description.value = ''
+		this.price.value = ''
+		this.texture.value = ''
+		this.wash.value = ''
+		this.place.value = ''
+		this.note.value = ''
+		this.story.value = ''
+		this.colors.value = ''
+		this.colorsName.value = ''
+		this.sizes.value = ''
+		this.main_image.value = ''
+		this.images.value = ''
 	}
 
 	_fillTestProductInfo() {

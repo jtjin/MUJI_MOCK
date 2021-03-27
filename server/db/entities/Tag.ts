@@ -26,5 +26,5 @@ export class Tag {
 	name!: string
 
 	@OneToMany((type) => Product, (product) => product.tag_id)
-	product?: Product[]
+	product?: Product[] | string
 }

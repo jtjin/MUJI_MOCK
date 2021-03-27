@@ -12,7 +12,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ImagesModule = void 0;
 const Images_1 = require("../entities/Images");
 class ImagesModule {
-    constructor(client, transaction) {
+    constructor(opt) {
+        const { client, transaction } = opt;
         this.client = client;
         if (transaction) {
             this.Repo = transaction.getRepository(Images_1.Images);
@@ -27,9 +28,9 @@ class ImagesModule {
             return yield this.Repo.createQueryBuilder().getMany();
         });
     }
-    getMainImagesById(id) {
+    getImagesById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.Repo.createQueryBuilder()
+            return yield this.Repo.createQueryBuilder()
                 .where('product_id = :id', {
                 id,
             })
@@ -42,6 +43,16 @@ class ImagesModule {
                 .insert()
                 .into(Images_1.Images)
                 .values(values)
+                .execute();
+        });
+    }
+    updateImageById(opt) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { id, url } = opt;
+            return yield this.Repo.createQueryBuilder()
+                .update(Images_1.Images)
+                .set({ url: url })
+                .where('id = :id', { id })
                 .execute();
         });
     }

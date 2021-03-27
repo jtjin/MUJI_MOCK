@@ -18,6 +18,8 @@ const MainImagesModule_1 = require("./modules/MainImagesModule");
 const ImagesModule_1 = require("./modules/ImagesModule");
 const CampaignModule_1 = require("./modules/CampaignModule");
 const UserModule_1 = require("./modules/UserModule");
+const MessagesModules_1 = require("./modules/MessagesModules");
+const PinMessagesModule_1 = require("./modules/PinMessagesModule");
 const config_1 = __importDefault(require("config"));
 const logger_1 = __importDefault(require("../utils/logger"));
 const tag = '/db/index';
@@ -41,12 +43,16 @@ class StylishRDB {
             if (this.client) {
                 console.log(`--- Stylish DB Connected ---`);
             }
-            this.productModule = new ProductModule_1.ProductModule(this.client);
-            this.userModule = new UserModule_1.UserModule(this.client);
-            this.campaignModule = new CampaignModule_1.CampaignModule(this.client);
-            this.productDetailsModule = new ProductDetailsModule_1.ProductDetailsModule(this.client);
-            this.imagesModule = new ImagesModule_1.ImagesModule(this.client);
-            this.mainImagesModule = new MainImagesModule_1.MainImagesModule(this.client);
+            this.productModule = new ProductModule_1.ProductModule({ client: this.client });
+            this.userModule = new UserModule_1.UserModule({ client: this.client });
+            this.campaignModule = new CampaignModule_1.CampaignModule({ client: this.client });
+            this.productDetailsModule = new ProductDetailsModule_1.ProductDetailsModule({
+                client: this.client,
+            });
+            this.imagesModule = new ImagesModule_1.ImagesModule({ client: this.client });
+            this.mainImagesModule = new MainImagesModule_1.MainImagesModule({ client: this.client });
+            this.messagesModule = new MessagesModules_1.MessagesModule({ client: this.client });
+            this.pinMessagesModule = new PinMessagesModule_1.PinMessagesModule({ client: this.client });
             dbConnection = this.client;
             return this.client;
         });

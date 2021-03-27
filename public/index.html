@@ -7,6 +7,7 @@
 		<link rel="stylesheet" type="text/css" href="./css/index.css" />
 		<link rel="stylesheet" type="text/css" href="./css/main.css" />
 		<link rel="stylesheet" type="text/css" href="./css/Tappay.css" />
+		<link rel="stylesheet" type="text/css" href="./css/fakebot.css" />
 
 		<script
 			src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"
@@ -16,6 +17,15 @@
 		<script src="../js/index.js" defer type="module"></script>
 		<script src="./js/components/header.js" defer></script>
 		<script src="./js/components/footer.js" defer></script>
+
+		<script src="./js/components/chatbot.js" defer type="module"></script>
+		<script src="/socket.io/socket.io.js"></script>
+
+		<link
+			rel="stylesheet"
+			type="text/css"
+			href="./css/components/chatbot.css"
+		/>
 	</head>
 
 	<body>
@@ -53,6 +63,11 @@
 			</div>
 		</main>
 
+		<div class="pagination">
+			<ul class="paginationList"></ul>
+		</div>
+
+		<stylish-chatbot></stylish-chatbot>
 		<stylish-footer></stylish-footer>
 	</body>
 </html>

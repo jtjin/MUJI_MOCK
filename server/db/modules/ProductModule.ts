@@ -2,13 +2,15 @@ import { Connection, EntityManager, InsertResult, Repository } from 'typeorm'
 import { Tag } from '../entities/Tag'
 import { Product } from '../entities/Product'
 import { TagsEnum } from '../../infra/enums/Tags'
+import { getKeyValue } from '../../utils/index'
 
 export class ProductModule {
-	client: Connection | undefined
+	client?: Connection
 	tag: string
 	Repo: Repository<Product>
 
-	constructor(client?: Connection, transaction?: EntityManager | undefined) {
+	constructor(opt: { client?: Connection; transaction?: EntityManager }) {
+		const { client, transaction } = opt
 		this.client = client
 		if (transaction) {
 			this.Repo = transaction.getRepository(Product)
@@ -34,23 +36,21 @@ export class ProductModule {
 	}
 
 	async getProductsByTag(opt: {
-		tag?: string
+		tagId?: TagsEnum
 		titleLike?: string
 		pagination?: { offset?: number; limit?: number }
 		orderBy?: { sort: string; order: 'DESC' | 'ASC' }
 	}) {
-		const { tag, titleLike, pagination, orderBy } = opt
-
-		const tags = TagsEnum[tag]
+		const { tagId, titleLike, pagination, orderBy } = opt
 
 		let query = this.Repo.createQueryBuilder('product')
 			.leftJoinAndSelect('product.variants', 'variants')
 			.leftJoinAndSelect('product.images', 'images')
 			.leftJoinAndSelect('product.main_image', 'main_image')
 
-		if (tags) {
+		if (tagId && tagId > 0) {
 			query = query.where('product.tag_id = :tagId', {
-				tagId: tags,
+				tagId,
 			})
 		}
 
@@ -66,9 +66,11 @@ export class ProductModule {
 		}
 
 		if (pagination) {
+			console.log('pagination=>', pagination)
+
 			const { limit, offset } = pagination
 			if (limit) query = query.take(limit)
-			if (offset) query = query.offset(offset)
+			if (offset) query = query.take(limit).skip(offset)
 		}
 
 		const result = await query.getMany()
@@ -85,12 +87,12 @@ export class ProductModule {
 		place: string
 		note: string
 		story: string
-		tag_id: Tag
+		tag_id: string
 	}): Promise<InsertResult> {
 		return await this.Repo.createQueryBuilder()
 			.insert()
 			.into(Product)
-			.values([values])
+			.values(values)
 			.execute()
 	}
 }

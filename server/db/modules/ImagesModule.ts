@@ -1,4 +1,10 @@
-import { Connection, EntityManager, InsertResult, Repository } from 'typeorm'
+import {
+	Connection,
+	EntityManager,
+	InsertResult,
+	Repository,
+	UpdateResult,
+} from 'typeorm'
 import { Images } from '../entities/Images'
 
 export class ImagesModule {
@@ -6,7 +12,12 @@ export class ImagesModule {
 	tag: string
 	Repo: Repository<Images>
 
-	constructor(client?: Connection, transaction?: EntityManager | undefined) {
+	constructor(opt: {
+		client?: Connection
+		transaction?: EntityManager | undefined
+	}) {
+		const { client, transaction } = opt
+
 		this.client = client
 		if (transaction) {
 			this.Repo = transaction.getRepository(Images)
@@ -20,8 +31,8 @@ export class ImagesModule {
 		return await this.Repo.createQueryBuilder().getMany()
 	}
 
-	async getMainImagesById(id: string) {
-		return this.Repo.createQueryBuilder()
+	async getImagesById(id: string) {
+		return await this.Repo.createQueryBuilder()
 			.where('product_id = :id', {
 				id,
 			})
@@ -33,6 +44,18 @@ export class ImagesModule {
 			.insert()
 			.into(Images)
 			.values(values)
+			.execute()
+	}
+
+	async updateImageById(opt: {
+		id: string
+		url: string
+	}): Promise<UpdateResult> {
+		const { id, url } = opt
+		return await this.Repo.createQueryBuilder()
+			.update(Images)
+			.set({ url: url })
+			.where('id = :id', { id })
 			.execute()
 	}
 }

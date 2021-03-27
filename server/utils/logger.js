@@ -64,7 +64,7 @@ function createLoggerTransports() {
     transports.push(
     // @ts-ignore
     new winston_2.default.transports.MongoDB({
-        level: 'debug',
+        level: 'info',
         db: logsDb,
         collection: logsCollection,
         format: winston_1.format.combine(winston_1.format.timestamp(), winston_1.format.json()),
