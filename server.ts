@@ -1,7 +1,5 @@
 import config from 'config'
 import logger from './server/utils/logger'
-import path from 'path'
-import http from 'http'
 import express from 'express'
 import bodyParser from 'body-parser'
 import StylishRDB from './server/db'
