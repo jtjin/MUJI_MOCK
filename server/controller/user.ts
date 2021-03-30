@@ -70,10 +70,7 @@ class User {
 
 	profile: StylishRouter = async (req, res, next) => {
 		try {
-			const access_token = req.get('Authorization')
-			if (!access_token) throw new Error(customErrors.FORBIDDEN.type)
-
-			const result = await UserService.profile(access_token.split(' ')[1])
+			const result = await UserService.profile(req.me.access_token)
 			res.send(result)
 		} catch (err) {
 			next(err)

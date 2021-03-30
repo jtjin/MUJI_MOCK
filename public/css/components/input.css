@@ -1,6 +1,6 @@
-.u-form-group > input[type='text'],
-.u-form-group > input[type='email'],
-.u-form-group > input[type='password'] {
+.form-column > input[type='text'],
+.form-column > input[type='email'],
+.form-column > input[type='password'] {
 	width: calc(70%);
 	height: 45px;
 	outline: none;
@@ -16,7 +16,7 @@
 	-o-transition: all 0.1s linear;
 }
 
-.u-form-group input:focus {
+.form-column input:focus {
 	border-color: #358efb;
 }
 

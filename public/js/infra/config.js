@@ -10,9 +10,10 @@ const config = {
 			canMessage: globalVersion + 'admin/chatRoom/pin',
 		},
 		user: {
-			signUp: globalVersion + 'user/register',
-			signIn: globalVersion + 'user/logIn',
+			signUp: globalVersion + 'user/signUp',
+			signIn: globalVersion + 'user/signIn',
 			chatRoomHistory: globalVersion + 'chatRoom/history',
+			profile: globalVersion + 'user/profile',
 		},
 		globalVersion: globalVersion,
 		product: {

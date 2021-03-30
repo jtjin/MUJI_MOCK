@@ -2,14 +2,11 @@ import {
 	Entity,
 	PrimaryGeneratedColumn,
 	Column,
-	CreateDateColumn,
-	UpdateDateColumn,
-	OneToMany,
-	ManyToOne,
 	JoinColumn,
-	Index,
-	OneToOne,
+	ManyToOne,
 } from 'typeorm'
+
+import { Role } from './Role'
 
 @Entity({ name: 'user' })
 export class User {
@@ -53,4 +50,10 @@ export class User {
 		type: 'varchar',
 	})
 	access_token!: string
+
+	@ManyToOne((type) => Role)
+	@JoinColumn({
+		name: 'role_id',
+	})
+	role: Role
 }

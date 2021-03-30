@@ -17,7 +17,6 @@ const aws_sdk_1 = __importDefault(require("aws-sdk"));
 const multer_1 = __importDefault(require("multer"));
 const multer_s3_1 = __importDefault(require("multer-s3"));
 const path_1 = __importDefault(require("path"));
-const customErrors_1 = require("../infra/customErrors");
 class User {
     constructor() {
         this.register = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
@@ -46,10 +45,7 @@ class User {
         });
         this.profile = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const access_token = req.get('Authorization');
-                if (!access_token)
-                    throw new Error(customErrors_1.customErrors.FORBIDDEN.type);
-                const result = yield user_1.default.profile(access_token.split(' ')[1]);
+                const result = yield user_1.default.profile(req.me.access_token);
                 res.send(result);
             }
             catch (err) {

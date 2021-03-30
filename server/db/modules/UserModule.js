@@ -27,6 +27,7 @@ class UserModule {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.Repo.createQueryBuilder('user')
                 .where('user.email = :userEmail', { userEmail })
+                .leftJoinAndSelect('user.role', 'role')
                 .getOne();
         });
     }
@@ -51,6 +52,7 @@ class UserModule {
             return yield this.Repo.createQueryBuilder()
                 .insert()
                 .into(User_1.User)
+                // @ts-ignore
                 .values([values])
                 .execute();
         });

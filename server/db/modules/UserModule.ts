@@ -5,6 +5,7 @@ import {
 	Repository,
 	UpdateResult,
 } from 'typeorm'
+
 import { User } from '../entities/User'
 
 export class UserModule {
@@ -27,6 +28,7 @@ export class UserModule {
 	async getUserByEmail(userEmail: string): Promise<User | undefined> {
 		return await this.Repo.createQueryBuilder('user')
 			.where('user.email = :userEmail', { userEmail })
+			.leftJoinAndSelect('user.role', 'role')
 			.getOne()
 	}
 
@@ -52,12 +54,14 @@ export class UserModule {
 		email: string
 		password?: string
 		access_token: string
-		picture: string
+		picture?: string
 		provider: string
+		role?: string
 	}): Promise<InsertResult> {
 		return await this.Repo.createQueryBuilder()
 			.insert()
 			.into(User)
+			// @ts-ignore
 			.values([values])
 			.execute()
 	}

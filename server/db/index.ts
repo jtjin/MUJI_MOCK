@@ -7,6 +7,7 @@ import { CampaignModule } from './modules/CampaignModule'
 import { UserModule } from './modules/UserModule'
 import { MessagesModule } from './modules/MessagesModules'
 import { PinMessagesModule } from './modules/PinMessagesModule'
+import { RoleModule } from './modules/RoleModule'
 import config from 'config'
 import logger from '../utils/logger'
 
@@ -27,6 +28,7 @@ class StylishRDB {
 	mainImagesModule: MainImagesModule
 	messagesModule: MessagesModule
 	pinMessagesModule: PinMessagesModule
+	roleModule: RoleModule
 
 	async initDb() {
 		const connectionConfig: ConnectionOptions = {
@@ -57,6 +59,7 @@ class StylishRDB {
 		this.mainImagesModule = new MainImagesModule({ client: this.client })
 		this.messagesModule = new MessagesModule({ client: this.client })
 		this.pinMessagesModule = new PinMessagesModule({ client: this.client })
+		this.roleModule = new RoleModule({ client: this.client })
 		dbConnection = this.client
 		return this.client
 	}

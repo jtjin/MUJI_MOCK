@@ -4,9 +4,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.handleError = exports.ErrorHandler = void 0;
-const customErrors_1 = require("../../infra/customErrors");
+const customErrors_1 = require("../infra/customErrors");
 const util_1 = require("util");
-const logger_1 = __importDefault(require("../logger"));
+const logger_1 = __importDefault(require("../utils/logger"));
 class ErrorHandler extends Error {
     constructor(statusCode, errorType, message) {
         super();

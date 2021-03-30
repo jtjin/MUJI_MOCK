@@ -1,21 +1,27 @@
-import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
 import StylishRDB from '../db/index'
 import config from 'config'
 import * as R from 'ramda'
 import { customErrors } from '../infra/customErrors'
-import { ErrorHandler } from '../utils/middleWares/errorHandler'
+import { ErrorHandler } from '../middleWares/errorHandler'
 import { ErrorType } from '../infra/enums/errorType'
 
+import TokenHelper from '../helpers/token'
+import { UserRole } from '../infra/enums/UserRole'
 class User {
 	async loginByEmail(reqVo: { email: string; password: string }) {
 		const { email, password } = reqVo
 		const userPO = await StylishRDB.userModule.getUserByEmail(email)
 		if (!userPO) throw new Error(customErrors.USER_NOT_FOUND.type)
+
 		if (this._validatePassword(password, userPO.password)) {
 			throw new Error(customErrors.FORBIDDEN.type)
 		}
-		const access_token = this._refreshAccessToken(email)
+		const access_token = await this._refreshAccessToken({
+			email,
+			role: userPO.role.name,
+		})
+
 		await StylishRDB.userModule.updateAccessToken(email, access_token)
 		return {
 			result: 'success',
@@ -36,7 +42,7 @@ class User {
 			name: string
 			email: string
 			picture: object
-			password?: string
+			password: string
 			provider: string
 		},
 		fileName?: string,
@@ -51,9 +57,17 @@ class User {
 			)
 		}
 		if (provider === 'facebook') {
-			return this._registerByFacebook({ email, name, picture })
+			return this._registerByFacebook({
+				email,
+				name,
+				picture,
+				role: UserRole.user,
+			})
 		} else if (provider === 'native') {
-			return this._registerByEmail({ email, name, password }, fileName)
+			return this._registerByEmail(
+				{ email, name, password, role: UserRole.user },
+				fileName,
+			)
 		} else {
 			throw new Error(customErrors.FORBIDDEN.type)
 		}
@@ -63,52 +77,41 @@ class User {
 		email: string
 		name: string
 		picture: any
+		role: string
 	}) {
-		const { email, name, picture } = values
-		const jwtExpireTime = Number(config.get('jwt.expireTime'))
-		const access_token = jwt.sign({ email }, config.get('jwt.secret'), {
-			expiresIn: jwtExpireTime,
-		})
+		const { email, name, picture, role = UserRole.user } = values
+		const access_token = TokenHelper.generateToken(email, role)
 		const insertedResult = await StylishRDB.userModule.createNewUser({
 			name,
 			email,
 			access_token,
 			picture: picture.data.url,
 			provider: 'facebook',
+			role,
 		})
 		return {
 			data: {
 				access_token,
-				access_expired: jwtExpireTime,
+				access_expired: config.get('jwt.expireTime'),
 				id: insertedResult.raw.insertId,
 				provider: 'facebook',
 				name,
 				email,
 				picture: picture.data.url,
+				role: role,
 			},
 		}
 	}
 
 	async _registerByEmail(
-		values: { name: string; email: string; password: string },
-		fileName: string,
+		values: { name: string; email: string; password: string; role: string },
+		fileName?: string,
 	) {
-		const { name, email, password } = values
-
+		const { name, email, password, role = UserRole.user } = values
 		if (!password) throw new Error(customErrors.FORBIDDEN.type)
 
 		const hashPwd = bcrypt.hashSync(password, 8)
-		console.log('hashPwd=>', hashPwd)
-
-		const access_token = jwt.sign(
-			{
-				email,
-			},
-			config.get('jwt.secret'),
-			{
-				expiresIn: Number(config.get('jwt.expireTime')),
-			},
-		)
+		const access_token = TokenHelper.generateToken(email, role)
 
 		const result = await StylishRDB.userModule.createNewUser({
 			name,
@@ -133,18 +136,16 @@ class User {
 	}
 
 	async loginByFB(token: string) {
-		jwt.verify(token, config.get('jwt.secret'))
-
+		TokenHelper.verifyToken(token)
 		const userPO = await StylishRDB.userModule.getUserByAccessToken(token)
 
 		if (!userPO) throw new Error(customErrors.USER_NOT_FOUND.type)
 
 		const tokenExpireTime = Number(config.get('jwt.expireTime'))
 
-		const access_token = jwt.sign(
-			{ email: userPO.email },
-			config.get('jwt.secret'),
-			{ expiresIn: Number(config.get('jwt.expireTime')) },
+		const access_token = TokenHelper.generateToken(
+			userPO.email,
+			userPO.role.name,
 		)
 
 		await StylishRDB.userModule.updateAccessToken(userPO.email, access_token)
@@ -164,7 +165,6 @@ class User {
 
 	async profile(access_token: string) {
 		try {
-			jwt.verify(access_token, config.get('jwt.secret'))
 			const userPO = await StylishRDB.userModule.getUserByAccessToken(
 				access_token,
 			)
@@ -176,10 +176,12 @@ class User {
 		}
 	}
 
-	_refreshAccessToken(email: string) {
-		return jwt.sign({ email }, config.get('jwt.secret'), {
-			expiresIn: Number(config.get('jwt.expireTime')),
-		})
+	async _refreshAccessToken(opt: {
+		email: string
+		role: string
+	}): Promise<string> {
+		const { email, role = UserRole.user } = opt
+		return TokenHelper.generateToken(email, role)
 	}
 }
 

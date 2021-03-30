@@ -7,42 +7,6 @@ const router = Router()
 const fs = require('fs')
 const path = require('path')
 
-/* ----------------------------------------
---- Multer 模組設定  
-------------------------------------------*/
-/* 
-
-let i = -1;
-function count(j) {
-    i = j + 1;
-    let result = (i == 0 ? '' : `-${i}`);
-    return (result);
-}
-
-let storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        const {
-            id
-        } = req.body;
-        const dir = `./public/uploads/campaigns/${id}/`;
-        fs.exists(dir, exist => {
-            !exist
-                ?
-                fs.mkdir(dir, error => cb(error, dir)) :
-                cb(null, dir);
-        })
-    },
-    filename: function (req, file, cb) {
-        console.log(i);
-        cb(null, file.fieldname + count(i) + path.extname(file.originalname));
-    },
-});
-let upload = multer({
-    storage: storage
-});
-
- */
-
 let i = -1
 
 function count(j) {

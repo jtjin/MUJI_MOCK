@@ -4,9 +4,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const user_1 = __importDefault(require("../controller/user"));
+const authorization_1 = require("../middleWares/authorization");
 const router = require('express').Router();
-router.post('/user/register', user_1.default.uploadImg, user_1.default.register);
-router.post('/user/logIn', user_1.default.logIn);
-// router.use(authorization)
-router.get('/user/profile', user_1.default.profile);
+router.post('/user/signUp', user_1.default.uploadImg, user_1.default.register);
+router.post('/user/signIn', user_1.default.logIn);
+router.get('/user/profile', authorization_1.isAuth, user_1.default.profile);
 module.exports = router;

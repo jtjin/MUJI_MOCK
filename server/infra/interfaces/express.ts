@@ -4,6 +4,7 @@ import {
 	NextFunction as Next,
 	RequestHandler,
 } from 'express'
+import { User } from '../../db/entities/User'
 
 export { Request, Response, Next, RequestHandler }
 
@@ -13,4 +14,5 @@ export interface StylishRouter {
 
 export interface StylishRequest extends Request {
 	files: any
+	me: User
 }

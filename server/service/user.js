@@ -30,14 +30,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const index_1 = __importDefault(require("../db/index"));
 const config_1 = __importDefault(require("config"));
 const R = __importStar(require("ramda"));
 const customErrors_1 = require("../infra/customErrors");
-const errorHandler_1 = require("../utils/middleWares/errorHandler");
+const errorHandler_1 = require("../middleWares/errorHandler");
 const errorType_1 = require("../infra/enums/errorType");
+const token_1 = __importDefault(require("../helpers/token"));
+const UserRole_1 = require("../infra/enums/UserRole");
 class User {
     loginByEmail(reqVo) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -48,7 +49,10 @@ class User {
             if (this._validatePassword(password, userPO.password)) {
                 throw new Error(customErrors_1.customErrors.FORBIDDEN.type);
             }
-            const access_token = this._refreshAccessToken(email);
+            const access_token = yield this._refreshAccessToken({
+                email,
+                role: userPO.role.name,
+            });
             yield index_1.default.userModule.updateAccessToken(email, access_token);
             return {
                 result: 'success',
@@ -67,10 +71,15 @@ class User {
                 throw new errorHandler_1.ErrorHandler(403, errorType_1.ErrorType.ClientError, 'User Already Exists...');
             }
             if (provider === 'facebook') {
-                return this._registerByFacebook({ email, name, picture });
+                return this._registerByFacebook({
+                    email,
+                    name,
+                    picture,
+                    role: UserRole_1.UserRole.user,
+                });
             }
             else if (provider === 'native') {
-                return this._registerByEmail({ email, name, password }, fileName);
+                return this._registerByEmail({ email, name, password, role: UserRole_1.UserRole.user }, fileName);
             }
             else {
                 throw new Error(customErrors_1.customErrors.FORBIDDEN.type);
@@ -79,43 +88,37 @@ class User {
     }
     _registerByFacebook(values) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { email, name, picture } = values;
-            const jwtExpireTime = Number(config_1.default.get('jwt.expireTime'));
-            const access_token = jsonwebtoken_1.default.sign({ email }, config_1.default.get('jwt.secret'), {
-                expiresIn: jwtExpireTime,
-            });
+            const { email, name, picture, role = UserRole_1.UserRole.user } = values;
+            const access_token = token_1.default.generateToken(email, role);
             const insertedResult = yield index_1.default.userModule.createNewUser({
                 name,
                 email,
                 access_token,
                 picture: picture.data.url,
                 provider: 'facebook',
+                role,
             });
             return {
                 data: {
                     access_token,
-                    access_expired: jwtExpireTime,
+                    access_expired: config_1.default.get('jwt.expireTime'),
                     id: insertedResult.raw.insertId,
                     provider: 'facebook',
                     name,
                     email,
                     picture: picture.data.url,
+                    role: role,
                 },
             };
         });
     }
     _registerByEmail(values, fileName) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { name, email, password } = values;
+            const { name, email, password, role = UserRole_1.UserRole.user } = values;
             if (!password)
                 throw new Error(customErrors_1.customErrors.FORBIDDEN.type);
             const hashPwd = bcryptjs_1.default.hashSync(password, 8);
-            console.log('hashPwd=>', hashPwd);
-            const access_token = jsonwebtoken_1.default.sign({
-                email,
-            }, config_1.default.get('jwt.secret'), {
-                expiresIn: Number(config_1.default.get('jwt.expireTime')),
-            });
+            const access_token = token_1.default.generateToken(email, role);
             const result = yield index_1.default.userModule.createNewUser({
                 name,
                 email,
@@ -139,12 +142,12 @@ class User {
     }
     loginByFB(token) {
         return __awaiter(this, void 0, void 0, function* () {
-            jsonwebtoken_1.default.verify(token, config_1.default.get('jwt.secret'));
+            token_1.default.verifyToken(token);
             const userPO = yield index_1.default.userModule.getUserByAccessToken(token);
             if (!userPO)
                 throw new Error(customErrors_1.customErrors.USER_NOT_FOUND.type);
             const tokenExpireTime = Number(config_1.default.get('jwt.expireTime'));
-            const access_token = jsonwebtoken_1.default.sign({ email: userPO.email }, config_1.default.get('jwt.secret'), { expiresIn: Number(config_1.default.get('jwt.expireTime')) });
+            const access_token = token_1.default.generateToken(userPO.email, userPO.role.name);
             yield index_1.default.userModule.updateAccessToken(userPO.email, access_token);
             return {
                 data: {
@@ -162,7 +165,6 @@ class User {
     profile(access_token) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                jsonwebtoken_1.default.verify(access_token, config_1.default.get('jwt.secret'));
                 const userPO = yield index_1.default.userModule.getUserByAccessToken(access_token);
                 return {
                     data: R.pick(['id', 'provider', 'name', 'email', 'picture'], userPO),
@@ -173,9 +175,10 @@ class User {
             }
         });
     }
-    _refreshAccessToken(email) {
-        return jsonwebtoken_1.default.sign({ email }, config_1.default.get('jwt.secret'), {
-            expiresIn: Number(config_1.default.get('jwt.expireTime')),
+    _refreshAccessToken(opt) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { email, role = UserRole_1.UserRole.user } = opt;
+            return token_1.default.generateToken(email, role);
         });
     }
 }

@@ -18,6 +18,15 @@ class RegisterFrom extends HTMLElement {
 		this._initElementEventsListeners()
 		this._fillTestAccount()
 		await this.checkLoginStatus()
+
+		imgUploadBtn.onchange = function () {
+			const file = $('#uploadImg')[0].files[0]
+			const reader = new FileReader()
+			reader.onload = function (e) {
+				$('.userImg').attr('src', e.target.result)
+			}
+			reader.readAsDataURL(file)
+		}
 	}
 
 	_initElements() {
@@ -37,7 +46,7 @@ class RegisterFrom extends HTMLElement {
 		this.signInBoxLink = this.shadow.querySelector('#registerContainer-link')
 		this.logInFormBackground = this.shadow.querySelector('.logInFormBackground')
 		this.registerContainer = this.shadow.querySelector('.registerContainer')
-		this.uploadSuccessBtn = this.shadow.querySelector('.uploadSuccessfullyDiv')
+		this.uploadSuccessBtn = this.shadow.querySelector('.uploadSuccessContainer')
 		this.facebookLogInBtn = this.shadow.querySelector('.facebookLogInBtn')
 		this.googleLogInBtn = this.shadow.querySelector('.googleLogInBtn')
 
@@ -132,6 +141,7 @@ class RegisterFrom extends HTMLElement {
 			await sleep(1000)
 			this.registerContainer.style.display = 'none'
 			this.logInFormBackground.style.display = 'none'
+			location.reload()
 		} catch (e) {
 			console.log(e)
 		}
@@ -199,7 +209,7 @@ class RegisterFrom extends HTMLElement {
 
         <script src="https://apis.google.com/js/platform.js" async defer></script>
 
-			<div class="registerContainer bounce">
+			<div class="registerContainer bounce" style="display: none">
 
 				<div class="postFormHeader">
 					<a href="#" class="active" id="registerContainer-link">Log In</a>
@@ -207,18 +217,19 @@ class RegisterFrom extends HTMLElement {
 				</div>
 
 				<form class="email-login" name='provider' value="native">
-					<div class="u-form-group">
+					<div class="form-column">
 						<input type="email" class="emailInput" name="email" placeholder="Email" required="required" />
 					</div>
 
-					<div class="u-form-group">
+					<div class="form-column">
 						<input class="pwdInput" type="password" name="password" placeholder="Password"
 							required="required" autocomplete />
 					</div>
 
-					<div class="u-form-group">
+					<div class="form-column">
 						<button name='provider' value="native" type="submit" class="submit">Log in</button>
                     </div>
+
                 <button name='provider' value="facebook" type="submit" class="facebookLogInBtn">Facebook</button>
                 <button name='provider' value="google"   class="googleLogInBtn" >Google</button>
 
@@ -227,23 +238,27 @@ class RegisterFrom extends HTMLElement {
                 </form>
 
 				<form class="email-signUp"  enctype="multipart/form-data">
-					<div class="u-form-group">
+					<div class="form-column">
 						<input type="text" name="name" placeholder="User Name" required="required" />
 					</div>
-					<div class="u-form-group">
+					<div class="form-column">
 						<input type="email" name="email" placeholder="Email" required="required" />
 					</div>
-					<div class="u-form-group">
+					<div class="form-column">
 						<input id="password" type="password" name="password" placeholder="Password" required="required"
 							autocomplete />
 					</div>
-					<div class="u-form-group">
+					<div class="form-column">
 						<input id="checkPwd" type="password" name="pwdConfirm" placeholder="Confirm Password"
 							required="required" autocomplete />
 					</div>
 					<div id="messageSignUp"></div>
 
-					<div class="u-form-group imgBtn-info">
+					<div>
+						<image class="picturePreview" src="">
+					</div>
+
+					<div class="form-column imgBtn-info">
 						<label class="imgBtn" >
 							Upload Photos
 							<input id="uploadImg" style="display:none;" type="file" name="userImage"
@@ -251,14 +266,13 @@ class RegisterFrom extends HTMLElement {
 						</label>
 					</div>
 
-					<div class="u-form-group">
+					<div class="form-column">
 						<button class="submit" type="submit">Sign Up</button>
 					</div>
-				
 					
 				</form>
 
-				<div class="uploadSuccessfullyDiv bounce">
+				<div class="uploadSuccessContainer bounce">
 					<img class="uploadSuccessfullyImg">
 				</div>
 			</div>

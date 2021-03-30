@@ -5,7 +5,7 @@ renderUserInfo()
 
 async function renderUserInfo() {
 	try {
-		const { data } = (await privateApi.get('/api/1.0/user/profile')).data
+		const { data } = (await privateApi.get(config.api.user.profile)).data
 		const { id, name, email, picture } = data
 		document.querySelector('.id').innerHTML = id
 		document.querySelector('.name').innerHTML = name

@@ -20,6 +20,7 @@ const CampaignModule_1 = require("./modules/CampaignModule");
 const UserModule_1 = require("./modules/UserModule");
 const MessagesModules_1 = require("./modules/MessagesModules");
 const PinMessagesModule_1 = require("./modules/PinMessagesModule");
+const RoleModule_1 = require("./modules/RoleModule");
 const config_1 = __importDefault(require("config"));
 const logger_1 = __importDefault(require("../utils/logger"));
 const tag = '/db/index';
@@ -53,6 +54,7 @@ class StylishRDB {
             this.mainImagesModule = new MainImagesModule_1.MainImagesModule({ client: this.client });
             this.messagesModule = new MessagesModules_1.MessagesModule({ client: this.client });
             this.pinMessagesModule = new PinMessagesModule_1.PinMessagesModule({ client: this.client });
+            this.roleModule = new RoleModule_1.RoleModule({ client: this.client });
             dbConnection = this.client;
             return this.client;
         });

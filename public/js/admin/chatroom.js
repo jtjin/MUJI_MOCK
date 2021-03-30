@@ -316,5 +316,3 @@ class PinMessageManager {
 }
 
 const adminChatroomManager = new AdminChatroomManager()
-
-// TODO: User 上線要直接加入 roomList

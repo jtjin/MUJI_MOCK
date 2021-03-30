@@ -1,8 +1,8 @@
-import { ErrorType } from '../../infra/enums/errorType'
-import { customErrors } from '../../infra/customErrors'
+import { ErrorType } from '../infra/enums/errorType'
+import { customErrors } from '../infra/customErrors'
 import { ErrorRequestHandler } from 'express'
 import { inspect } from 'util'
-import logger from '../logger'
+import logger from '../utils/logger'
 
 export class ErrorHandler extends Error {
 	statusCode: number

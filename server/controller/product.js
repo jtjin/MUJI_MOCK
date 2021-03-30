@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 const product_1 = __importDefault(require("../service/product"));
 const errorType_1 = require("../infra/enums/errorType");
-const errorHandler_1 = require("../utils/middleWares/errorHandler");
+const errorHandler_1 = require("../middleWares/errorHandler");
 const aws_sdk_1 = __importDefault(require("aws-sdk"));
 const multer_1 = __importDefault(require("multer"));
 const multer_s3_1 = __importDefault(require("multer-s3"));

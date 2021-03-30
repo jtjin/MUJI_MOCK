@@ -1,7 +1,7 @@
 import { StylishRouter } from '../infra/interfaces/express'
 import ChatRoomService from '../service/admin/chatRoom'
 import { ErrorType } from '../infra/enums/errorType'
-import { ErrorHandler } from '../utils/middleWares/errorHandler'
+import { ErrorHandler } from '../middleWares/errorHandler'
 
 import logger from '../utils/logger'
 
@@ -13,8 +13,6 @@ class CharRoomController {
 	getChatRoomsListById: StylishRouter = async (req: any, res, next) => {
 		try {
 			const userId = req.params.userId
-			console.log(userId)
-
 			const roomList = await ChatRoomService.getChatRoomsListById(userId)
 			console.log(roomList)
 
@@ -29,8 +27,6 @@ class CharRoomController {
 		try {
 			const room = req.params.room
 			const history = await ChatRoomService.getChatRoomHistory(room)
-			console.log('getChatRoomHistory=>', history)
-
 			res.send({ result: 'success', data: history })
 		} catch (error) {
 			logger.error({ tag: tag + '/getChatRoomHistory', error })
@@ -40,34 +36,28 @@ class CharRoomController {
 
 	getPinMessages: StylishRouter = async (req: any, res, next) => {
 		const adminId = req.params.adminId
-		console.log('req.body->', req.body, adminId)
 		const messages = await ChatRoomService.getPinMessages({
 			adminId,
 		})
-		console.log('messages=>', messages)
 		res.send({ result: 'success', data: messages })
 	}
 
 	createPinMessage: StylishRouter = async (req: any, res, next) => {
 		const adminId = req.params.adminId
 		const { message } = req.body
-		console.log('req.body->', req.body)
 		const data = await ChatRoomService.createPinMessage({
 			adminId,
 			message,
 		})
-		console.log(' createPinMessage messages=>', data)
 	}
 
 	deletePinMessage: StylishRouter = async (req: any, res, next) => {
 		const adminId = req.params.adminId
 		const { message } = req.body
-		console.log('req.body->', req.body, adminId)
 		const data = await ChatRoomService.deletePinMessage({
 			adminId,
 			message,
 		})
-		console.log('deletePinMessage messages=>', data)
 	}
 }
 

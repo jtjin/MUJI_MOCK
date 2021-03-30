@@ -8,6 +8,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
 const typeorm_1 = require("typeorm");
+const Role_1 = require("./Role");
 let User = class User {
 };
 __decorate([
@@ -51,6 +52,12 @@ __decorate([
         type: 'varchar',
     })
 ], User.prototype, "access_token", void 0);
+__decorate([
+    typeorm_1.ManyToOne((type) => Role_1.Role),
+    typeorm_1.JoinColumn({
+        name: 'role_id',
+    })
+], User.prototype, "role", void 0);
 User = __decorate([
     typeorm_1.Entity({ name: 'user' })
 ], User);

@@ -19,7 +19,6 @@ class CharRoomController {
         this.getChatRoomsListById = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const userId = req.params.userId;
-                console.log(userId);
                 const roomList = yield chatRoom_1.default.getChatRoomsListById(userId);
                 console.log(roomList);
                 res.send({ result: 'success', data: roomList });
@@ -33,7 +32,6 @@ class CharRoomController {
             try {
                 const room = req.params.room;
                 const history = yield chatRoom_1.default.getChatRoomHistory(room);
-                console.log('getChatRoomHistory=>', history);
                 res.send({ result: 'success', data: history });
             }
             catch (error) {
@@ -43,32 +41,26 @@ class CharRoomController {
         });
         this.getPinMessages = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             const adminId = req.params.adminId;
-            console.log('req.body->', req.body, adminId);
             const messages = yield chatRoom_1.default.getPinMessages({
                 adminId,
             });
-            console.log('messages=>', messages);
             res.send({ result: 'success', data: messages });
         });
         this.createPinMessage = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             const adminId = req.params.adminId;
             const { message } = req.body;
-            console.log('req.body->', req.body);
             const data = yield chatRoom_1.default.createPinMessage({
                 adminId,
                 message,
             });
-            console.log(' createPinMessage messages=>', data);
         });
         this.deletePinMessage = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             const adminId = req.params.adminId;
             const { message } = req.body;
-            console.log('req.body->', req.body, adminId);
             const data = yield chatRoom_1.default.deletePinMessage({
                 adminId,
                 message,
             });
-            console.log('deletePinMessage messages=>', data);
         });
     }
 }

@@ -1,12 +1,10 @@
 import User from '../controller/user'
-
+import { isAuth } from '../middleWares/authorization'
 const router = require('express').Router()
 
-router.post('/user/register', User.uploadImg, User.register)
-router.post('/user/logIn', User.logIn)
+router.post('/user/signUp', User.uploadImg, User.register)
+router.post('/user/signIn', User.logIn)
 
-// router.use(authorization)
-
-router.get('/user/profile', User.profile)
+router.get('/user/profile', isAuth, User.profile)
 
 module.exports = router

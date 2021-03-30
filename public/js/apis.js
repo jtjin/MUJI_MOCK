@@ -5,7 +5,6 @@ const publicApi = axios.create({
 })
 
 const privateApi = axios.create({
-	// TODO: add authorization to header
 	baseURL: baseUrl,
 })
 
@@ -16,7 +15,7 @@ privateApi.interceptors.request.use(
 		if (!access_token) {
 			window.location('/profile.html')
 		}
-		config.headers.Authorization = `User ${access_token}`
+		config.headers.Authorization = `${access_token}`
 		return config
 	},
 	(error) => {
@@ -34,9 +33,7 @@ publicApi.interceptors.response.use(
 		const { status, data } = errResponse
 		const { type } = data.error
 
-		if (status === 403) {
-			localStorage.removeItem('token')
-		}
+		if (status === 403) localStorage.removeItem('token')
 
 		switch (type) {
 			case 'FORBIDDEN':
@@ -44,6 +41,8 @@ publicApi.interceptors.response.use(
 				alert('Invalid Password or Email...')
 				console.log(errResponse)
 				break
+			case 'AUTH_NO_TOKEN':
+			case 'AUTH_NO_IDENTITY':
 			case 'USER_INVALID_TOKEN':
 				console.log(errResponse)
 				localStorage.removeItem('token')
