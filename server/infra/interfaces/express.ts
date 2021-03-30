@@ -14,5 +14,5 @@ export interface StylishRouter {
 
 export interface StylishRequest extends Request {
 	files: any
-	me: User
+	me?: User
 }

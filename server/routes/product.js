@@ -7,7 +7,6 @@ const product_1 = __importDefault(require("../controller/product"));
 const express_1 = require("express");
 const router = express_1.Router();
 router.get('/products/:bodyTag', product_1.default.getProductsListByTag);
-// router.use(authorization)
 // TODO: Move this to admin folder
 router.post('/admin/product', product_1.default.uploadImg, product_1.default.createProduct);
 // TODO: Add edit product function

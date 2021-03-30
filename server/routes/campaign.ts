@@ -7,57 +7,47 @@ const router = Router()
 const fs = require('fs')
 const path = require('path')
 
-let i = -1
+// let i = -1
 
-function count(j) {
-	i = j + 1
-	let result = i == 0 ? '' : `-${i}`
-	return result
-}
+// function count(j) {
+// 	i = j + 1
+// 	let result = i == 0 ? '' : `-${i}`
+// 	return result
+// }
 
-var AWS = require('aws-sdk')
-var multer = require('multer')
-var multerS3 = require('multer-s3')
-var s3 = new AWS.S3({
-	accessKeyId: config.get('aws.s3.accessKeyId'),
-	secretAccessKey: config.get('aws.s3.secretAccessKey'),
-	Bucket: config.get('aws.s3.bucket'),
-})
-var upload = multer({
-	storage: multerS3({
-		s3: s3,
-		bucket: config.get('aws.s3.bucket') + '/campaigns',
-		acl: 'public-read',
-		key: function (req, file, cb) {
-			let id = req.body.id
-			cb(
-				null,
-				`${id}/${file.fieldname}${count(i)}${path.extname(file.originalname)}`,
-			)
-		},
-	}),
-})
+// var AWS = require('aws-sdk')
+// var multer = require('multer')
+// var multerS3 = require('multer-s3')
+// var s3 = new AWS.S3({
+// 	accessKeyId: config.get('aws.s3.accessKeyId'),
+// 	secretAccessKey: config.get('aws.s3.secretAccessKey'),
+// 	Bucket: config.get('aws.s3.bucket'),
+// })
+// var upload = multer({
+// 	storage: multerS3({
+// 		s3: s3,
+// 		bucket: config.get('aws.s3.bucket') + '/campaigns',
+// 		acl: 'public-read',
+// 		key: function (req: Request, file: any, cb: any) {
+// 			let id = req.body.id
+// 			cb(
+// 				null,
+// 				`${id}/${file.fieldname}${count(i)}${path.extname(file.originalname)}`,
+// 			)
+// 		},
+// 	}),
+// })
 
-router.get('/marketing/campaigns', cache, Campaign.getCampaigns)
+router.get('/marketing/campaigns', Campaign.getCampaigns)
 
-async function cache(req, res, next) {
-	// const data = await redisClient.get('campaigns')
-	next()
-	// if (data != null) {
-	// 	res.send(data)
-	// } else {
-	// 	next()
-	// }
-}
-
-router.post(
-	'/admin/campaign.html',
-	upload.fields([
-		{
-			name: 'image',
-			maxCount: 5,
-		},
-	]),
-	Campaign.createCampaign,
-)
+// router.post(
+// 	'/admin/campaign.html',
+// 	upload.fields([
+// 		{
+// 			name: 'image',
+// 			maxCount: 5,
+// 		},
+// 	]),
+// 	Campaign.createCampaign,
+// )
 module.exports = router

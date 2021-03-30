@@ -1,5 +1,5 @@
 import config from '../infra/config.js'
-import { privateApi, publicApi } from '../apis.js'
+import { privateApi, publicApi } from '../infra/apis.js'
 
 class CreateProductFrom {
 	constructor() {

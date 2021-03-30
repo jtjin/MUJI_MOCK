@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 class Error {
     constructor() {
         this.get404 = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            console.log('?404????');
             res.redirect('/404.html');
         });
     }

@@ -1,7 +1,7 @@
-const orderHandler = (io, socket) => {
-	socket.on('newOrderCreated', (data) => {
-		io.emit('freshDashBoard')
-	})
-}
+// const orderHandler = (io, socket) => {
+// 	socket.on('newOrderCreated', (data) => {
+// 		io.emit('freshDashBoard')
+// 	})
+// }
 
-export = orderHandler
+// export = orderHandler

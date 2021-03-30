@@ -1,4 +1,4 @@
-import { privateApi } from './apis.js'
+import { privateApi } from './infra/apis.js'
 import config from './infra/config.js'
 
 renderUserInfo()

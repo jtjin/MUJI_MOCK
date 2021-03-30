@@ -1,4 +1,5 @@
 import Product from '../controller/product'
+import { isAuth } from '../middleWares/authorization'
 import config from 'config'
 import { redisClient } from '../db/redisDb'
 import fs from 'fs'
@@ -7,7 +8,6 @@ import { Router } from 'express'
 const router = Router()
 
 router.get('/products/:bodyTag', Product.getProductsListByTag)
-// router.use(authorization)
 
 // TODO: Move this to admin folder
 router.post('/admin/product', Product.uploadImg, Product.createProduct)

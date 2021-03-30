@@ -1,4 +1,4 @@
-import { publicApi } from './apis.js'
+import { publicApi } from './infra/apis.js'
 import config from './infra/config.js'
 
 let that
