@@ -33,7 +33,7 @@ publicApi.interceptors.response.use(
 		const { status, data } = errResponse
 		const { type } = data.error
 
-		if (status === 403) localStorage.removeItem('token')
+		if (status === 403) localStorage.removeItem('stylish')
 
 		switch (type) {
 			case 'FORBIDDEN':
@@ -45,7 +45,7 @@ publicApi.interceptors.response.use(
 			case 'AUTH_NO_IDENTITY':
 			case 'USER_INVALID_TOKEN':
 				console.log(errResponse)
-				localStorage.removeItem('token')
+				localStorage.removeItem('stylish')
 				alert('Please Log In...')
 				break
 			default:

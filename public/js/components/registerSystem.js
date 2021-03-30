@@ -1,10 +1,10 @@
 import config from '../infra/config.js'
-import { unFade, sleep } from '../utils/index.js'
-import { publicApi } from '../apis.js'
+import { unFade } from '../utils/fade.js'
+import { sleep } from '../utils/sleep.js'
+import { publicApi } from '../infra/apis.js'
 
 let that
 class RegisterFrom extends HTMLElement {
-	FB
 	constructor() {
 		super()
 		this.shadow = this.attachShadow({ mode: 'open' })
@@ -18,15 +18,6 @@ class RegisterFrom extends HTMLElement {
 		this._initElementEventsListeners()
 		this._fillTestAccount()
 		await this.checkLoginStatus()
-
-		imgUploadBtn.onchange = function () {
-			const file = $('#uploadImg')[0].files[0]
-			const reader = new FileReader()
-			reader.onload = function (e) {
-				$('.userImg').attr('src', e.target.result)
-			}
-			reader.readAsDataURL(file)
-		}
 	}
 
 	_initElements() {
@@ -90,9 +81,6 @@ class RegisterFrom extends HTMLElement {
 	async _postSignUpForm() {
 		const formData = new FormData(this.signUpForm)
 		formData.set('provider', 'native')
-		// if (this.userImgUploadInput.files[0]) {
-		// 	formData.append('userImage', this.userImgUploadInput.files[0])
-		// }
 
 		try {
 			await publicApi({
@@ -254,9 +242,6 @@ class RegisterFrom extends HTMLElement {
 					</div>
 					<div id="messageSignUp"></div>
 
-					<div>
-						<image class="picturePreview" src="">
-					</div>
 
 					<div class="form-column imgBtn-info">
 						<label class="imgBtn" >

@@ -23,11 +23,3 @@ export function unFade(element) {
 		op += op * 0.5
 	}, 10)
 }
-
-export function sleep(seconds) {
-	return new Promise(function (resolve, reject) {
-		setTimeout(function () {
-			resolve('anything')
-		}, seconds)
-	})
-}
