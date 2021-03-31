@@ -83,8 +83,7 @@ class ProductService {
                     return JSON.parse(String(resultCache));
                 const productPO = yield index_1.default.productModule.getProductDetailById(id);
                 yield redisDb_1.redisClient.set(`product:detail:${id}`, JSON.stringify(productPO));
-                const result = { data: this._formatProductList(productPO)[0] };
-                return result;
+                return this._formatProductList(productPO)[0];
             }
             catch (error) {
                 throw error;

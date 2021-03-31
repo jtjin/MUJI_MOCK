@@ -43,6 +43,7 @@ class ProductDetailManager {
 	}
 
 	renderProduct(productInfo) {
+		console.log('productInfo-->', productInfo)
 		const { story, colors, images, variants, sizes } = productInfo
 
 		this.focusedProductInfo = {
@@ -55,8 +56,8 @@ class ProductDetailManager {
 
 		this.fetchVariantStock()
 		this.renderBasicProductInfo({ ...productInfo })
-		this.renderColorVariant(colors)
-		this.renderSizesVariant(sizes)
+		// this.renderColorVariant(colors)
+		// this.renderSizesVariant(sizes)
 		this.renderAdvertisingProductInfo(story, images)
 	}
 

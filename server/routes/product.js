@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const product_1 = __importDefault(require("../controller/product"));
 const express_1 = require("express");
 const router = express_1.Router();
+router.get('/products/details', product_1.default.getProductDetail);
 router.get('/products/:bodyTag', product_1.default.getProductsListByTag);
 // TODO: Move this to admin folder
 router.post('/admin/product', product_1.default.uploadImg, product_1.default.createProduct);
@@ -15,7 +16,7 @@ router.post('/admin/product', product_1.default.uploadImg, product_1.default.cre
 // router.delete('/admin/product/:productId', Product.deleteProduct)
 module.exports = router;
 /* ----------------------------------------
---- GET ORDERS // 期中考增加的
+--- GET ORDERS
 ------------------------------------------*/
 // router.get('/order/payments', cacheOrder, (req, res) => {
 // 	let sql =

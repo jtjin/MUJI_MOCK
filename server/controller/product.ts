@@ -69,17 +69,20 @@ class Product {
 		}
 	}
 
+	getProductDetail: StylishRouter = async (req, res, next) => {
+		try {
+			const { id } = req.query
+			const data = await ProductService.getProductDetailById(String(id))
+			res.send({ result: 'success', data })
+		} catch (error) {
+			logger.error({ tag: tag + '/getProductDetail', error })
+			next(error)
+		}
+	}
+
 	getProductsListByTag: StylishRouter = async (req, res, next) => {
 		const { bodyTag } = req.params
-		const { keyword, id } = req.query
-		let page
-		console.log('req.query.paging=>', req.query.paging)
-
-		if (req.query.paging && typeof req.query.paging === 'string') {
-			page = req.query.paging
-		} else {
-			page = '1'
-		}
+		const { keyword, paging = '1' as string } = req.query
 		try {
 			switch (bodyTag) {
 				case 'women':
@@ -90,7 +93,7 @@ class Product {
 					res.send(
 						await ProductService.getProductsListByTag({
 							tagId,
-							page,
+							page: paging as string,
 						}),
 					)
 					break
@@ -99,13 +102,11 @@ class Product {
 					res.send(
 						await ProductService.getProductsListByTag({
 							titleLike: String(keyword),
-							page,
+							page: paging as string,
 						}),
 					)
 					break
-				case 'details':
-					res.send(await ProductService.getProductDetailById(String(id)))
-					break
+
 				default:
 					throw new ErrorHandler(
 						403,
@@ -114,6 +115,7 @@ class Product {
 					)
 			}
 		} catch (error) {
+			logger.error({ tag: tag + '/getProductsListByTag', error })
 			next(error)
 		}
 	}
@@ -124,7 +126,6 @@ class Product {
 			const { main_image, images } = await ProductService.getPhotosByProductId(
 				productId,
 			)
-
 			main_image.forEach(async (img) => {
 				await this._updateAWSS3Images(
 					img.url.slice(1),
@@ -170,6 +171,7 @@ class Product {
 				})
 				.promise()
 		} catch (error) {
+			logger.error({ tag: tag + '/_updateAWSS3Images', error })
 			throw error
 		}
 	}

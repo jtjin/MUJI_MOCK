@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.socketIoInit = exports.io = void 0;
 const socket_io_1 = __importDefault(require("socket.io"));
+// import registerOrderHandlers from './handlers/orderHandler'
 const userHandler_1 = __importDefault(require("./handlers/userHandler"));
 const socketIoInit = (server) => {
     try {

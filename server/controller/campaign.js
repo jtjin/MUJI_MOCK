@@ -12,6 +12,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 const campaign_1 = __importDefault(require("../service/campaign"));
+const logger_1 = __importDefault(require("../utils/logger"));
+const tag = 'server/controller/campaign';
 class Campaign {
     constructor() {
         this.getCampaigns = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
@@ -20,6 +22,7 @@ class Campaign {
                 res.send(result);
             }
             catch (error) {
+                logger_1.default.error({ tag: tag + '/getCampaigns', error });
                 next(error);
             }
         });
@@ -33,6 +36,7 @@ class Campaign {
                 });
             }
             catch (error) {
+                logger_1.default.error({ tag: tag + '/createCampaign', error });
                 next(error);
             }
         });

@@ -47,17 +47,20 @@ class Product {
                 next(error);
             }
         });
+        this.getProductDetail = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { id } = req.query;
+                const data = yield product_1.default.getProductDetailById(String(id));
+                res.send({ result: 'success', data });
+            }
+            catch (error) {
+                logger_1.default.error({ tag: tag + '/getProductDetail', error });
+                next(error);
+            }
+        });
         this.getProductsListByTag = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             const { bodyTag } = req.params;
-            const { keyword, id } = req.query;
-            let page;
-            console.log('req.query.paging=>', req.query.paging);
-            if (req.query.paging && typeof req.query.paging === 'string') {
-                page = req.query.paging;
-            }
-            else {
-                page = '1';
-            }
+            const { keyword, paging = '1' } = req.query;
             try {
                 switch (bodyTag) {
                     case 'women':
@@ -67,23 +70,21 @@ class Product {
                         const tagId = Tags_1.TagsEnum[bodyTag];
                         res.send(yield product_1.default.getProductsListByTag({
                             tagId,
-                            page,
+                            page: paging,
                         }));
                         break;
                     case 'search':
                         res.send(yield product_1.default.getProductsListByTag({
                             titleLike: String(keyword),
-                            page,
+                            page: paging,
                         }));
-                        break;
-                    case 'details':
-                        res.send(yield product_1.default.getProductDetailById(String(id)));
                         break;
                     default:
                         throw new errorHandler_1.ErrorHandler(403, errorType_1.ErrorType.ValidationError, 'Request Error: Invalid product category');
                 }
             }
             catch (error) {
+                logger_1.default.error({ tag: tag + '/getProductsListByTag', error });
                 next(error);
             }
         });
@@ -129,6 +130,7 @@ class Product {
                     .promise();
             }
             catch (error) {
+                logger_1.default.error({ tag: tag + '/_updateAWSS3Images', error });
                 throw error;
             }
         });

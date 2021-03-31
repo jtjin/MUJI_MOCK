@@ -17,6 +17,9 @@ const aws_sdk_1 = __importDefault(require("aws-sdk"));
 const multer_1 = __importDefault(require("multer"));
 const multer_s3_1 = __importDefault(require("multer-s3"));
 const path_1 = __importDefault(require("path"));
+const customErrors_1 = require("../infra/customErrors");
+const logger_1 = __importDefault(require("../utils/logger"));
+const tag = 'controller/user';
 class User {
     constructor() {
         this.register = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
@@ -24,8 +27,9 @@ class User {
                 const result = yield user_1.default.register(req.body, `${req.body.email}/${req.body.name}${path_1.default.extname(req.files.userImage[0].originalname)}`);
                 res.send({ access_token: result.data.access_token });
             }
-            catch (err) {
-                next(err);
+            catch (error) {
+                logger_1.default.error({ tag: tag + '/register', error });
+                next(error);
             }
         });
         this.logIn = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
@@ -39,26 +43,32 @@ class User {
                     res.send(result);
                 }
             }
-            catch (err) {
-                next(err);
+            catch (error) {
+                logger_1.default.error({ tag: tag + '/logIn', error });
+                next(error);
             }
         });
         this.profile = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             try {
+                if (!req.me)
+                    throw new Error(customErrors_1.customErrors.USER_NOT_FOUND.type);
                 const result = yield user_1.default.profile(req.me.access_token);
                 res.send(result);
             }
-            catch (err) {
-                next(err);
+            catch (error) {
+                logger_1.default.error({ tag: tag + '/profile', error });
+                next(error);
             }
         });
         this.s3config = new aws_sdk_1.default.S3({
             accessKeyId: config_1.default.get('aws.s3.accessKeyId'),
             secretAccessKey: config_1.default.get('aws.s3.secretAccessKey'),
+            // @ts-ignore
             Bucket: config_1.default.get('aws.s3.bucket'),
         });
         this.upload = multer_1.default({
             storage: multer_s3_1.default({
+                // @ts-ignore
                 s3: this.s3config,
                 bucket: config_1.default.get('aws.s3.userImagesFolder'),
                 acl: 'public-read',

@@ -72,9 +72,10 @@ class ProductService {
 			if (resultCache) return JSON.parse(String(resultCache))
 
 			const productPO = await StylishRDB.productModule.getProductDetailById(id)
+
 			await redisClient.set(`product:detail:${id}`, JSON.stringify(productPO))
-			const result = { data: this._formatProductList(productPO)[0] }
-			return result
+
+			return this._formatProductList(productPO)[0]
 		} catch (error) {
 			throw error
 		}

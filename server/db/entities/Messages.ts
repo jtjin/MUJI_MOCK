@@ -18,7 +18,7 @@ export class Messages {
 	@Column({
 		type: 'json',
 	})
-	messages: JSON
+	messages: string
 
 	@Column({
 		nullable: false,

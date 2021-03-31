@@ -7,6 +7,7 @@ import path from 'path'
 import { Router } from 'express'
 const router = Router()
 
+router.get('/products/details', Product.getProductDetail)
 router.get('/products/:bodyTag', Product.getProductsListByTag)
 
 // TODO: Move this to admin folder
@@ -21,7 +22,7 @@ router.post('/admin/product', Product.uploadImg, Product.createProduct)
 module.exports = router
 
 /* ----------------------------------------
---- GET ORDERS // 期中考增加的
+--- GET ORDERS 
 ------------------------------------------*/
 
 // router.get('/order/payments', cacheOrder, (req, res) => {

@@ -40,27 +40,45 @@ class CharRoomController {
             }
         });
         this.getPinMessages = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-            const adminId = req.params.adminId;
-            const messages = yield chatRoom_1.default.getPinMessages({
-                adminId,
-            });
-            res.send({ result: 'success', data: messages });
+            try {
+                const adminId = req.params.adminId;
+                const messages = yield chatRoom_1.default.getPinMessages({
+                    adminId,
+                });
+                res.send({ result: 'success', data: messages });
+            }
+            catch (error) {
+                logger_1.default.error({ tag: tag + '/getPinMessages', error });
+                next(error);
+            }
         });
         this.createPinMessage = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-            const adminId = req.params.adminId;
-            const { message } = req.body;
-            const data = yield chatRoom_1.default.createPinMessage({
-                adminId,
-                message,
-            });
+            try {
+                const adminId = req.params.adminId;
+                const { message } = req.body;
+                const data = yield chatRoom_1.default.createPinMessage({
+                    adminId,
+                    message,
+                });
+            }
+            catch (error) {
+                logger_1.default.error({ tag: tag + '/createPinMessage', error });
+                next(error);
+            }
         });
         this.deletePinMessage = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-            const adminId = req.params.adminId;
-            const { message } = req.body;
-            const data = yield chatRoom_1.default.deletePinMessage({
-                adminId,
-                message,
-            });
+            try {
+                const adminId = req.params.adminId;
+                const { message } = req.body;
+                const data = yield chatRoom_1.default.deletePinMessage({
+                    adminId,
+                    message,
+                });
+            }
+            catch (error) {
+                logger_1.default.error({ tag: tag + '/deletePinMessage', error });
+                next(error);
+            }
         });
     }
 }

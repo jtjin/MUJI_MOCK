@@ -1,6 +1,6 @@
 import SocketIO from 'socket.io'
 import { Socket } from 'socket.io'
-import registerOrderHandlers from './handlers/orderHandler'
+// import registerOrderHandlers from './handlers/orderHandler'
 import registerUserHandlers from './handlers/userHandler'
 
 export let io: any

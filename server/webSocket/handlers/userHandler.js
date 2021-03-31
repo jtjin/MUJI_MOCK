@@ -104,7 +104,7 @@ class UserHandler {
             const tempHistoryMsg = yield redisDb_1.redisClient.get(userInfo.room);
             const payload = R.pick(['userId', 'message', 'time'], userInfo);
             if (tempHistoryMsg) {
-                const data = Array.from(JSON.parse(tempHistoryMsg));
+                const data = Array.from(JSON.parse(String(tempHistoryMsg)));
                 data.push(payload);
                 yield redisDb_1.redisClient.set(userInfo.room, JSON.stringify(data));
             }
@@ -135,7 +135,7 @@ class UserHandler {
         return __awaiter(this, void 0, void 0, function* () {
             const messagesInfo = yield index_1.default.messagesModule.getMessagesByRoom(userInfo.room);
             if (messagesInfo && userInfo.redisData) {
-                const updatedMessages = Array.from(JSON.parse(messagesInfo.messages)).concat(Array.from(JSON.parse(userInfo.redisData)));
+                const updatedMessages = Array.from(JSON.parse(String(messagesInfo.messages))).concat(Array.from(JSON.parse(userInfo.redisData)));
                 yield index_1.default.messagesModule.updateRoomMessages(userInfo.room, JSON.stringify(updatedMessages));
             }
             else if (userInfo.redisData) {

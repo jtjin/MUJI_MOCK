@@ -8,7 +8,9 @@ import multerS3 from 'multer-s3'
 import path from 'path'
 import { ClientConfiguration } from 'aws-sdk/clients/acm'
 import { customErrors } from '../infra/customErrors'
+import logger from '../utils/logger'
 
+const tag = 'controller/user'
 class User {
 	s3config: ClientConfiguration
 	uploadImg
@@ -17,11 +19,13 @@ class User {
 		this.s3config = new AWS.S3({
 			accessKeyId: config.get('aws.s3.accessKeyId'),
 			secretAccessKey: config.get('aws.s3.secretAccessKey'),
+			// @ts-ignore
 			Bucket: config.get('aws.s3.bucket'),
 		})
 
 		this.upload = multer({
 			storage: multerS3({
+				// @ts-ignore
 				s3: this.s3config,
 				bucket: config.get('aws.s3.userImagesFolder'),
 				acl: 'public-read',
@@ -49,8 +53,9 @@ class User {
 				)}`,
 			)
 			res.send({ access_token: result.data.access_token })
-		} catch (err) {
-			next(err)
+		} catch (error) {
+			logger.error({ tag: tag + '/register', error })
+			next(error)
 		}
 	}
 
@@ -63,17 +68,20 @@ class User {
 				const result = await UserService.loginByEmail(req.body)
 				res.send(result)
 			}
-		} catch (err) {
-			next(err)
+		} catch (error) {
+			logger.error({ tag: tag + '/logIn', error })
+			next(error)
 		}
 	}
 
 	profile: StylishRouter = async (req, res, next) => {
 		try {
+			if (!req.me) throw new Error(customErrors.USER_NOT_FOUND.type)
 			const result = await UserService.profile(req.me.access_token)
 			res.send(result)
-		} catch (err) {
-			next(err)
+		} catch (error) {
+			logger.error({ tag: tag + '/profile', error })
+			next(error)
 		}
 	}
 }

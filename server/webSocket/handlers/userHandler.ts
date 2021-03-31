@@ -60,7 +60,7 @@ class UserHandler {
 		const tempHistoryMsg = await redisClient.get(userInfo.room)
 		const payload = R.pick(['userId', 'message', 'time'], userInfo)
 		if (tempHistoryMsg) {
-			const data = Array.from(JSON.parse(tempHistoryMsg))
+			const data = Array.from(JSON.parse(String(tempHistoryMsg)))
 			data.push(payload)
 			await redisClient.set(userInfo.room, JSON.stringify(data))
 		} else {
@@ -111,7 +111,7 @@ class UserHandler {
 
 		if (messagesInfo && userInfo.redisData) {
 			const updatedMessages = Array.from(
-				JSON.parse(messagesInfo.messages),
+				JSON.parse(String(messagesInfo.messages)),
 			).concat(Array.from(JSON.parse(userInfo.redisData)))
 
 			await StylishRDB.messagesModule.updateRoomMessages(
