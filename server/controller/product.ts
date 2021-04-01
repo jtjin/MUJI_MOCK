@@ -24,6 +24,7 @@ class Product {
 			//@ts-ignore
 			Bucket: config.get('aws.s3.bucket'),
 		})
+
 		this.upload = multer({
 			storage: multerS3({
 				s3: this.s3SDK,
@@ -71,8 +72,10 @@ class Product {
 
 	getProductDetail: StylishRouter = async (req, res, next) => {
 		try {
+			console.log('getProductDetail')
 			const { id } = req.query
-			const data = await ProductService.getProductDetailById(String(id))
+			const data = await ProductService.getProductDetailById(id as string)
+
 			res.send({ result: 'success', data })
 		} catch (error) {
 			logger.error({ tag: tag + '/getProductDetail', error })

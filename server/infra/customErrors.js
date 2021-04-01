@@ -7,4 +7,5 @@ exports.customErrors = {
     FORBIDDEN: { status: 403, type: 'FORBIDDEN' },
     AUTH_NO_TOKEN: { status: 403, type: 'FORBIDDEN' },
     AUTH_NO_IDENTITY: { status: 403, type: 'FORBIDDEN' },
+    PRODUCT_NOT_FOUND: { status: 500, type: 'USER_NOT_FOUND' },
 };

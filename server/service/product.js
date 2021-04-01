@@ -40,6 +40,7 @@ const typeorm_1 = require("typeorm");
 const Tags_1 = require("../infra/enums/Tags");
 const redisDb_1 = require("../db/redisDb");
 const safeAsync_1 = require("../utils/safeAsync");
+const customErrors_1 = require("../infra/customErrors");
 const tag = 'server/product';
 class ProductService {
     constructor() {
@@ -79,11 +80,15 @@ class ProductService {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const resultCache = yield redisDb_1.redisClient.get(`product:detail:${id}`);
+                console.log('resultCache-->', resultCache);
                 if (resultCache)
                     return JSON.parse(String(resultCache));
                 const productPO = yield index_1.default.productModule.getProductDetailById(id);
-                yield redisDb_1.redisClient.set(`product:detail:${id}`, JSON.stringify(productPO));
-                return this._formatProductList(productPO)[0];
+                if (!productPO)
+                    throw new Error(customErrors_1.customErrors.PRODUCT_NOT_FOUND.type);
+                const result = JSON.stringify(this._formatProductList([productPO])[0]);
+                yield redisDb_1.redisClient.set(`product:detail:${id}`, result);
+                return result;
             }
             catch (error) {
                 throw error;

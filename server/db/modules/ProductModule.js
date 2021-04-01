@@ -37,7 +37,7 @@ class ProductModule {
                 .where('product.id = :id', {
                 id,
             })
-                .getMany();
+                .getOne();
         });
     }
     getProductsByTag(opt) {

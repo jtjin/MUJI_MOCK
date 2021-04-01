@@ -35,9 +35,9 @@ class ProductDetailManager {
 
 	connectedCallback() {}
 
-	async fetchAndRenderProductDetails(ID) {
+	async fetchAndRenderProductDetails(productId) {
 		const { data } = (
-			await publicApi.get(config.api.product.details + `?id=${ID}`)
+			await publicApi.get(config.api.product.details + `?id=${productId}`)
 		).data
 		this.renderProduct(data)
 	}

@@ -49,8 +49,9 @@ class Product {
         });
         this.getProductDetail = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             try {
+                console.log('getProductDetail');
                 const { id } = req.query;
-                const data = yield product_1.default.getProductDetailById(String(id));
+                const data = yield product_1.default.getProductDetailById(id);
                 res.send({ result: 'success', data });
             }
             catch (error) {

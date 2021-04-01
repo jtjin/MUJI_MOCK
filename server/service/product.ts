@@ -13,6 +13,7 @@ import { TagsEnum } from '../infra/enums/Tags'
 import { redisClient } from '../db/redisDb'
 import logger from '../utils/logger'
 import { safeAwait } from '../utils/safeAsync'
+import { customErrors } from '../infra/customErrors'
 const tag = 'server/product'
 class ProductService {
 	tag: string
@@ -69,13 +70,20 @@ class ProductService {
 	async getProductDetailById(id: string) {
 		try {
 			const resultCache = await redisClient.get(`product:detail:${id}`)
+
+			console.log('resultCache-->', resultCache)
+
 			if (resultCache) return JSON.parse(String(resultCache))
 
 			const productPO = await StylishRDB.productModule.getProductDetailById(id)
 
-			await redisClient.set(`product:detail:${id}`, JSON.stringify(productPO))
+			if (!productPO) throw new Error(customErrors.PRODUCT_NOT_FOUND.type)
 
-			return this._formatProductList(productPO)[0]
+			const result = JSON.stringify(this._formatProductList([productPO])[0])
+
+			await redisClient.set(`product:detail:${id}`, result)
+
+			return result
 		} catch (error) {
 			throw error
 		}

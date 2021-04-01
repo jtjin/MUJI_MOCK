@@ -12,7 +12,6 @@ class ProductListManager {
 		if (requestLocation[2]) {
 			this.paging = requestLocation[2].split('=')[1]
 		}
-
 		if (key && key.split('=')[0] == 'search') {
 			this.productCategory = 'search?' + key
 		} else if (key && key.split('=')[0] == 'tag') {
@@ -25,7 +24,6 @@ class ProductListManager {
 
 	async renderProducts(paging) {
 		this.paging = paging
-		console.log('renderProducts paging->', paging)
 		let requestUrl = config.api.product.list
 		requestUrl += this.productCategory ? this.productCategory : 'all'
 		if (paging) requestUrl = requestUrl + '?paging=' + paging
@@ -65,7 +63,6 @@ class ProductListManager {
 					a.addEventListener('click', () => alert('There is no other page...'))
 				}
 			}
-			console.log('this.paging--->', this.paging)
 			if (pageCount === this.paging) a.classList.add('currentPaging')
 			li.appendChild(a)
 			paginationList.appendChild(li)
@@ -86,21 +83,19 @@ class ProductListManager {
 			).href = `/product.html?id=${productInfo.id}`
 			productTempClone.querySelector('img').src =
 				config.images.product + productInfo.main_image
-			const productDivColors = productTempClone.querySelector('.colors')
 
-			productInfo.colors.forEach((color) => {
-				const productDicColor = document.createElement('div')
-				productDicColor.setAttribute('class', 'color')
-				productDicColor.setAttribute('style', `background-color:#${color.code}`)
-				productDivColors.appendChild(productDicColor)
-			})
+			// const productDivColors = productTempClone.querySelector('.colors')
+			// productInfo.colors.forEach((color) => {
+			// 	const productDicColor = document.createElement('div')
+			// 	productDicColor.setAttribute('class', 'color')
+			// 	productDicColor.setAttribute('style', `background-color:#${color.code}`)
+			// 	productDivColors.appendChild(productDicColor)
+			// })
 
 			productTempClone.querySelector('.name').innerHTML = productInfo.title
-
 			productTempClone.querySelector(
 				'.price',
 			).innerHTML = `TWD.${productInfo.price}`
-
 			productsContainer.appendChild(productTempClone)
 		})
 	}
@@ -161,15 +156,12 @@ class SliderManager {
 		setInterval(() => {
 			const nextSlider = document.querySelector('#top').nextElementSibling
 			const nextDot = document.querySelector('#topDot').nextElementSibling
-
 			document.querySelectorAll('.mainSliders').forEach((slider) => {
 				slider.removeAttribute('id')
 			})
-
 			document.querySelectorAll('.sliderOption').forEach((dot) => {
 				dot.removeAttribute('id')
 			})
-
 			if (nextSlider != null) {
 				nextSlider.setAttribute('id', 'top')
 				nextDot.setAttribute('id', 'topDot')

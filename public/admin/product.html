@@ -50,17 +50,83 @@
 						<span class="columnTitle">Story</span>
 						<textarea name="story" cols="30" rows="10" class="story"></textarea>
 					</div>
-					<fieldset>
+
+					<div class="formColumn">
+						<span class="columnTitle">Product Category</span>
+						<select name="tag">
+							<option value="women">Women</option>
+							<option value="men">Men</option>
+							<option value="accessories">Accessories</option>
+						</select>
+					</div>
+					<fieldset class="specsField">
+						<legend>Spec Name</legend>
+						<template class="specTemplate">
+							<div class="specContainer">
+								<span class="columnTitle" index="0">規格名稱</span>
+								<input
+									type="text"
+									name="spec"
+									class="specNameInput"
+									index="0"
+								/>
+								<span class="addSpecVariantBtn">
+									新增種類
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										width="16"
+										height="16"
+										fill="currentColor"
+										class="bi bi-plus-circle-fill"
+										viewBox="0 0 16 16"
+									>
+										<path
+											d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"
+										/>
+									</svg>
+								</span>
+								<div class="formColumn specVariantNameContainer">
+									<span class="specVariantName">種類</span>
+									<input
+										type="text"
+										name="specVariantName"
+										class="specVariantNameInput"
+									/>
+								</div>
+							</div>
+						</template>
+
+						<div class="addSpecBtn">新增規格</div>
+					</fieldset>
+					<fieldset class="variantsContainer">
 						<legend>Variants Information</legend>
-						<div class="formColumn">
-							<span class="columnTitle">Product Category</span>
-							<select name="tag">
-								<option value="women">Women</option>
-								<option value="men">Men</option>
-								<option value="accessories">Accessories</option>
-							</select>
-						</div>
-						<div class="formColumn">
+						<template class="mainSpecVariantContainerTemplate">
+							<div class="singleVariantContainer">
+								<div class="mainSpecName">
+									規格
+								</div>
+								<table>
+									<tr>
+										<td style="display: none;">規格</td>
+										<td>價格</td>
+										<td>庫存</td>
+										<td>貨號</td>
+									</tr>
+								</table>
+							</div>
+						</template>
+						<template class="subClassVariantTemplate">
+							<tr class="subClassVariantContainer">
+								<td style="display: none;">
+									<input class="subSpecName" type="text" name="subSpecName" />
+								</td>
+								<td><input type="text" name="price" /></td>
+								<td><input type="text" name="stock" /></td>
+								<td><input type="text" name="code" /></td>
+							</tr>
+						</template>
+
+						<!-- <div class="formColumn">
 							<span class="columnTitle">Colors</span>
 							<input
 								type="text"
@@ -86,10 +152,10 @@
 								placeholder="S,M,L,XL,XXL,..."
 								class="sizes"
 							/>
-						</div>
+						</div> -->
 					</fieldset>
 
-					<fieldset>
+					<!-- <fieldset>
 						<legend>Images</legend>
 						<div class="formColumn">
 							<span class="columnTitle">Main image</span>
@@ -110,7 +176,7 @@
 								required="required"
 							/>
 						</div>
-					</fieldset>
+					</fieldset> -->
 					<button type="submit" class="submitButton">Create</button>
 				</form>
 			</div>

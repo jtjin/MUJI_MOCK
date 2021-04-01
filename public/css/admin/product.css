@@ -17,7 +17,73 @@ main {
 form {
 	display: flex;
 	flex-direction: column;
+	align-items: stretch;
+}
+
+.addSpecVariantBtn {
+	width: 30px;
+	height: 30px;
+}
+
+.specsField {
+	position: relative;
+}
+
+.specsField input.specNameInput {
+	width: 80px;
+}
+
+.specVariantNameContainer {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.singleVariantContainer {
+	display: flex;
+	justify-content: center;
+	align-items: stretch;
+	padding: 10px;
+}
+
+td {
+	text-align: center;
+}
+div.mainSpecName {
+	min-width: 80px;
+	margin: 5px;
+	display: flex;
+	justify-content: center;
 	align-items: center;
+	padding: 5px;
+	width: auto;
+	background-color: #fff;
+}
+
+.specsField .formColumn input {
+	width: 80px;
+}
+.specsField .columnTitle {
+	width: 80px;
+	text-align: center;
+}
+
+.addSpecBtn {
+	width: 80px;
+	position: absolute;
+	right: 10px;
+	top: 3px;
+	font-size: 0.8rem;
+	padding: 3px;
+	border-radius: 2px;
+	box-sizing: border-box;
+	text-align: center;
+	background-color: #524c4c;
+	color: #fff;
+	float: right;
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+	-ms-border-radius: 2px;
+	-o-border-radius: 2px;
 }
 
 .formContainer {
@@ -63,6 +129,10 @@ textarea {
 	width: 22%;
 }
 
+.specVariant {
+	min-width: 50px;
+}
+
 .submitButton {
 	padding: 5px 8px;
 	border-radius: 2px;
@@ -80,5 +150,7 @@ textarea {
 }
 
 fieldset {
+	font-size: 0.8rem;
 	width: 100%;
+	margin: 10px 0px;
 }

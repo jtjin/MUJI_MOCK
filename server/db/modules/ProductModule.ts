@@ -32,7 +32,7 @@ export class ProductModule {
 			.where('product.id = :id', {
 				id,
 			})
-			.getMany()
+			.getOne()
 	}
 
 	async getProductsByTag(opt: {
