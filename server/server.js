@@ -14,16 +14,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.dbConnection = void 0;
 const config_1 = __importDefault(require("config"));
-const logger_1 = __importDefault(require("./server/utils/logger"));
+const logger_1 = __importDefault(require("./utils/logger"));
 const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
-const db_1 = __importDefault(require("./server/db"));
-const errorHandler_1 = require("./server/middleWares/errorHandler");
+const db_1 = __importDefault(require("./db"));
+const errorHandler_1 = require("./middleWares/errorHandler");
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
-const redisDb_1 = require("./server/db/redisDb");
-const error_1 = __importDefault(require("./server/controller/error"));
-const index_1 = require("./server/webSocket/index");
-const utils_1 = require("./server/utils");
+const redisDb_1 = require("./db/redisDb");
+const error_1 = __importDefault(require("./controller/error"));
+const index_1 = require("./webSocket/index");
+const utils_1 = require("./utils");
+const morgan_1 = __importDefault(require("morgan"));
 const env = process.env.NODE_ENV || 'development';
 const app = express_1.default();
 const tag = 'server';
@@ -48,6 +49,19 @@ const initServer = () => __awaiter(void 0, void 0, void 0, function* () {
         app.set('json spaces', 2);
         app.use(express_1.default.json());
         app.use(express_1.default.urlencoded());
+        morgan_1.default.token('accessLog', (tokens, req, res) => {
+            return [
+                tokens.method(req, res),
+                tokens.url(req, res),
+                tokens.status(req, res),
+                '-',
+                tokens['response-time'](req, res),
+                'ms',
+                '\nrequest: ' + JSON.stringify(req.body),
+            ].join(' ');
+        });
+        // @ts-ignore
+        app.use(morgan_1.default('accessLog', { stream: logger_1.default.stream }));
         /// CORS Control
         app.use('/api/', function (req, res, next) {
             res.set('Access-Control-Allow-Origin', '*');
@@ -58,14 +72,14 @@ const initServer = () => __awaiter(void 0, void 0, void 0, function* () {
         });
         // API routes
         app.use('/api/' + config_1.default.get('api.version'), [
-            require('./server/routes/user'),
-            require('./server/routes/product'),
-            require('./server/routes/chatRoom'),
-            require('./server/routes/campaign'),
+            require('./routes/user'),
+            require('./routes/product'),
+            require('./routes/chatRoom'),
+            require('./routes/campaign'),
         ]);
         app.set('view engine', 'html');
-        app.set('views', utils_1.rootPath + '/public/');
-        app.use(express_1.default.static(utils_1.rootPath + '/public'));
+        app.set('views', utils_1.rootPath + '/../public/');
+        app.use(express_1.default.static(utils_1.rootPath + '/../public'));
         app.use(error_1.default.get404);
         app.use(errorHandler_1.handleError);
         process.on('uncaughtException', _exitHandler(1, 'Unexpected Error'));

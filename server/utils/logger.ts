@@ -17,16 +17,13 @@ export const logger = createLogger({
 	format: format.combine(format.timestamp()),
 })
 
-/**
- *  @return {void}
- */
 function createLoggerTransports() {
 	const transports = []
 
 	// Save logs file to folders
 	transports.push(
 		new DailyRotateFile({
-			filename: './logs/TechBase-Tracker-%DATE%.log',
+			filename: './logs/STYLiSH-%DATE%.log',
 			datePattern: 'YYYY-MM-DD-HH',
 			zippedArchive: true,
 			maxSize: '20m',
@@ -75,10 +72,6 @@ function createLoggerTransports() {
 	return transports
 }
 
-/**
- * @param {String | Object} message
- * @return { Object }
- */
 function formatMsgByType(message: string | Object) {
 	if (typeof message === 'string') {
 		return { msg: message }
@@ -87,21 +80,13 @@ function formatMsgByType(message: string | Object) {
 	}
 }
 
-/**
- * @param {String | Object } msg
- * @return { Object }
- */
 function consoleOutLogsMsg(msg: any) {
 	if (!(msg instanceof Object)) return msg
 	const output = _formatObject(msg)
 	return inspect(output)
 }
 
-/**
- * @param {String | Object } msg
- * @return { Object }
- */
-function _formatObject(msg: any) {
+function _formatObject(msg: any): any {
 	const output: any = {}
 	Object.keys(msg).forEach((key) => {
 		if (msg[key] instanceof Error || key === 'error') {
@@ -112,6 +97,13 @@ function _formatObject(msg: any) {
 		output[key] = msg[key]
 	})
 	return output
+}
+
+logger.stream = {
+	// @ts-ignore
+	write: (message: string, encoding: any) => {
+		logger.info(message.trim())
+	},
 }
 
 export default logger

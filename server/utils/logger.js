@@ -30,14 +30,11 @@ exports.logger = winston_1.createLogger({
     exitOnError: false,
     format: winston_1.format.combine(winston_1.format.timestamp()),
 });
-/**
- *  @return {void}
- */
 function createLoggerTransports() {
     const transports = [];
     // Save logs file to folders
     transports.push(new DailyRotateFile({
-        filename: './logs/TechBase-Tracker-%DATE%.log',
+        filename: './logs/STYLiSH-%DATE%.log',
         datePattern: 'YYYY-MM-DD-HH',
         zippedArchive: true,
         maxSize: '20m',
@@ -71,10 +68,6 @@ function createLoggerTransports() {
     }));
     return transports;
 }
-/**
- * @param {String | Object} message
- * @return { Object }
- */
 function formatMsgByType(message) {
     if (typeof message === 'string') {
         return { msg: message };
@@ -83,20 +76,12 @@ function formatMsgByType(message) {
         return _formatObject(message);
     }
 }
-/**
- * @param {String | Object } msg
- * @return { Object }
- */
 function consoleOutLogsMsg(msg) {
     if (!(msg instanceof Object))
         return msg;
     const output = _formatObject(msg);
     return util_1.inspect(output);
 }
-/**
- * @param {String | Object } msg
- * @return { Object }
- */
 function _formatObject(msg) {
     const output = {};
     Object.keys(msg).forEach((key) => {
@@ -109,4 +94,10 @@ function _formatObject(msg) {
     });
     return output;
 }
+exports.logger.stream = {
+    // @ts-ignore
+    write: (message, encoding) => {
+        exports.logger.info(message.trim());
+    },
+};
 exports.default = exports.logger;

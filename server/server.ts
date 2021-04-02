@@ -1,15 +1,16 @@
 import config from 'config'
-import logger from './server/utils/logger'
+import logger from './utils/logger'
 import express from 'express'
 import bodyParser from 'body-parser'
-import StylishRDB from './server/db'
-import { handleError } from './server/middleWares/errorHandler'
+import StylishRDB from './db'
+import { handleError } from './middleWares/errorHandler'
 import { Server } from 'http'
 import cookieParser from 'cookie-parser'
-import { disconnectRedis } from './server/db/redisDb'
-import ErrorController from './server/controller/error'
-import { socketIoInit } from './server/webSocket/index'
-import { rootPath } from './server/utils'
+import { disconnectRedis } from './db/redisDb'
+import ErrorController from './controller/error'
+import { socketIoInit } from './webSocket/index'
+import { rootPath } from './utils'
+import morgan from 'morgan'
 
 const env = process.env.NODE_ENV || 'development'
 const app = express()
@@ -42,6 +43,21 @@ const initServer = async () => {
 		app.use(express.json())
 		app.use(express.urlencoded())
 
+		morgan.token('accessLog', (tokens: any, req: any, res: any) => {
+			return [
+				tokens.method(req, res),
+				tokens.url(req, res),
+				tokens.status(req, res),
+				'-',
+				tokens['response-time'](req, res),
+				'ms',
+				'\nrequest: ' + JSON.stringify(req.body),
+				// '\nresponse: ' + res.__body_response,
+			].join(' ')
+		})
+		// @ts-ignore
+		app.use(morgan('accessLog', { stream: logger.stream }))
+
 		/// CORS Control
 		app.use('/api/', function (req, res, next) {
 			res.set('Access-Control-Allow-Origin', '*')
@@ -56,17 +72,17 @@ const initServer = async () => {
 
 		// API routes
 		app.use('/api/' + config.get('api.version'), [
-			require('./server/routes/user'),
-			require('./server/routes/product'),
-			require('./server/routes/chatRoom'),
-			require('./server/routes/campaign'),
-			// require('./server/routes/checkout'),
-			// require('./server/routes/store_order_dta'),
+			require('./routes/user'),
+			require('./routes/product'),
+			require('./routes/chatRoom'),
+			require('./routes/campaign'),
+			// require('./routes/checkout'),
+			// require('./routes/store_order_dta'),
 		])
 
 		app.set('view engine', 'html')
-		app.set('views', rootPath + '/public/')
-		app.use(express.static(rootPath + '/public'))
+		app.set('views', rootPath + '/../public/')
+		app.use(express.static(rootPath + '/../public'))
 
 		app.use(ErrorController.get404)
 
