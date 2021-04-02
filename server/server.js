@@ -49,6 +49,14 @@ const initServer = () => __awaiter(void 0, void 0, void 0, function* () {
         app.set('json spaces', 2);
         app.use(express_1.default.json());
         app.use(express_1.default.urlencoded());
+        app.use((req, res, next) => {
+            var originalSend = res.send;
+            res.send = function (body) {
+                res.__body_response = body;
+                originalSend.call(this, body);
+            };
+            next();
+        });
         morgan_1.default.token('accessLog', (tokens, req, res) => {
             return [
                 tokens.method(req, res),

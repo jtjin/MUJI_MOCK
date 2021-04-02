@@ -43,6 +43,15 @@ const initServer = async () => {
 		app.use(express.json())
 		app.use(express.urlencoded())
 
+		app.use((req: Request, res: any, next: Next) => {
+			var originalSend = res.send
+			res.send = function (body: any) {
+				res.__body_response = body
+				originalSend.call(this, body)
+			}
+			next()
+		})
+
 		morgan.token('accessLog', (tokens: any, req: any, res: any) => {
 			return [
 				tokens.method(req, res),
