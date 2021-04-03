@@ -60,10 +60,13 @@ class CreateProductFrom {
 
 	addSpec(specType) {
 		let index = 1,
-			specName
+			specName,
+			specVariantName
 		if (specType === 'sub') {
 			specName = 'subSpecName'
+			specVariantName = 'subSpecVariantName'
 		} else {
+			specVariantName = 'mainSpecVariantName'
 			specName = 'mainSpecName'
 		}
 		if (this.allSpecCount > this.limitedSpecCount) {
@@ -80,6 +83,7 @@ class CreateProductFrom {
 		specTemplate
 			.querySelector('.specVariantNameInput')
 			.setAttribute('index', index)
+		specTemplate.querySelector('.specVariantNameInput').name = specVariantName
 		specTemplate
 			.querySelector('.addSpecVariantBtn')
 			.setAttribute('index', index)
@@ -148,18 +152,23 @@ class CreateProductFrom {
 
 	addSpecVariant(specName) {
 		if (specName === 'mainSpecName') {
-			const nowIndex = ++this.mainSpecVariantCount
+			const nowMainSpecVariantCount = ++this.mainSpecVariantCount
 			document
 				.querySelector(`div[class*="specVariantNameContainer"][index="1"]`)
-				.appendChild(this.createNewSpecVariantInputBtn(nowIndex, specName))
+				.appendChild(
+					this.createNewSpecVariantInputBtn(nowMainSpecVariantCount, specName),
+				)
 
 			this.addMainSpecVariantContainerClone()
 		} else {
-			const now2Index = ++this.subSpecVariantCount
+			const nowSubSpecVariantCount = ++this.subSpecVariantCount
 			document
 				.querySelector(`div[class*="subSpecContainer"][index="1"]`)
 				.appendChild(
-					this.createNewSpecVariantInputBtn(`${now2Index}`, specName),
+					this.createNewSpecVariantInputBtn(
+						`${nowSubSpecVariantCount}`,
+						specName,
+					),
 				)
 			let howManyMainVariant = this.mainSpecVariantCount
 			while (howManyMainVariant > 0) {
@@ -170,17 +179,22 @@ class CreateProductFrom {
 				document
 					.querySelector(`table[index="${howManyMainVariant}"]`)
 					.appendChild(
-						this.addSubVariantContainerClone(howManyMainVariant, now2Index),
+						this.addSubVariantContainerClone(
+							howManyMainVariant,
+							nowSubSpecVariantCount,
+						),
 					)
 				howManyMainVariant--
 			}
 		}
 	}
 	createNewSpecVariantInputBtn(index, className) {
-		console.log('createNewSpecVariantInputBtn==>', className, index)
 		const input = document.createElement('input')
 		input.setAttribute('index', index)
-		input.name = 'specVariantName'
+		input.name =
+			className === 'mainSpecName'
+				? 'mainSpecVariantName'
+				: 'subSpecVariantName'
 		input.type = 'text'
 		input.classList.add('specVariantNameInput')
 		input.addEventListener('keyup', (e) => {
@@ -194,7 +208,7 @@ class CreateProductFrom {
 			true,
 		)
 		mainSpecVariantContainerClone
-			.querySelector('.mainSpecName')
+			.querySelector('div[class*=mainSpecName]')
 			.setAttribute('index', that.mainSpecVariantCount)
 		mainSpecVariantContainerClone
 			.querySelector('table')
@@ -233,6 +247,15 @@ class CreateProductFrom {
 		container
 			.querySelector('.subSpecName')
 			.setAttribute('index', String(mainSpecIndex) + String(subSpecIndex))
+
+		container.querySelector('.subSpecName').name =
+			String(mainSpecIndex) + String(subSpecIndex)
+		container.querySelectorAll('input').forEach((element) => {
+			console.log('????-->', element)
+			element.name =
+				'SpecVariant_' + String(mainSpecIndex) + '_' + +String(subSpecIndex)
+		})
+
 		if (that.allSpecCount === 2) {
 			container.querySelector('td').style.display = 'block'
 		}
@@ -248,29 +271,58 @@ class CreateProductFrom {
 
 	async _postCreateProductForm() {
 		const formData = new FormData(this.productCreateFrom)
-
+		console.log(formData.entries())
+		console.log(
+			`formData.get('mainSpecVariantName')`,
+			formData.getAll('mainSpecVariantName'),
+		)
+		console.log(
+			`formData.get('subSpecVariantName')`,
+			formData.getAll('subSpecVariantName'),
+		)
+		const variants = []
 		for (var pair of formData.entries()) {
-			console.log(pair[0] + ', ' + pair[1])
+			// console.log(pair[0] + ', ' + pair[1])
+			if (pair[0].includes('SpecVariant_')) {
+				const [mainSpecIndex, subSpecIndex] = pair[0]
+					.split('SpecVariant_')[1]
+					.split('_')
+				console.log(
+					'mainSpecIndex, subSpecIndex-->',
+					mainSpecIndex,
+					subSpecIndex,
+				)
+				variants.push({
+					mainSpec: formData.getAll('mainSpecVariantName')[mainSpecIndex - 1],
+					SubSpec: formData.getAll('subSpecVariantName')[subSpecIndex - 1],
+					price: formData.getAll(pair[0])[1],
+					stock: formData.getAll(pair[0])[2],
+					code: formData.getAll(pair[0])[3],
+				})
+				formData.delete(pair[0])
+			}
 		}
+		console.log('variant==>', variants)
+		formData.set('variants', JSON.stringify(variants))
 		try {
-			// 	const { result } = (
-			// 		await privateApi({
-			// 			url: config.api.admin.product,
-			// 			method: 'POST',
-			// 			data: formData,
-			// 		})
-			// 	).data
-			// 	if (result === 'success') {
-			// 		this._cleanProductInfo()
-			// 		Swal.fire({
-			// 			// Reference Links: https://sweetalert2.github.io/
-			// 			position: 'top-end',
-			// 			icon: 'success',
-			// 			title: 'Your work has been saved',
-			// 			showConfirmButton: false,
-			// 			timer: 1500,
-			// 		})
-			// 	}
+			const { result } = (
+				await privateApi({
+					url: config.api.admin.product,
+					method: 'POST',
+					data: formData,
+				})
+			).data
+			if (result === 'success') {
+				this._cleanProductInfo()
+				Swal.fire({
+					// Reference Links: https://sweetalert2.github.io/
+					position: 'top-end',
+					icon: 'success',
+					title: 'Your work has been saved',
+					showConfirmButton: false,
+					timer: 1500,
+				})
+			}
 		} catch (error) {
 			console.log(error)
 		}

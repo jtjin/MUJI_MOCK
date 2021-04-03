@@ -33,6 +33,8 @@ class Product {
         });
         this.createProduct = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             try {
+                console.log('createProduct--->', req.body, req.files);
+                console.log(JSON.parse(req.body.variants));
                 // TODO: Add product main category ex: clothes, stationary...
                 const productId = yield product_1.default.createProduct(req.body, req.files);
                 if (productId)

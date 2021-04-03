@@ -89,7 +89,7 @@
 									<span class="specVariantName">種類</span>
 									<input
 										type="text"
-										name="specVariantName"
+										name="mainSpecVariantName"
 										class="specVariantNameInput"
 									/>
 								</div>
@@ -102,12 +102,10 @@
 						<legend>Variants Information</legend>
 						<template class="mainSpecVariantContainerTemplate">
 							<div class="singleVariantContainer">
-								<div class="mainSpecName">
-									規格
-								</div>
+								<div class="mainSpecName">規格</div>
 								<table>
 									<tr>
-										<td style="display: none;">規格</td>
+										<td style="display: none">規格</td>
 										<td>價格</td>
 										<td>庫存</td>
 										<td>貨號</td>
@@ -117,8 +115,9 @@
 						</template>
 						<template class="subClassVariantTemplate">
 							<tr class="subClassVariantContainer">
-								<td style="display: none;">
-									<input class="subSpecName" type="text" name="subSpecName" />
+								<td style="display: none">
+									<input class="subSpecName" type="text" />
+									<!-- <input class="subSpecName" type="text" name="subSpecName" /> -->
 								</td>
 								<td><input type="text" name="price" /></td>
 								<td><input type="text" name="stock" /></td>
@@ -155,7 +154,7 @@
 						</div> -->
 					</fieldset>
 
-					<!-- <fieldset>
+					<fieldset>
 						<legend>Images</legend>
 						<div class="formColumn">
 							<span class="columnTitle">Main image</span>
@@ -176,7 +175,7 @@
 								required="required"
 							/>
 						</div>
-					</fieldset> -->
+					</fieldset>
 					<button type="submit" class="submitButton">Create</button>
 				</form>
 			</div>

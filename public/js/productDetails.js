@@ -43,7 +43,6 @@ class ProductDetailManager {
 	}
 
 	renderProduct(productInfo) {
-		console.log('productInfo-->', productInfo)
 		const { story, colors, images, variants, sizes } = productInfo
 
 		this.focusedProductInfo = {

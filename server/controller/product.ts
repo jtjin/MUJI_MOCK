@@ -57,6 +57,8 @@ class Product {
 
 	createProduct: StylishRouter = async (req, res, next) => {
 		try {
+			console.log('createProduct--->', req.body, req.files)
+			console.log(JSON.parse(req.body.variants))
 			// TODO: Add product main category ex: clothes, stationary...
 			const productId = await ProductService.createProduct(req.body, req.files)
 			if (productId) this.renameProductImages({ productId })

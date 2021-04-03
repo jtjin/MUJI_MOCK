@@ -11,6 +11,7 @@ import ErrorController from './controller/error'
 import { socketIoInit } from './webSocket/index'
 import { rootPath } from './utils'
 import morgan from 'morgan'
+import { Request, Response, NextFunction, RequestHandler } from 'express'
 
 const env = process.env.NODE_ENV || 'development'
 const app = express()
@@ -43,7 +44,7 @@ const initServer = async () => {
 		app.use(express.json())
 		app.use(express.urlencoded())
 
-		app.use((req: Request, res: any, next: Next) => {
+		app.use((req: Request, res: any, next: NextFunction) => {
 			var originalSend = res.send
 			res.send = function (body: any) {
 				res.__body_response = body
