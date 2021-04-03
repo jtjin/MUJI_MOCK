@@ -88,6 +88,7 @@ const initServer = () => __awaiter(void 0, void 0, void 0, function* () {
         app.set('view engine', 'html');
         app.set('views', utils_1.rootPath + '/../public/');
         app.use(express_1.default.static(utils_1.rootPath + '/../public'));
+        // @ts-ignore
         app.use(error_1.default.get404);
         app.use(errorHandler_1.handleError);
         process.on('uncaughtException', _exitHandler(1, 'Unexpected Error'));

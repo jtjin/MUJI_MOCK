@@ -92,7 +92,7 @@ const initServer = async () => {
 		app.set('view engine', 'html')
 		app.set('views', rootPath + '/../public/')
 		app.use(express.static(rootPath + '/../public'))
-
+		// @ts-ignore
 		app.use(ErrorController.get404)
 
 		app.use(handleError)

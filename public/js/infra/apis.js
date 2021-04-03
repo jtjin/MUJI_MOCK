@@ -2,10 +2,12 @@ const baseUrl = 'http://localhost:5000/'
 // const baseUrl = 'https://white-100.online/'
 const publicApi = axios.create({
 	baseURL: baseUrl,
+	headers: { 'Content-Type': 'application/json' },
 })
 
 const privateApi = axios.create({
 	baseURL: baseUrl,
+	headers: { 'Content-Type': 'application/json' },
 })
 
 privateApi.interceptors.request.use(

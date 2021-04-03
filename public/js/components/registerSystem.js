@@ -108,9 +108,6 @@ class RegisterFrom extends HTMLElement {
 					url: config.api.user.signIn,
 					method: 'POST',
 					data: JSON.stringify(res),
-					headers: {
-						'Content-Type': 'application/json',
-					},
 				})
 			).data
 
