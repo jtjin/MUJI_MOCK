@@ -10,10 +10,13 @@ import * as R from 'ramda'
 import { ProductDetails } from '../db/entities/ProductDetails'
 import { EntityManager, getConnection } from 'typeorm'
 import { TagsEnum } from '../infra/enums/Tags'
+import { CategoryEnum } from '../infra/enums/CategoryEnum'
 import { redisClient } from '../db/redisDb'
-import logger from '../utils/logger'
 import { safeAwait } from '../utils/safeAsync'
 import { customErrors } from '../infra/customErrors'
+import { stringValue } from 'aws-sdk/clients/iot'
+import { ErrorType } from '../infra/enums/errorType'
+import { ErrorHandler } from '../middleWares/errorHandler'
 const tag = 'server/product'
 class ProductService {
 	tag: string
@@ -26,7 +29,7 @@ class ProductService {
 		page?: string
 	}) {
 		const { tagId, titleLike, page = 1 } = opt
-		console.log(tagId, titleLike, page)
+
 		try {
 			const [_error, resultCache] = await safeAwait(
 				redisClient.get(`product:${tagId}:${titleLike}:${page}`),
@@ -71,8 +74,6 @@ class ProductService {
 		try {
 			const resultCache = await redisClient.get(`product:detail:${id}`)
 
-			console.log('resultCache-->', resultCache)
-
 			if (resultCache) return JSON.parse(String(resultCache))
 
 			const productPO = await StylishRDB.productModule.getProductDetailById(id)
@@ -112,47 +113,95 @@ class ProductService {
 			place: string
 			note: string
 			story: string
+			category: CategoryEnum
 			tag: TagsEnum
 			colors: string
 			colorsName: string
 			sizes: string
+			spec: string[]
+			variants: stringValue
 		},
 		files: any,
-	): Promise<string | undefined> {
+	): Promise<{ productId: string } | undefined> {
 		const productVO = {
 			tag_id: TagsEnum[reqVO.tag],
+			spec: reqVO.spec.join(','),
+			category: CategoryEnum[reqVO.category],
+			variants: JSON.parse(reqVO.variants),
 			...R.pick(
-				[
-					'title',
-					'description',
-					'price',
-					'texture',
-					'wash',
-					'place',
-					'note',
-					'story',
-				],
+				['title', 'description', 'texture', 'wash', 'place', 'note', 'story'],
 				reqVO,
 			),
 		}
-
-		let productId
+		let productId: string | undefined, productDetailId: string | undefined
 		try {
 			await getConnection('stylish').transaction(async (trans) => {
 				const productModule = new ProductModule({ transaction: trans })
 				const insertedResult = await productModule.createProduct(productVO)
-				productId = insertedResult.raw.insertId
-				if (productId) {
-					await this._createProductDetails({
-						transaction: trans,
-						productId,
-						...R.pick(['colors', 'colorsName', 'sizes'], reqVO),
-					})
-				}
+				productId = insertedResult.raw.insertId as string
+
+				if (!productId)
+					throw new ErrorHandler(
+						500,
+						ErrorType.DatabaseError,
+						'Fail to create product...',
+					)
+
+				productVO.variants.forEach(
+					(variant: {
+						product_id: string
+						main_spec: string
+						sub_spec: string
+						price: number
+						stock: number
+						code: string
+					}) => {
+						variant.product_id = productId as string
+					},
+				)
+				productDetailId = await this._createProductDetails({
+					transaction: trans,
+					variants: productVO.variants,
+				})
+
+				if (!productDetailId)
+					throw new ErrorHandler(
+						500,
+						ErrorType.DatabaseError,
+						'Fail to create product details...',
+					)
+
 				await this._createdPhotos({ transaction: trans, productId, files })
 			})
-			this._delProductCacheByTag(TagsEnum[reqVO.tag])
-			return productId
+			this._delProductCacheByTag({
+				category: CategoryEnum[reqVO.category],
+				tag: TagsEnum[reqVO.tag],
+			})
+			if (!productId || !productDetailId) return
+			return { productId }
+		} catch (error) {
+			throw error
+		}
+	}
+
+	async _createProductDetails(opt: {
+		transaction: EntityManager
+		variants: {
+			product_id: string
+			main_spec: string
+			sub_spec: string
+			price: number
+			stock: number
+			code: string
+		}[]
+	}) {
+		try {
+			const { transaction, variants } = opt
+			const productDetailModule = new ProductDetailsModule({ transaction })
+			const insertedResult = await productDetailModule.createProductDetails(
+				variants,
+			)
+			return insertedResult.raw.insertId
 		} catch (error) {
 			throw error
 		}
@@ -191,47 +240,12 @@ class ProductService {
 		}
 	}
 
-	async _createProductDetails(opt: {
-		transaction: EntityManager
-		productId: string
-		colors: string
-		colorsName: string
-		sizes: string
-	}) {
+	async _delProductCacheByTag(opt: { category: string; tag: string }) {
+		const { category, tag } = opt
 		try {
-			const { transaction, productId, colors, colorsName, sizes } = opt
-			const productDetailModule = new ProductDetailsModule({ transaction })
-
-			const colorsArr = colors.split(',')
-			const colorsNameArr = colorsName.split(',')
-			const sizesArr = sizes.split(',')
-
-			let productDetailVariants: Partial<ProductDetails>[] = []
-
-			colorsArr.forEach((color, colorsArrIndex) => {
-				let temp: Partial<ProductDetails> = {
-					color_code: color.trim(),
-					name: colorsNameArr[colorsArrIndex].trim(),
-				}
-				sizesArr.forEach((size) => {
-					const detailVariant = { ...temp }
-					detailVariant.size = size.trim()
-					detailVariant.product_id = productId
-					productDetailVariants.push(detailVariant)
-				})
-			})
-
-			return await productDetailModule.createProductDetails(
-				productDetailVariants,
+			const productCacheKeys = await redisClient.keys(
+				`product:${category}:${tag}:*`,
 			)
-		} catch (error) {
-			throw error
-		}
-	}
-
-	async _delProductCacheByTag(tag: string) {
-		try {
-			const productCacheKeys = await redisClient.keys(`product:${tag}:*`)
 			// @ts-ignore
 			productCacheKeys.forEach((key) => {
 				redisClient.del(key)

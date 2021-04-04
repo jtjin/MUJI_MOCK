@@ -23,28 +23,40 @@ __decorate([
 ], ProductDetails.prototype, "stock", void 0);
 __decorate([
     typeorm_1.Column({
+        type: 'int',
         nullable: false,
-        type: 'varchar',
     })
-], ProductDetails.prototype, "size", void 0);
+], ProductDetails.prototype, "price", void 0);
 __decorate([
     typeorm_1.Column({
         nullable: false,
         type: 'varchar',
     })
-], ProductDetails.prototype, "name", void 0);
+], ProductDetails.prototype, "main_spec", void 0);
 __decorate([
     typeorm_1.Column({
         nullable: false,
         type: 'varchar',
     })
-], ProductDetails.prototype, "color_code", void 0);
+], ProductDetails.prototype, "sub_spec", void 0);
+__decorate([
+    typeorm_1.Column({
+        type: 'int',
+        nullable: false,
+    })
+], ProductDetails.prototype, "code", void 0);
 __decorate([
     typeorm_1.ManyToOne((type) => Product_1.Product, (product) => product.variants),
     typeorm_1.JoinColumn({
         name: 'product_id',
     })
 ], ProductDetails.prototype, "product_id", void 0);
+__decorate([
+    typeorm_1.CreateDateColumn()
+], ProductDetails.prototype, "createdAt", void 0);
+__decorate([
+    typeorm_1.UpdateDateColumn()
+], ProductDetails.prototype, "updatedAt", void 0);
 ProductDetails = __decorate([
     typeorm_1.Entity({ name: 'product_details' })
 ], ProductDetails);

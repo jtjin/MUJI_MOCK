@@ -2,12 +2,7 @@ import {
 	Entity,
 	PrimaryGeneratedColumn,
 	Column,
-	CreateDateColumn,
-	UpdateDateColumn,
-	OneToMany,
-	ManyToOne,
 	JoinColumn,
-	Index,
 	OneToOne,
 } from 'typeorm'
 import { Product } from './Product'

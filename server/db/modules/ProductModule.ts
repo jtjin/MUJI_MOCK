@@ -1,4 +1,10 @@
-import { Connection, EntityManager, InsertResult, Repository } from 'typeorm'
+import {
+	Connection,
+	EntityManager,
+	InsertResult,
+	Repository,
+	UpdateResult,
+} from 'typeorm'
 import { Tag } from '../entities/Tag'
 import { Product } from '../entities/Product'
 import { TagsEnum } from '../../infra/enums/Tags'
@@ -81,18 +87,33 @@ export class ProductModule {
 	async createProduct(values: {
 		title: string
 		description: string
-		price: number
+		// price: number
 		texture: string
 		wash: string
 		place: string
 		note: string
 		story: string
+		spec: string
 		tag_id: string
+		category: string
 	}): Promise<InsertResult> {
+		console.log('DB--> createProduct ->', values)
 		return await this.Repo.createQueryBuilder()
 			.insert()
 			.into(Product)
 			.values(values)
+			.execute()
+	}
+
+	async updateProductById(opt: {
+		id: string
+		value: any
+	}): Promise<UpdateResult> {
+		const { id, value } = opt
+		return await this.Repo.createQueryBuilder()
+			.update(Product)
+			.set(value)
+			.where('id = :id', { id })
 			.execute()
 	}
 }

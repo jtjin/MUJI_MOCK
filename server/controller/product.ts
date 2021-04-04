@@ -57,11 +57,24 @@ class Product {
 
 	createProduct: StylishRouter = async (req, res, next) => {
 		try {
-			console.log('createProduct--->', req.body, req.files)
-			console.log(JSON.parse(req.body.variants))
-			// TODO: Add product main category ex: clothes, stationary...
-			const productId = await ProductService.createProduct(req.body, req.files)
-			if (productId) this.renameProductImages({ productId })
+			if (!req.files)
+				throw new ErrorHandler(
+					500,
+					ErrorType.ClientError,
+					'No Images provided...',
+				)
+
+			const result = await ProductService.createProduct(req.body, req.files)
+
+			if (!result)
+				throw new ErrorHandler(
+					500,
+					ErrorType.DatabaseError,
+					'Fail to create new product ...',
+				)
+			const { productId } = result
+
+			if (productId) await this.renameProductImages({ productId })
 			res.send({
 				result: 'success',
 				data: productId,
@@ -128,6 +141,7 @@ class Product {
 	renameProductImages = async (opt: { productId: string }) => {
 		try {
 			const { productId } = opt
+			if (!productId) return
 			const { main_image, images } = await ProductService.getPhotosByProductId(
 				productId,
 			)

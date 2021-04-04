@@ -33,12 +33,14 @@ class Product {
         });
         this.createProduct = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log('createProduct--->', req.body, req.files);
-                console.log(JSON.parse(req.body.variants));
-                // TODO: Add product main category ex: clothes, stationary...
-                const productId = yield product_1.default.createProduct(req.body, req.files);
+                if (!req.files)
+                    throw new errorHandler_1.ErrorHandler(500, errorType_1.ErrorType.ClientError, 'No Images provided...');
+                const result = yield product_1.default.createProduct(req.body, req.files);
+                if (!result)
+                    throw new errorHandler_1.ErrorHandler(500, errorType_1.ErrorType.DatabaseError, 'Fail to create new product ...');
+                const { productId } = result;
                 if (productId)
-                    this.renameProductImages({ productId });
+                    yield this.renameProductImages({ productId });
                 res.send({
                     result: 'success',
                     data: productId,
@@ -94,6 +96,8 @@ class Product {
         this.renameProductImages = (opt) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const { productId } = opt;
+                if (!productId)
+                    return;
                 const { main_image, images } = yield product_1.default.getPhotosByProductId(productId);
                 main_image.forEach((img) => __awaiter(this, void 0, void 0, function* () {
                     yield this._updateAWSS3Images(img.url.slice(1), `${productId}/${img.name}`);

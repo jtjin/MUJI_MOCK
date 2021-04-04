@@ -8,6 +8,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Product = void 0;
 const Tag_1 = require("./Tag");
+const Category_1 = require("./Category");
 const typeorm_1 = require("typeorm");
 const Hot_1 = require("./Hot");
 const ProductDetails_1 = require("./ProductDetails");
@@ -34,12 +35,6 @@ __decorate([
     })
 ], Product.prototype, "description", void 0);
 __decorate([
-    typeorm_1.Column({
-        type: 'int',
-        nullable: false,
-    })
-], Product.prototype, "price", void 0);
-__decorate([
     typeorm_1.Column({ type: 'varchar' })
 ], Product.prototype, "texture", void 0);
 __decorate([
@@ -54,6 +49,21 @@ __decorate([
 __decorate([
     typeorm_1.Column({ type: 'varchar' })
 ], Product.prototype, "story", void 0);
+__decorate([
+    typeorm_1.Column({ type: 'varchar' })
+], Product.prototype, "specs", void 0);
+__decorate([
+    typeorm_1.CreateDateColumn()
+], Product.prototype, "createdAt", void 0);
+__decorate([
+    typeorm_1.UpdateDateColumn()
+], Product.prototype, "updatedAt", void 0);
+__decorate([
+    typeorm_1.ManyToOne((type) => Category_1.Category),
+    typeorm_1.JoinColumn({
+        name: 'category_id',
+    })
+], Product.prototype, "category", void 0);
 __decorate([
     typeorm_1.ManyToOne((type) => Tag_1.Tag),
     typeorm_1.JoinColumn({

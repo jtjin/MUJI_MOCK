@@ -87,6 +87,7 @@ div.mainSpecName {
 }
 
 .formContainer {
+	position: relative;
 	width: 70%;
 }
 
@@ -102,7 +103,9 @@ textarea {
 
 select,
 input[type='text'],
+input[type='number'],
 textarea {
+	color: #3f3a3a;
 	width: 70%;
 	height: 30px;
 	outline: none;
@@ -153,4 +156,14 @@ fieldset {
 	font-size: 0.8rem;
 	width: 100%;
 	margin: 10px 0px;
+}
+
+.fillTestDataOfProductVariant {
+	position: absolute;
+	right: 5px;
+	bottom: 5px;
+}
+
+.detailContainer {
+	display: none;
 }

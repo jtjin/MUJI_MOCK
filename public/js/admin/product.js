@@ -15,7 +15,7 @@ class CreateProductFrom {
 		this.productCreateFrom = document.querySelector('.productCreateFrom')
 		this.title = document.querySelector('.title')
 		this.description = document.querySelector('.description')
-		this.price = document.querySelector('.price')
+		// this.price = document.querySelector('.price')
 		this.texture = document.querySelector('.texture')
 		this.wash = document.querySelector('.wash')
 		this.place = document.querySelector('.place')
@@ -31,9 +31,13 @@ class CreateProductFrom {
 		this.specsField = document.querySelector('.specsField')
 		this.specTemplate = document.querySelector('.specTemplate')
 		this.variantsContainer = document.querySelector('.variantsContainer')
+		this.fillTestDataOfProductVariant = document.querySelector(
+			'.fillTestDataOfProductVariant',
+		)
 		this.mainSpecVariantContainerTemplate = document.querySelector(
 			'.mainSpecVariantContainerTemplate',
 		)
+		this.detailContainer = document.querySelector('.detailContainer')
 		this.subClassVariantTemplate = document.querySelector(
 			'.subClassVariantTemplate',
 		)
@@ -46,6 +50,7 @@ class CreateProductFrom {
 		this.addMainSpecVariantContainerClone()
 
 		this.addSpecVariantBtn = document.querySelector('.addSpecVariantBtn')
+		this.categorySelector = document.querySelector('.category')
 	}
 
 	_initEvents() {
@@ -55,6 +60,16 @@ class CreateProductFrom {
 		})
 		this.addSpecBtn.addEventListener('click', async (event) => {
 			this.addSpec('sub')
+		})
+		this.fillTestDataOfProductVariant.addEventListener(
+			'click',
+			async (event) => {
+				this._fillTestDataOfProductVariant()
+			},
+		)
+		this.categorySelector.addEventListener('change', (e) => {
+			if (e.target.value === 'Clothes')
+				this.detailContainer.style.display = 'block'
 		})
 	}
 
@@ -73,9 +88,7 @@ class CreateProductFrom {
 			alert('目前只能新增兩種Spec，如有新需求請與系統人員反應')
 			return
 		}
-
 		const specTemplate = this.specTemplate.content.cloneNode(true)
-
 		specTemplate.querySelector('.specContainer').setAttribute('index', index)
 		specTemplate
 			.querySelector('.specVariantNameContainer')
@@ -87,13 +100,11 @@ class CreateProductFrom {
 		specTemplate
 			.querySelector('.addSpecVariantBtn')
 			.setAttribute('index', index)
-
 		specTemplate
 			.querySelector('.addSpecVariantBtn')
 			.addEventListener('click', (e) => {
 				that.addSpecVariant(specName)
 			})
-
 		if (specType === 'sub') {
 			specTemplate
 				.querySelector('.specVariantNameContainer')
@@ -172,10 +183,6 @@ class CreateProductFrom {
 				)
 			let howManyMainVariant = this.mainSpecVariantCount
 			while (howManyMainVariant > 0) {
-				console.log(
-					'mainSpecVariantCount howManyMainVariant==>',
-					howManyMainVariant,
-				)
 				document
 					.querySelector(`table[index="${howManyMainVariant}"]`)
 					.appendChild(
@@ -226,7 +233,6 @@ class CreateProductFrom {
 			howManySubClass <= that.subSpecVariantCount ||
 			howManySubClass === 1
 		) {
-			console.log('howManySubClass->', howManySubClass)
 			subSpec = that.addSubVariantContainerClone(
 				that.mainSpecVariantCount,
 				howManySubClass,
@@ -251,18 +257,15 @@ class CreateProductFrom {
 		container.querySelector('.subSpecName').name =
 			String(mainSpecIndex) + String(subSpecIndex)
 		container.querySelectorAll('input').forEach((element) => {
-			console.log('????-->', element)
 			element.name =
 				'SpecVariant_' + String(mainSpecIndex) + '_' + +String(subSpecIndex)
 		})
-
 		if (that.allSpecCount === 2) {
 			container.querySelector('td').style.display = 'block'
 		}
 		const existVariantNameInput = document.querySelector(
 			`.subSpecContainer input[class*=specVariantNameInput][index="${subSpecIndex}"]`,
 		)
-
 		if (existVariantNameInput)
 			container.querySelector('.subSpecName').value =
 				existVariantNameInput.value
@@ -271,30 +274,15 @@ class CreateProductFrom {
 
 	async _postCreateProductForm() {
 		const formData = new FormData(this.productCreateFrom)
-		console.log(formData.entries())
-		console.log(
-			`formData.get('mainSpecVariantName')`,
-			formData.getAll('mainSpecVariantName'),
-		)
-		console.log(
-			`formData.get('subSpecVariantName')`,
-			formData.getAll('subSpecVariantName'),
-		)
 		const variants = []
 		for (var pair of formData.entries()) {
-			// console.log(pair[0] + ', ' + pair[1])
 			if (pair[0].includes('SpecVariant_')) {
 				const [mainSpecIndex, subSpecIndex] = pair[0]
 					.split('SpecVariant_')[1]
 					.split('_')
-				console.log(
-					'mainSpecIndex, subSpecIndex-->',
-					mainSpecIndex,
-					subSpecIndex,
-				)
 				variants.push({
-					mainSpec: formData.getAll('mainSpecVariantName')[mainSpecIndex - 1],
-					SubSpec: formData.getAll('subSpecVariantName')[subSpecIndex - 1],
+					main_spec: formData.getAll('mainSpecVariantName')[mainSpecIndex - 1],
+					sub_spec: formData.getAll('subSpecVariantName')[subSpecIndex - 1],
 					price: formData.getAll(pair[0])[1],
 					stock: formData.getAll(pair[0])[2],
 					code: formData.getAll(pair[0])[3],
@@ -302,7 +290,14 @@ class CreateProductFrom {
 				formData.delete(pair[0])
 			}
 		}
-		console.log('variant==>', variants)
+		if (this.detailContainer.style.display !== 'block') {
+			this.detailContainer
+				.querySelectorAll('input')
+				.forEach((e) => formData.delete(e.name))
+			this.detailContainer
+				.querySelectorAll('select')
+				.forEach((e) => formData.delete(e.name))
+		}
 		formData.set('variants', JSON.stringify(variants))
 		try {
 			const { result } = (
@@ -328,25 +323,19 @@ class CreateProductFrom {
 		}
 	}
 	_cleanProductInfo() {
-		this.title.value = ''
-		this.description.value = ''
-		this.price.value = ''
-		this.texture.value = ''
-		this.wash.value = ''
-		this.place.value = ''
-		this.note.value = ''
 		this.story.value = ''
-		this.colors.value = ''
-		this.colorsName.value = ''
-		this.sizes.value = ''
-		this.main_image.value = ''
-		this.images.value = ''
+		document.querySelectorAll('input').forEach((e) => {
+			e.value = ''
+		})
+		document.querySelectorAll('.mainSpecName').forEach((e) => {
+			e.innerText = ''
+		})
 	}
 
 	_fillTestProductInfo() {
 		this.title.value = '測試產品' + '-' + Math.floor(Math.random() * 100)
 		this.description.value = '測試產品描述'
-		this.price.value = 599
+		// this.price.value = 599
 		this.texture.value = '棉 100% 厚薄：薄 彈性：無'
 		this.wash.value = '手洗，溫水'
 		this.place.value = '火星'
@@ -356,6 +345,51 @@ class CreateProductFrom {
 		// this.colors.value = '58166846, FFFdfe, SERHTH'
 		// this.colorsName.value = 'Red, Blue, Green'
 		// this.sizes.value = 'S,M,L,XL,XXL'
+	}
+	_fillTestDataOfProductVariant() {
+		document.querySelectorAll('.specNameInput').forEach((element, index) => {
+			element.value = '規格名稱' + index
+		})
+		document.querySelectorAll('.mainSpecName').forEach((element, index) => {
+			element.innerText = '主規格名稱' + index
+		})
+		const allSpecContainer = document.querySelectorAll('.specContainer')
+
+		allSpecContainer[0]
+			.querySelectorAll('.specVariantNameInput')
+			.forEach((element, index) => {
+				element.value = '主規格名稱' + index
+			})
+		console.log(this.allSpecCount, this.limitedSpecCount)
+		if (this.allSpecCount > this.limitedSpecCount) {
+			allSpecContainer[1]
+				.querySelectorAll('.specVariantNameInput')
+				.forEach((element, index) => {
+					element.value = '副規格名稱' + index
+				})
+		}
+		document.querySelectorAll('.price').forEach((element, index) => {
+			element.value = 599
+		})
+		document.querySelectorAll('.stock').forEach((element, index) => {
+			element.value = 5
+		})
+		document.querySelectorAll('.code').forEach((element, index) => {
+			element.value = 'HiDear99'
+		})
+		const howManySubSpec = this.subSpecVariantCount
+		let now = 0
+		document
+			.querySelectorAll('input[class*="subSpecName"][name^="SpecVariant_"]')
+			.forEach((element, index) => {
+				if (now <= howManySubSpec) {
+					element.value = '副規格名稱' + now
+				} else {
+					now = 0
+					element.value = '副規格名稱' + now
+				}
+				now++
+			})
 	}
 }
 

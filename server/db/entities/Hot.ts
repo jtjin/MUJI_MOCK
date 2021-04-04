@@ -1,14 +1,4 @@
-import {
-	Entity,
-	PrimaryGeneratedColumn,
-	Column,
-	CreateDateColumn,
-	UpdateDateColumn,
-	OneToMany,
-	ManyToOne,
-	JoinColumn,
-	Index,
-} from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm'
 import { Product } from './Product'
 
 @Entity({ name: 'hot' })

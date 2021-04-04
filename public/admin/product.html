@@ -25,19 +25,15 @@
 						<span class="columnTitle">Description</span>
 						<input type="text" name="description" class="description" />
 					</div>
-					<div class="formColumn">
+					<!-- <div class="formColumn">
 						<span class="columnTitle">Price</span>
 						<input type="text" name="price" class="price" />
-					</div>
-
+					</div> -->
 					<div class="formColumn">
 						<span class="columnTitle">Texture</span>
 						<input type="text" name="texture" class="texture" />
 					</div>
-					<div class="formColumn">
-						<span class="columnTitle">Wash</span>
-						<input type="text" name="wash" class="wash" />
-					</div>
+
 					<div class="formColumn">
 						<span class="columnTitle">Place</span>
 						<input type="text" name="place" class="place" />
@@ -50,15 +46,33 @@
 						<span class="columnTitle">Story</span>
 						<textarea name="story" cols="30" rows="10" class="story"></textarea>
 					</div>
+					<fieldset class="categoryField">
+						<legend>Category</legend>
+						<div class="formColumn">
+							<span class="columnTitle">Product Category</span>
+							<select name="category" class="category">
+								<option value="Groceries">Groceries</option>
+								<option value="Clothes">Clothes</option>
+								<option value="Food">Food</option>
+							</select>
+						</div>
+					</fieldset>
 
-					<div class="formColumn">
-						<span class="columnTitle">Product Category</span>
-						<select name="tag">
-							<option value="women">Women</option>
-							<option value="men">Men</option>
-							<option value="accessories">Accessories</option>
-						</select>
-					</div>
+					<fieldset class="detailContainer">
+						<legend>Detail</legend>
+						<div class="formColumn">
+							<span class="columnTitle">Wash</span>
+							<input type="text" name="wash" class="wash" />
+						</div>
+						<div class="formColumn">
+							<span class="columnTitle">Product Tags</span>
+							<select name="tag" class="tag">
+								<option value="women">Women</option>
+								<option value="men">Men</option>
+								<option value="accessories">Accessories</option>
+							</select>
+						</div>
+					</fieldset>
 					<fieldset class="specsField">
 						<legend>Spec Name</legend>
 						<template class="specTemplate">
@@ -102,7 +116,7 @@
 						<legend>Variants Information</legend>
 						<template class="mainSpecVariantContainerTemplate">
 							<div class="singleVariantContainer">
-								<div class="mainSpecName">規格</div>
+								<div class="mainSpecName"></div>
 								<table>
 									<tr>
 										<td style="display: none">規格</td>
@@ -119,9 +133,9 @@
 									<input class="subSpecName" type="text" />
 									<!-- <input class="subSpecName" type="text" name="subSpecName" /> -->
 								</td>
-								<td><input type="text" name="price" /></td>
-								<td><input type="text" name="stock" /></td>
-								<td><input type="text" name="code" /></td>
+								<td><input type="number" class="price" /></td>
+								<td><input type="number" class="stock" /></td>
+								<td><input type="text" class="code" /></td>
 							</tr>
 						</template>
 
@@ -154,7 +168,7 @@
 						</div> -->
 					</fieldset>
 
-					<fieldset>
+					<!-- <fieldset>
 						<legend>Images</legend>
 						<div class="formColumn">
 							<span class="columnTitle">Main image</span>
@@ -175,9 +189,10 @@
 								required="required"
 							/>
 						</div>
-					</fieldset>
+					</fieldset> -->
 					<button type="submit" class="submitButton">Create</button>
 				</form>
+				<button class="fillTestDataOfProductVariant">Fill test data</button>
 			</div>
 		</main>
 	</body>

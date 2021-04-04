@@ -75,10 +75,21 @@ class ProductModule {
     }
     createProduct(values) {
         return __awaiter(this, void 0, void 0, function* () {
+            console.log('DB--> createProduct ->', values);
             return yield this.Repo.createQueryBuilder()
                 .insert()
                 .into(Product_1.Product)
                 .values(values)
+                .execute();
+        });
+    }
+    updateProductById(opt) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { id, value } = opt;
+            return yield this.Repo.createQueryBuilder()
+                .update(Product_1.Product)
+                .set(value)
+                .where('id = :id', { id })
                 .execute();
         });
     }

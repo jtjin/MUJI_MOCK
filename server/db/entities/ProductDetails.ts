@@ -5,6 +5,8 @@ import {
 	Column,
 	ManyToOne,
 	JoinColumn,
+	CreateDateColumn,
+	UpdateDateColumn,
 } from 'typeorm'
 import { Product } from './Product'
 
@@ -21,26 +23,56 @@ export class ProductDetails {
 	stock: number
 
 	@Column({
+		type: 'int',
 		nullable: false,
-		type: 'varchar',
 	})
-	size: string
+	price!: number
 
 	@Column({
 		nullable: false,
 		type: 'varchar',
 	})
-	name: string
+	main_spec: string
 
 	@Column({
 		nullable: false,
 		type: 'varchar',
 	})
-	color_code: string
+	sub_spec: string
+
+	@Column({
+		type: 'int',
+		nullable: false,
+	})
+	code!: string
+
+	// @Column({
+	// 	nullable: false,
+	// 	type: 'varchar',
+	// })
+	// size: string
+
+	// @Column({
+	// 	nullable: false,
+	// 	type: 'varchar',
+	// })
+	// name: string
+
+	// @Column({
+	// 	nullable: false,
+	// 	type: 'varchar',
+	// })
+	// color_code: string
 
 	@ManyToOne((type) => Product, (product) => product.variants)
 	@JoinColumn({
 		name: 'product_id',
 	})
 	product_id: Product | string
+
+	@CreateDateColumn()
+	createdAt!: Date
+
+	@UpdateDateColumn()
+	updatedAt!: Date
 }

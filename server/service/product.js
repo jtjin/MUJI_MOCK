@@ -38,9 +38,12 @@ const MainImagesModule_1 = require("../db/modules/MainImagesModule");
 const R = __importStar(require("ramda"));
 const typeorm_1 = require("typeorm");
 const Tags_1 = require("../infra/enums/Tags");
+const CategoryEnum_1 = require("../infra/enums/CategoryEnum");
 const redisDb_1 = require("../db/redisDb");
 const safeAsync_1 = require("../utils/safeAsync");
 const customErrors_1 = require("../infra/customErrors");
+const errorType_1 = require("../infra/enums/errorType");
+const errorHandler_1 = require("../middleWares/errorHandler");
 const tag = 'server/product';
 class ProductService {
     constructor() {
@@ -49,7 +52,6 @@ class ProductService {
     getProductsListByTag(opt) {
         return __awaiter(this, void 0, void 0, function* () {
             const { tagId, titleLike, page = 1 } = opt;
-            console.log(tagId, titleLike, page);
             try {
                 const [_error, resultCache] = yield safeAsync_1.safeAwait(redisDb_1.redisClient.get(`product:${tagId}:${titleLike}:${page}`), tag + this.tag + '/getProductsListByTag/redis');
                 if (resultCache)
@@ -80,7 +82,6 @@ class ProductService {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const resultCache = yield redisDb_1.redisClient.get(`product:detail:${id}`);
-                console.log('resultCache-->', resultCache);
                 if (resultCache)
                     return JSON.parse(String(resultCache));
                 const productPO = yield index_1.default.productModule.getProductDetailById(id);
@@ -110,29 +111,46 @@ class ProductService {
     }
     createProduct(reqVO, files) {
         return __awaiter(this, void 0, void 0, function* () {
-            const productVO = Object.assign({ tag_id: Tags_1.TagsEnum[reqVO.tag] }, R.pick([
-                'title',
-                'description',
-                'price',
-                'texture',
-                'wash',
-                'place',
-                'note',
-                'story',
-            ], reqVO));
-            let productId;
+            const productVO = Object.assign({ tag_id: Tags_1.TagsEnum[reqVO.tag], spec: reqVO.spec.join(','), category: CategoryEnum_1.CategoryEnum[reqVO.category], variants: JSON.parse(reqVO.variants) }, R.pick(['title', 'description', 'texture', 'wash', 'place', 'note', 'story'], reqVO));
+            let productId, productDetailId;
             try {
                 yield typeorm_1.getConnection('stylish').transaction((trans) => __awaiter(this, void 0, void 0, function* () {
                     const productModule = new ProductModule_1.ProductModule({ transaction: trans });
                     const insertedResult = yield productModule.createProduct(productVO);
                     productId = insertedResult.raw.insertId;
-                    if (productId) {
-                        yield this._createProductDetails(Object.assign({ transaction: trans, productId }, R.pick(['colors', 'colorsName', 'sizes'], reqVO)));
-                    }
+                    if (!productId)
+                        throw new errorHandler_1.ErrorHandler(500, errorType_1.ErrorType.DatabaseError, 'Fail to create product...');
+                    productVO.variants.forEach((variant) => {
+                        variant.product_id = productId;
+                    });
+                    productDetailId = yield this._createProductDetails({
+                        transaction: trans,
+                        variants: productVO.variants,
+                    });
+                    if (!productDetailId)
+                        throw new errorHandler_1.ErrorHandler(500, errorType_1.ErrorType.DatabaseError, 'Fail to create product details...');
                     yield this._createdPhotos({ transaction: trans, productId, files });
                 }));
-                this._delProductCacheByTag(Tags_1.TagsEnum[reqVO.tag]);
-                return productId;
+                this._delProductCacheByTag({
+                    category: CategoryEnum_1.CategoryEnum[reqVO.category],
+                    tag: Tags_1.TagsEnum[reqVO.tag],
+                });
+                if (!productId || !productDetailId)
+                    return;
+                return { productId };
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
+    _createProductDetails(opt) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { transaction, variants } = opt;
+                const productDetailModule = new ProductDetailsModule_1.ProductDetailsModule({ transaction });
+                const insertedResult = yield productDetailModule.createProductDetails(variants);
+                return insertedResult.raw.insertId;
             }
             catch (error) {
                 throw error;
@@ -170,38 +188,11 @@ class ProductService {
             }
         });
     }
-    _createProductDetails(opt) {
+    _delProductCacheByTag(opt) {
         return __awaiter(this, void 0, void 0, function* () {
+            const { category, tag } = opt;
             try {
-                const { transaction, productId, colors, colorsName, sizes } = opt;
-                const productDetailModule = new ProductDetailsModule_1.ProductDetailsModule({ transaction });
-                const colorsArr = colors.split(',');
-                const colorsNameArr = colorsName.split(',');
-                const sizesArr = sizes.split(',');
-                let productDetailVariants = [];
-                colorsArr.forEach((color, colorsArrIndex) => {
-                    let temp = {
-                        color_code: color.trim(),
-                        name: colorsNameArr[colorsArrIndex].trim(),
-                    };
-                    sizesArr.forEach((size) => {
-                        const detailVariant = Object.assign({}, temp);
-                        detailVariant.size = size.trim();
-                        detailVariant.product_id = productId;
-                        productDetailVariants.push(detailVariant);
-                    });
-                });
-                return yield productDetailModule.createProductDetails(productDetailVariants);
-            }
-            catch (error) {
-                throw error;
-            }
-        });
-    }
-    _delProductCacheByTag(tag) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const productCacheKeys = yield redisDb_1.redisClient.keys(`product:${tag}:*`);
+                const productCacheKeys = yield redisDb_1.redisClient.keys(`product:${category}:${tag}:*`);
                 // @ts-ignore
                 productCacheKeys.forEach((key) => {
                     redisDb_1.redisClient.del(key);

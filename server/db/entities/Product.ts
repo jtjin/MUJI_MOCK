@@ -1,4 +1,5 @@
 import { Tag } from './Tag'
+import { Category } from './Category'
 import {
 	Entity,
 	PrimaryGeneratedColumn,
@@ -36,11 +37,11 @@ export class Product {
 	})
 	description?: string
 
-	@Column({
-		type: 'int',
-		nullable: false,
-	})
-	price!: number
+	// @Column({
+	// 	type: 'int',
+	// 	nullable: false,
+	// })
+	// price!: number
 
 	@Column({ type: 'varchar' })
 	texture?: string
@@ -57,11 +58,20 @@ export class Product {
 	@Column({ type: 'varchar' })
 	story?: string
 
-	// @CreateDateColumn()
-	// createdAt!: Date
+	@Column({ type: 'varchar' })
+	specs?: string
 
-	// @UpdateDateColumn()
-	// updatedAt!: Date
+	@CreateDateColumn()
+	createdAt!: Date
+
+	@UpdateDateColumn()
+	updatedAt!: Date
+
+	@ManyToOne((type) => Category)
+	@JoinColumn({
+		name: 'category_id',
+	})
+	category: Category | string
 
 	@ManyToOne((type) => Tag)
 	@JoinColumn({
