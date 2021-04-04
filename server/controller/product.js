@@ -21,6 +21,7 @@ const config_1 = __importDefault(require("config"));
 const logger_1 = __importDefault(require("../utils/logger"));
 const crypto_1 = __importDefault(require("crypto"));
 const Tags_1 = require("../infra/enums/Tags");
+const Category_1 = require("../infra/enums/Category");
 const tag = 'controller/product';
 class Product {
     constructor() {
@@ -53,7 +54,6 @@ class Product {
         });
         this.getProductDetail = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log('getProductDetail');
                 const { id } = req.query;
                 const data = yield product_1.default.getProductDetailById(id);
                 res.send({ result: 'success', data });
@@ -64,29 +64,15 @@ class Product {
             }
         });
         this.getProductsListByTag = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-            const { bodyTag } = req.params;
-            const { keyword, paging = '1' } = req.query;
+            const query = req.query;
+            const { paging = '1', tag = 'all', category = 'all', keyword } = query;
             try {
-                switch (bodyTag) {
-                    case 'women':
-                    case 'men':
-                    case 'accessories':
-                    case 'all':
-                        const tagId = Tags_1.TagsEnum[bodyTag];
-                        res.send(yield product_1.default.getProductsListByTag({
-                            tagId,
-                            page: paging,
-                        }));
-                        break;
-                    case 'search':
-                        res.send(yield product_1.default.getProductsListByTag({
-                            titleLike: String(keyword),
-                            page: paging,
-                        }));
-                        break;
-                    default:
-                        throw new errorHandler_1.ErrorHandler(403, errorType_1.ErrorType.ValidationError, 'Request Error: Invalid product category');
-                }
+                res.send(yield product_1.default.getProductsListByTag({
+                    titleLike: keyword,
+                    tagId: Tags_1.TagsEnum[tag],
+                    page: paging,
+                    categoryId: Category_1.CategoryEnum[category],
+                }));
             }
             catch (error) {
                 logger_1.default.error({ tag: tag + '/getProductsListByTag', error });

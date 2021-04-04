@@ -39,10 +39,12 @@ class ProductDetailManager {
 		const { data } = (
 			await publicApi.get(config.api.product.details + `?id=${productId}`)
 		).data
+		console.log('data-->', data)
 		this.renderProduct(data)
 	}
 
 	renderProduct(productInfo) {
+		// FIXME:
 		const { story, colors, images, variants, sizes } = productInfo
 
 		this.focusedProductInfo = {

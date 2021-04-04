@@ -67,6 +67,12 @@ export class Product {
 	@UpdateDateColumn()
 	updatedAt!: Date
 
+	@Column({ type: 'varchar' })
+	main_specs?: string
+
+	@Column({ type: 'varchar' })
+	sub_specs?: string
+
 	@ManyToOne((type) => Category)
 	@JoinColumn({
 		name: 'category_id',

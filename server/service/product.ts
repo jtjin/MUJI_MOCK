@@ -10,7 +10,7 @@ import * as R from 'ramda'
 import { ProductDetails } from '../db/entities/ProductDetails'
 import { EntityManager, getConnection } from 'typeorm'
 import { TagsEnum } from '../infra/enums/Tags'
-import { CategoryEnum } from '../infra/enums/CategoryEnum'
+import { CategoryEnum } from '../infra/enums/Category'
 import { redisClient } from '../db/redisDb'
 import { safeAwait } from '../utils/safeAsync'
 import { customErrors } from '../infra/customErrors'
@@ -24,27 +24,31 @@ class ProductService {
 		this.tag = 'ProductService'
 	}
 	async getProductsListByTag(opt: {
-		tagId?: TagsEnum
+		categoryId?: string
+		tagId?: string
 		titleLike?: string
 		page?: string
 	}) {
-		const { tagId, titleLike, page = 1 } = opt
+		const { tagId, titleLike, categoryId, page = 1 } = opt
 
 		try {
-			const [_error, resultCache] = await safeAwait(
-				redisClient.get(`product:${tagId}:${titleLike}:${page}`),
-				tag + this.tag + '/getProductsListByTag/redis',
-			)
-			if (resultCache) return JSON.parse(String(resultCache))
+			// const [_error, resultCache] = await safeAwait(
+			// 	redisClient.get(`product:${tagId}:${titleLike}:${page}`),
+			// 	tag + this.tag + '/getProductsListByTag/redis',
+			// )
+			// if (resultCache) return JSON.parse(String(resultCache))
+			console.log(tagId, titleLike, page, categoryId)
 
 			const productPO = await StylishRDB.productModule.getProductsByTag({
 				tagId,
 				titleLike,
+				categoryId,
 				pagination: {
 					offset: (Number(page) - 1) * 6,
 					limit: 6 + 1,
 				},
 			})
+			console.log('productPO-->', productPO)
 
 			const result: {
 				data?: Product[]
@@ -72,19 +76,22 @@ class ProductService {
 
 	async getProductDetailById(id: string) {
 		try {
-			const resultCache = await redisClient.get(`product:detail:${id}`)
+			// const resultCache = await redisClient.get(`product:detail:${id}`)
 
-			if (resultCache) return JSON.parse(String(resultCache))
+			// if (resultCache) return JSON.parse(String(resultCache))
 
 			const productPO = await StylishRDB.productModule.getProductDetailById(id)
+			console.log('productPO-->', productPO)
 
 			if (!productPO) throw new Error(customErrors.PRODUCT_NOT_FOUND.type)
 
-			const result = JSON.stringify(this._formatProductList([productPO])[0])
+			// const result = JSON.stringify(this._formatProductList([productPO])[0])
 
-			await redisClient.set(`product:detail:${id}`, result)
+			// FIXME: 這邊應該不用再 _formatProductList
 
-			return result
+			// await redisClient.set(`product:detail:${id}`, JSON.stringify(productPO))
+
+			return productPO
 		} catch (error) {
 			throw error
 		}
@@ -120,6 +127,8 @@ class ProductService {
 			sizes: string
 			spec: string[]
 			variants: stringValue
+			mainSpecVariantName: string[]
+			subSpecVariantName: string[]
 		},
 		files: any,
 	): Promise<{ productId: string } | undefined> {
@@ -128,6 +137,8 @@ class ProductService {
 			spec: reqVO.spec.join(','),
 			category: CategoryEnum[reqVO.category],
 			variants: JSON.parse(reqVO.variants),
+			main_specs: reqVO.mainSpecVariantName.join(','),
+			sub_specs: reqVO.subSpecVariantName.join(','),
 			...R.pick(
 				['title', 'description', 'texture', 'wash', 'place', 'note', 'story'],
 				reqVO,
@@ -159,6 +170,7 @@ class ProductService {
 						variant.product_id = productId as string
 					},
 				)
+
 				productDetailId = await this._createProductDetails({
 					transaction: trans,
 					variants: productVO.variants,
@@ -274,38 +286,57 @@ class ProductService {
 	_formatProductList(productPO: Product[]) {
 		try {
 			return productPO.map((productPO) => {
-				const formatPO: any = { ...productPO, colors: [], sizes: [] }
-				const colorsMapped: any = {}
-				const sizeMapped: any = {}
+				const formatPO: any = { ...productPO }
 				formatPO.images = productPO.images.map((image) => image.url)
-
 				formatPO.main_image = productPO.main_image.url
-
-				formatPO.variants = productPO.variants.map(
-					(variant: ProductDetails) => {
-						if (!colorsMapped[variant.color_code]) {
-							formatPO.colors.push({
-								code: variant.color_code,
-								name: variant.name,
-							})
-							colorsMapped[variant.color_code] = variant.color_code
-						}
-
-						if (!sizeMapped[variant.size]) {
-							formatPO.sizes.push(variant.size)
-							sizeMapped[variant.size] = variant.size
-						}
-
-						return R.pick(['color_code', 'size', 'stock'], variant)
-					},
-				)
-
+				formatPO.highestPrice = -Infinity
+				formatPO.lowestPrice = Infinity
+				formatPO.variants.forEach((variant: any) => {
+					if (variant.price > formatPO.highestPrice)
+						formatPO.highestPrice = variant.price
+					if (variant.price < formatPO.lowestPrice)
+						formatPO.lowestPrice = variant.price
+				})
+				console.log(formatPO)
 				return formatPO
 			})
 		} catch (error) {
 			throw error
 		}
 	}
+
+	// _formatProductList(productPO: Product[]) {
+	// 	try {
+	// 		return productPO.map((productPO) => {
+	// 			const formatPO: any = { ...productPO, colors: [], sizes: [] }
+	// 			const colorsMapped: any = {}
+	// 			const sizeMapped: any = {}
+	// 			formatPO.images = productPO.images.map((image) => image.url)
+	// 			formatPO.main_image = productPO.main_image.url
+	// 			formatPO.variants = productPO.variants.map(
+	// 				(variant: ProductDetails) => {
+	// 					if (!colorsMapped[variant.color_code]) {
+	// 						formatPO.colors.push({
+	// 							code: variant.color_code,
+	// 							name: variant.name,
+	// 						})
+	// 						colorsMapped[variant.color_code] = variant.color_code
+	// 					}
+
+	// 					if (!sizeMapped[variant.size]) {
+	// 						formatPO.sizes.push(variant.size)
+	// 						sizeMapped[variant.size] = variant.size
+	// 					}
+
+	// 					return R.pick(['color_code', 'size', 'stock'], variant)
+	// 				},
+	// 			)
+	// 			return formatPO
+	// 		})
+	// 	} catch (error) {
+	// 		throw error
+	// 	}
+	// }
 }
 
 export = new ProductService()

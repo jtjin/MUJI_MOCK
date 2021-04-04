@@ -8,6 +8,7 @@ import {
 import { Tag } from '../entities/Tag'
 import { Product } from '../entities/Product'
 import { TagsEnum } from '../../infra/enums/Tags'
+import { CategoryEnum } from '../../infra/enums/Category'
 import { getKeyValue } from '../../utils/index'
 
 export class ProductModule {
@@ -42,19 +43,25 @@ export class ProductModule {
 	}
 
 	async getProductsByTag(opt: {
-		tagId?: TagsEnum
+		categoryId?: string
+		tagId?: string
 		titleLike?: string
 		pagination?: { offset?: number; limit?: number }
 		orderBy?: { sort: string; order: 'DESC' | 'ASC' }
 	}) {
-		const { tagId, titleLike, pagination, orderBy } = opt
+		const { tagId, titleLike, pagination, orderBy, categoryId } = opt
 
 		let query = this.Repo.createQueryBuilder('product')
 			.leftJoinAndSelect('product.variants', 'variants')
 			.leftJoinAndSelect('product.images', 'images')
 			.leftJoinAndSelect('product.main_image', 'main_image')
 
-		if (tagId && tagId > 0) {
+		if (categoryId) {
+			query = query.where('product.category = :category', {
+				categoryId,
+			})
+		}
+		if (tagId) {
 			query = query.where('product.tag_id = :tagId', {
 				tagId,
 			})
@@ -72,15 +79,12 @@ export class ProductModule {
 		}
 
 		if (pagination) {
-			console.log('pagination=>', pagination)
-
 			const { limit, offset } = pagination
 			if (limit) query = query.take(limit)
 			if (offset) query = query.take(limit).skip(offset)
 		}
 
 		const result = await query.getMany()
-
 		return result
 	}
 

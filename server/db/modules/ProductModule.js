@@ -42,12 +42,17 @@ class ProductModule {
     }
     getProductsByTag(opt) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { tagId, titleLike, pagination, orderBy } = opt;
+            const { tagId, titleLike, pagination, orderBy, categoryId } = opt;
             let query = this.Repo.createQueryBuilder('product')
                 .leftJoinAndSelect('product.variants', 'variants')
                 .leftJoinAndSelect('product.images', 'images')
                 .leftJoinAndSelect('product.main_image', 'main_image');
-            if (tagId && tagId > 0) {
+            if (categoryId) {
+                query = query.where('product.category = :category', {
+                    categoryId,
+                });
+            }
+            if (tagId) {
                 query = query.where('product.tag_id = :tagId', {
                     tagId,
                 });
@@ -62,7 +67,6 @@ class ProductModule {
                 query = query.orderBy(sort, order);
             }
             if (pagination) {
-                console.log('pagination=>', pagination);
                 const { limit, offset } = pagination;
                 if (limit)
                     query = query.take(limit);

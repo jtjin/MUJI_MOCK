@@ -38,7 +38,7 @@ const MainImagesModule_1 = require("../db/modules/MainImagesModule");
 const R = __importStar(require("ramda"));
 const typeorm_1 = require("typeorm");
 const Tags_1 = require("../infra/enums/Tags");
-const CategoryEnum_1 = require("../infra/enums/CategoryEnum");
+const Category_1 = require("../infra/enums/Category");
 const redisDb_1 = require("../db/redisDb");
 const safeAsync_1 = require("../utils/safeAsync");
 const customErrors_1 = require("../infra/customErrors");
@@ -51,19 +51,24 @@ class ProductService {
     }
     getProductsListByTag(opt) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { tagId, titleLike, page = 1 } = opt;
+            const { tagId, titleLike, categoryId, page = 1 } = opt;
             try {
-                const [_error, resultCache] = yield safeAsync_1.safeAwait(redisDb_1.redisClient.get(`product:${tagId}:${titleLike}:${page}`), tag + this.tag + '/getProductsListByTag/redis');
-                if (resultCache)
-                    return JSON.parse(String(resultCache));
+                // const [_error, resultCache] = await safeAwait(
+                // 	redisClient.get(`product:${tagId}:${titleLike}:${page}`),
+                // 	tag + this.tag + '/getProductsListByTag/redis',
+                // )
+                // if (resultCache) return JSON.parse(String(resultCache))
+                console.log(tagId, titleLike, page, categoryId);
                 const productPO = yield index_1.default.productModule.getProductsByTag({
                     tagId,
                     titleLike,
+                    categoryId,
                     pagination: {
                         offset: (Number(page) - 1) * 6,
                         limit: 6 + 1,
                     },
                 });
+                console.log('productPO-->', productPO);
                 const result = {};
                 if (productPO.length === 6 + 1) {
                     productPO.pop();
@@ -81,15 +86,16 @@ class ProductService {
     getProductDetailById(id) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const resultCache = yield redisDb_1.redisClient.get(`product:detail:${id}`);
-                if (resultCache)
-                    return JSON.parse(String(resultCache));
+                // const resultCache = await redisClient.get(`product:detail:${id}`)
+                // if (resultCache) return JSON.parse(String(resultCache))
                 const productPO = yield index_1.default.productModule.getProductDetailById(id);
+                console.log('productPO-->', productPO);
                 if (!productPO)
                     throw new Error(customErrors_1.customErrors.PRODUCT_NOT_FOUND.type);
-                const result = JSON.stringify(this._formatProductList([productPO])[0]);
-                yield redisDb_1.redisClient.set(`product:detail:${id}`, result);
-                return result;
+                // const result = JSON.stringify(this._formatProductList([productPO])[0])
+                // FIXME: 這邊應該不用再 _formatProductList
+                // await redisClient.set(`product:detail:${id}`, JSON.stringify(productPO))
+                return productPO;
             }
             catch (error) {
                 throw error;
@@ -111,7 +117,7 @@ class ProductService {
     }
     createProduct(reqVO, files) {
         return __awaiter(this, void 0, void 0, function* () {
-            const productVO = Object.assign({ tag_id: Tags_1.TagsEnum[reqVO.tag], spec: reqVO.spec.join(','), category: CategoryEnum_1.CategoryEnum[reqVO.category], variants: JSON.parse(reqVO.variants) }, R.pick(['title', 'description', 'texture', 'wash', 'place', 'note', 'story'], reqVO));
+            const productVO = Object.assign({ tag_id: Tags_1.TagsEnum[reqVO.tag], spec: reqVO.spec.join(','), category: Category_1.CategoryEnum[reqVO.category], variants: JSON.parse(reqVO.variants), main_specs: reqVO.mainSpecVariantName.join(','), sub_specs: reqVO.subSpecVariantName.join(',') }, R.pick(['title', 'description', 'texture', 'wash', 'place', 'note', 'story'], reqVO));
             let productId, productDetailId;
             try {
                 yield typeorm_1.getConnection('stylish').transaction((trans) => __awaiter(this, void 0, void 0, function* () {
@@ -132,7 +138,7 @@ class ProductService {
                     yield this._createdPhotos({ transaction: trans, productId, files });
                 }));
                 this._delProductCacheByTag({
-                    category: CategoryEnum_1.CategoryEnum[reqVO.category],
+                    category: Category_1.CategoryEnum[reqVO.category],
                     tag: Tags_1.TagsEnum[reqVO.tag],
                 });
                 if (!productId || !productDetailId)
@@ -226,25 +232,18 @@ class ProductService {
     _formatProductList(productPO) {
         try {
             return productPO.map((productPO) => {
-                const formatPO = Object.assign(Object.assign({}, productPO), { colors: [], sizes: [] });
-                const colorsMapped = {};
-                const sizeMapped = {};
+                const formatPO = Object.assign({}, productPO);
                 formatPO.images = productPO.images.map((image) => image.url);
                 formatPO.main_image = productPO.main_image.url;
-                formatPO.variants = productPO.variants.map((variant) => {
-                    if (!colorsMapped[variant.color_code]) {
-                        formatPO.colors.push({
-                            code: variant.color_code,
-                            name: variant.name,
-                        });
-                        colorsMapped[variant.color_code] = variant.color_code;
-                    }
-                    if (!sizeMapped[variant.size]) {
-                        formatPO.sizes.push(variant.size);
-                        sizeMapped[variant.size] = variant.size;
-                    }
-                    return R.pick(['color_code', 'size', 'stock'], variant);
+                formatPO.highestPrice = -Infinity;
+                formatPO.lowestPrice = Infinity;
+                formatPO.variants.forEach((variant) => {
+                    if (variant.price > formatPO.highestPrice)
+                        formatPO.highestPrice = variant.price;
+                    if (variant.price < formatPO.lowestPrice)
+                        formatPO.lowestPrice = variant.price;
                 });
+                console.log(formatPO);
                 return formatPO;
             });
         }

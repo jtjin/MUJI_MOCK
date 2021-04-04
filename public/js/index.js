@@ -1,6 +1,18 @@
 import { publicApi } from './infra/apis.js'
 import config from './infra/config.js'
-
+function getQueryStringValue(key) {
+	return decodeURIComponent(
+		window.location.search.replace(
+			new RegExp(
+				'^(?:.*[&\\?]' +
+					encodeURIComponent(key).replace(/[\.\+\*]/g, '\\$&') +
+					'(?:\\=([^&]*))?)?.*$',
+				'i',
+			),
+			'$1',
+		),
+	)
+}
 class ProductListManager {
 	productCategory
 	paging = 1
@@ -12,21 +24,22 @@ class ProductListManager {
 		if (requestLocation[2]) {
 			this.paging = requestLocation[2].split('=')[1]
 		}
-		if (key && key.split('=')[0] == 'search') {
-			this.productCategory = 'search?' + key
-		} else if (key && key.split('=')[0] == 'tag') {
-			this.productCategory = key.split('=')[1]
-		} else {
-			this.productCategory = 'all'
-		}
+		let searchParams = new URLSearchParams(window.location.search)
+
+		this.tag = getQueryStringValue('tag')
+		this.category = getQueryStringValue('category')
+		this.keyword = getQueryStringValue('keyword')
+
 		this.renderProducts(this.paging)
 	}
 
 	async renderProducts(paging) {
 		this.paging = paging
-		let requestUrl = config.api.product.list
-		requestUrl += this.productCategory ? this.productCategory : 'all'
-		if (paging) requestUrl = requestUrl + '?paging=' + paging
+		let requestUrl = config.api.product.list + '?paging=' + (this.paging || 1)
+		if (this.tag) requestUrl = requestUrl + '&tag=' + this.tag
+		if (this.keyword) requestUrl = requestUrl + '&keyword=' + this.keyword
+		if (this.category) requestUrl = requestUrl + '&category=' + this.category
+
 		const { data, next_paging } = (await publicApi.get(requestUrl)).data
 
 		if (next_paging) {
@@ -95,7 +108,7 @@ class ProductListManager {
 			productTempClone.querySelector('.name').innerHTML = productInfo.title
 			productTempClone.querySelector(
 				'.price',
-			).innerHTML = `TWD.${productInfo.price}`
+			).innerHTML = `TWD.${productInfo.lowestPrice} - ${productInfo.highestPrice}`
 			productsContainer.appendChild(productTempClone)
 		})
 	}

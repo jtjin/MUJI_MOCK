@@ -9,6 +9,7 @@ import config from 'config'
 import logger from '../utils/logger'
 import crypto from 'crypto'
 import { TagsEnum } from '../infra/enums/Tags'
+import { CategoryEnum } from '../infra/enums/Category'
 
 const tag = 'controller/product'
 
@@ -63,9 +64,7 @@ class Product {
 					ErrorType.ClientError,
 					'No Images provided...',
 				)
-
 			const result = await ProductService.createProduct(req.body, req.files)
-
 			if (!result)
 				throw new ErrorHandler(
 					500,
@@ -73,7 +72,6 @@ class Product {
 					'Fail to create new product ...',
 				)
 			const { productId } = result
-
 			if (productId) await this.renameProductImages({ productId })
 			res.send({
 				result: 'success',
@@ -87,7 +85,6 @@ class Product {
 
 	getProductDetail: StylishRouter = async (req, res, next) => {
 		try {
-			console.log('getProductDetail')
 			const { id } = req.query
 			const data = await ProductService.getProductDetailById(id as string)
 
@@ -99,39 +96,24 @@ class Product {
 	}
 
 	getProductsListByTag: StylishRouter = async (req, res, next) => {
-		const { bodyTag } = req.params
-		const { keyword, paging = '1' as string } = req.query
+		const query: {
+			category?: CategoryEnum
+			keyword?: string
+			paging?: string
+			tag?: TagsEnum
+		} = req.query
+
+		const { paging = '1', tag = 'all', category = 'all', keyword } = query
+
 		try {
-			switch (bodyTag) {
-				case 'women':
-				case 'men':
-				case 'accessories':
-				case 'all':
-					const tagId = TagsEnum[bodyTag]
-					res.send(
-						await ProductService.getProductsListByTag({
-							tagId,
-							page: paging as string,
-						}),
-					)
-					break
-
-				case 'search':
-					res.send(
-						await ProductService.getProductsListByTag({
-							titleLike: String(keyword),
-							page: paging as string,
-						}),
-					)
-					break
-
-				default:
-					throw new ErrorHandler(
-						403,
-						ErrorType.ValidationError,
-						'Request Error: Invalid product category',
-					)
-			}
+			res.send(
+				await ProductService.getProductsListByTag({
+					titleLike: keyword,
+					tagId: TagsEnum[tag] as string,
+					page: paging as string,
+					categoryId: CategoryEnum[category] as string,
+				}),
+			)
 		} catch (error) {
 			logger.error({ tag: tag + '/getProductsListByTag', error })
 			next(error)

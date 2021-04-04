@@ -59,6 +59,12 @@ __decorate([
     typeorm_1.UpdateDateColumn()
 ], Product.prototype, "updatedAt", void 0);
 __decorate([
+    typeorm_1.Column({ type: 'varchar' })
+], Product.prototype, "main_specs", void 0);
+__decorate([
+    typeorm_1.Column({ type: 'varchar' })
+], Product.prototype, "sub_specs", void 0);
+__decorate([
     typeorm_1.ManyToOne((type) => Category_1.Category),
     typeorm_1.JoinColumn({
         name: 'category_id',
