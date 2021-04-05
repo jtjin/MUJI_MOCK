@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<link rel="stylesheet" type="text/css" href="./css/main.css" />
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"
+			defer
+		></script>
+		<script
+			src="./js/components/registerSystem.js"
+			type="module"
+			defer
+		></script>
+		<script src="./js/components/header.js" type="module" defer></script>
+		<script src="./js/cart.js" type="module" defer></script>
+		<script src="./js/components/footer.js" defer></script>
+		<link rel="stylesheet" href="./css/cart.css" />
+	</head>
+	<body>
+		<muji-nav></muji-nav>
+		<sign-form></sign-form>
+		<main>
+			<div class="cartItemContainer">
+				<div class="cartItem">
+					<div><input type="checkbox" name="" id="" /></div>
+					<div class="title">商品</div>
+					<div class="imageContainer">圖片</div>
+					<div class="mainSpec">規格一</div>
+					<div class="subSpec">規格二</div>
+					<div class="price">單價</div>
+					<div class="count">數量</div>
+					<div class="totalPrice">總計</div>
+					<div class="delete">操作</div>
+				</div>
+			
+
+				<template class ="cartItemTemplate"">
+					<div class="cartItem">
+						<div><input type="checkbox" name="" id="" /></div>
+						<div class="imageContainer">
+							<img src="" alt="" />
+						</div>
+						<div class="title">男有機棉混縱橫彈性綾織合身褲</div>
+						<div class="mainSpec">黑色</div>
+						<div class="subSpec">L</div>
+						<div class="price">599</div>
+						<div class="count">
+							<button class="quantity-minus">-</button>
+							<input class="quantity-value" type="text" value="1" />
+							<button class="quantity-add">+</button>
+						</div>
+						<div class="totalPrice">$<span>1600</span></div>
+						<button class="delete">刪除</button>
+					</div>
+				</template>
+			</div>
+		</main>
+		<muji-footer></muji-footer>
+	</body>
+</html>

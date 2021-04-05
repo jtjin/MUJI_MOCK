@@ -49,8 +49,29 @@ class CartController {
         });
         this.deleteItemById = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             try {
-                // console.log('deleteItemById-->')
-                // res.send({ result: 'success', data })
+                const { variantId, productId } = req.body;
+                yield cart_1.default.deleteItemById({
+                    variantId: variantId,
+                    productId: productId,
+                    userId: req.me.id,
+                });
+                res.send({ result: 'success' });
+            }
+            catch (error) {
+                logger_1.default.error({ tag: tag + '/deleteItemById', error });
+                next(error);
+            }
+        });
+        this.updateItemQuantity = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { variantId, productId, quantity } = req.body;
+                yield cart_1.default.updateItemQuantityById({
+                    variantId: variantId,
+                    productId: productId,
+                    quantity: quantity,
+                    userId: req.me.id,
+                });
+                res.send({ result: 'success' });
             }
             catch (error) {
                 logger_1.default.error({ tag: tag + '/deleteItemById', error });

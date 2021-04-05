@@ -19,6 +19,7 @@ class CartController {
 			next(error)
 		}
 	}
+
 	createItemByUserId: MujiRouter = async (req, res, next) => {
 		try {
 			const { productId, variantId, quantity } = req.body
@@ -40,8 +41,29 @@ class CartController {
 
 	deleteItemById: MujiRouter = async (req, res, next) => {
 		try {
-			// console.log('deleteItemById-->')
-			// res.send({ result: 'success', data })
+			const { variantId, productId } = req.body
+			await CartService.deleteItemById({
+				variantId: variantId as string,
+				productId: productId as string,
+				userId: req.me!.id,
+			})
+			res.send({ result: 'success' })
+		} catch (error) {
+			logger.error({ tag: tag + '/deleteItemById', error })
+			next(error)
+		}
+	}
+
+	updateItemQuantity: MujiRouter = async (req, res, next) => {
+		try {
+			const { variantId, productId, quantity } = req.body
+			await CartService.updateItemQuantityById({
+				variantId: variantId as string,
+				productId: productId as string,
+				quantity: quantity as number,
+				userId: req.me!.id,
+			})
+			res.send({ result: 'success' })
 		} catch (error) {
 			logger.error({ tag: tag + '/deleteItemById', error })
 			next(error)

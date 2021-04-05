@@ -27,33 +27,77 @@ class CartModule {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.Repo.createQueryBuilder('cart')
                 .leftJoinAndSelect('cart.variant_id', 'variant_id')
+                .leftJoinAndSelect('cart.product_id', 'product_id')
                 .where('user_id = :userId', {
                 userId,
             })
                 .getMany();
         });
     }
-    insertCartItem(values) {
+    getCartItemsById(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.Repo.createQueryBuilder()
-                .insert()
-                .into(Cart_1.Cart)
-                .values(values)
-                .execute();
+            return yield this.Repo.createQueryBuilder('cart')
+                .leftJoinAndSelect('cart.variant_id', 'variant_id')
+                .leftJoinAndSelect('cart.product_id', 'product_id')
+                .where('user_id = :userId', {
+                userId,
+            })
+                .getMany();
+        });
+    }
+    insertOrUpdateCartItem(value) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { user_id, quantity, variant_id, product_id } = value;
+                const result = yield this.Repo.createQueryBuilder('cart')
+                    .update(Cart_1.Cart)
+                    .where('user_id = :user_id', { user_id })
+                    .andWhere('product_detail_id = :variant_id', { variant_id })
+                    .andWhere('product_id = :product_id', { product_id })
+                    .set({ quantity: () => `quantity + ${quantity}` })
+                    .execute();
+                if (!result.raw.affectedRows) {
+                    return yield this.Repo.createQueryBuilder()
+                        .insert()
+                        .into(Cart_1.Cart)
+                        .values([value])
+                        .execute();
+                }
+                return result;
+            }
+            catch (error) {
+                throw error;
+            }
         });
     }
     deleteItemById(opt) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { id, userId } = opt;
+            const { variantId, userId, productId } = opt;
             return yield this.Repo.createQueryBuilder()
                 .delete()
                 .from(Cart_1.Cart)
                 .where('user_id = :userId', {
                 userId,
             })
-                .andWhere('id = :id', {
-                id,
+                .andWhere('variant_id = :variantId', {
+                variantId,
             })
+                .andWhere('product_id = :productId', {
+                productId,
+            })
+                .execute();
+        });
+    }
+    updateItemQuantityById(opt) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { userId, quantity, variantId, productId } = opt;
+            console.log(userId, quantity, variantId, productId);
+            return yield this.Repo.createQueryBuilder('cart')
+                .update(Cart_1.Cart)
+                .where('user_id = :userId', { userId })
+                .andWhere('product_detail_id = :variantId', { variantId })
+                .andWhere('product_id = :productId', { productId })
+                .set({ quantity: () => `quantity + ${quantity}` })
                 .execute();
         });
     }

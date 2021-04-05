@@ -66,7 +66,6 @@ const initServer = () => __awaiter(void 0, void 0, void 0, function* () {
                 tokens['response-time'](req, res),
                 'ms',
                 '\nrequest: ' + JSON.stringify(req.body),
-                '\nresponse: ' + res.__body_response,
             ].join(' ');
         });
         // @ts-ignore

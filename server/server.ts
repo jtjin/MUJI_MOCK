@@ -62,7 +62,7 @@ const initServer = async () => {
 				tokens['response-time'](req, res),
 				'ms',
 				'\nrequest: ' + JSON.stringify(req.body),
-				'\nresponse: ' + res.__body_response,
+				// '\nresponse: ' + res.__body_response,
 			].join(' ')
 		})
 		// @ts-ignore

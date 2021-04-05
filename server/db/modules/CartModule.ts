@@ -4,6 +4,7 @@ import {
 	EntityManager,
 	InsertResult,
 	Repository,
+	UpdateResult,
 } from 'typeorm'
 import { Cart } from '../entities/Cart'
 
@@ -15,7 +16,6 @@ export class CartModule {
 	constructor(opt: { client?: Connection; transaction?: EntityManager }) {
 		const { client, transaction } = opt
 		this.client = client
-
 		if (transaction) {
 			this.Repo = transaction.getRepository(Cart)
 		} else if (this.client) {
@@ -27,34 +27,88 @@ export class CartModule {
 	async getCartItemsByUserId(userId: string) {
 		return await this.Repo.createQueryBuilder('cart')
 			.leftJoinAndSelect('cart.variant_id', 'variant_id')
+			.leftJoinAndSelect('cart.product_id', 'product_id')
 			.where('user_id = :userId', {
 				userId,
 			})
 			.getMany()
 	}
 
-	async insertCartItem(values: Partial<Cart>[]): Promise<InsertResult> {
-		return await this.Repo.createQueryBuilder()
-			.insert()
-			.into(Cart)
-			.values(values)
-			.execute()
+	async getCartItemsById(userId: string) {
+		return await this.Repo.createQueryBuilder('cart')
+			.leftJoinAndSelect('cart.variant_id', 'variant_id')
+			.leftJoinAndSelect('cart.product_id', 'product_id')
+			.where('user_id = :userId', {
+				userId,
+			})
+			.getMany()
+	}
+
+	async insertOrUpdateCartItem(value: {
+		user_id: string
+		quantity: number
+		variant_id: string
+		product_id: string
+	}) {
+		try {
+			const { user_id, quantity, variant_id, product_id } = value
+
+			const result = await this.Repo.createQueryBuilder('cart')
+				.update(Cart)
+				.where('user_id = :user_id', { user_id })
+				.andWhere('product_detail_id = :variant_id', { variant_id })
+				.andWhere('product_id = :product_id', { product_id })
+				.set({ quantity: () => `quantity + ${quantity}` })
+				.execute()
+
+			if (!result.raw.affectedRows) {
+				return await this.Repo.createQueryBuilder()
+					.insert()
+					.into(Cart)
+					.values([value])
+					.execute()
+			}
+			return result
+		} catch (error) {
+			throw error
+		}
 	}
 
 	async deleteItemById(opt: {
-		id: string
+		variantId: string
+		productId: string
 		userId: string
 	}): Promise<DeleteResult> {
-		const { id, userId } = opt
+		const { variantId, userId, productId } = opt
 		return await this.Repo.createQueryBuilder()
 			.delete()
 			.from(Cart)
 			.where('user_id = :userId', {
 				userId,
 			})
-			.andWhere('id = :id', {
-				id,
+			.andWhere('variant_id = :variantId', {
+				variantId,
 			})
+			.andWhere('product_id = :productId', {
+				productId,
+			})
+			.execute()
+	}
+
+	async updateItemQuantityById(opt: {
+		variantId: string
+		productId: string
+		userId: string
+		quantity: number
+	}): Promise<UpdateResult> {
+		const { userId, quantity, variantId, productId } = opt
+		console.log(userId, quantity, variantId, productId)
+		return await this.Repo.createQueryBuilder('cart')
+			.update(Cart)
+			.where('user_id = :userId', { userId })
+			.andWhere('product_detail_id = :variantId', { variantId })
+			.andWhere('product_id = :productId', { productId })
+			.set({ quantity: () => `quantity + ${quantity}` })
 			.execute()
 	}
 }

@@ -17,7 +17,7 @@ class ProductDetailManager {
 		this.subSpecVariantContainer = document.querySelector(
 			'.subSpecVariantContainer',
 		)
-		this.totalUserQuantities = document.querySelector('.value')
+		this.totalUserQuantities = document.querySelector('.quantity-value')
 
 		this.productMainInfo = document.querySelector('.productMainInfo')
 		this.remainStock = document.querySelector('.remainStock > span')
@@ -27,10 +27,10 @@ class ProductDetailManager {
 		document
 			.getElementById('product-add-cart-btn')
 			.addEventListener('click', this.addToCart)
-		document.querySelector('.add').addEventListener('click', () => {
+		document.querySelector('.quantity-add').addEventListener('click', () => {
 			this.calc('+')
 		})
-		document.querySelector('.minus').addEventListener('click', () => {
+		document.querySelector('.quantity-minus').addEventListener('click', () => {
 			this.calc('-')
 		})
 	}

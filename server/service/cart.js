@@ -29,14 +29,51 @@ class CartService {
     }
     createItems(opt) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { productId: product_id, variantId: variant_id, quantity, userId: user_id, } = opt;
-            yield index_1.default.cartModule.insertCartItem([
-                { user_id, quantity, variant_id, product_id },
-            ]);
+            try {
+                const { productId: product_id, variantId: variant_id, quantity, userId: user_id, } = opt;
+                yield index_1.default.cartModule.insertOrUpdateCartItem({
+                    user_id,
+                    quantity,
+                    variant_id,
+                    product_id,
+                });
+            }
+            catch (error) {
+                throw error;
+            }
         });
     }
-    deleteItemById(userId) {
-        return __awaiter(this, void 0, void 0, function* () { });
+    deleteItemById(opt) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { userId, variantId, productId } = opt;
+                const data = yield index_1.default.cartModule.deleteItemById({
+                    variantId,
+                    userId,
+                    productId,
+                });
+                console.log(data);
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
+    updateItemQuantityById(opt) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { userId, variantId, productId, quantity } = opt;
+                const data = yield index_1.default.cartModule.updateItemQuantityById({
+                    variantId,
+                    userId,
+                    productId,
+                    quantity,
+                });
+            }
+            catch (error) {
+                throw error;
+            }
+        });
     }
 }
 module.exports = new CartService();

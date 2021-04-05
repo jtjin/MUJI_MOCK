@@ -39,7 +39,7 @@ class Header extends HTMLElement {
                         <button type="submit" class="keyword" id="keywordSearchBtn"></button>
                     </form>
 
-                    <a class="item cart">
+                    <a class="item cart" href="/cart.html">
                         <div id="cart-qty" class="qty">0</div>
                     </a>
 
@@ -70,9 +70,8 @@ class Header extends HTMLElement {
 		const nav = document.querySelector('muji-nav').shadowRoot
 		const cartNumber = nav.querySelector('#cart-qty')
 
-		if (!JSON.parse(localStorage.getItem('muji'))) {
-			return
-		}
+		if (!JSON.parse(localStorage.getItem('muji'))) return
+
 		const { data: cartList } = (
 			await privateApi({
 				url: config.api.user.cart,
@@ -80,10 +79,8 @@ class Header extends HTMLElement {
 			})
 		).data
 
-		console.log('cartList--?', cartList)
-		if (cartList) {
-			cartNumber.innerHTML = cartList.length
-		}
+		if (cartList) cartNumber.innerHTML = cartList.length
+
 		nav.querySelector('.cart').addEventListener('click', () => {
 			document.querySelector('.paymentForm').style.display = 'flex'
 		})

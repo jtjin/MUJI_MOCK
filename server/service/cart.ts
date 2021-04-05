@@ -1,18 +1,4 @@
 import MujiRDB from '../db/index'
-import { CartModule } from '../db/modules/CartModule'
-
-import { Product } from '../db/entities/Product'
-
-import * as R from 'ramda'
-import { ProductDetails } from '../db/entities/ProductDetails'
-import { EntityManager, getConnection } from 'typeorm'
-
-import { redisClient } from '../db/redisDb'
-import { safeAwait } from '../utils/safeAsync'
-import { customErrors } from '../infra/customErrors'
-
-import { ErrorType } from '../infra/enums/errorType'
-import { ErrorHandler } from '../middleWares/errorHandler'
 
 const tag = 'server/service/cart'
 
@@ -36,19 +22,61 @@ class CartService {
 		quantity: number
 		userId: string
 	}) {
-		const {
-			productId: product_id,
-			variantId: variant_id,
-			quantity,
-			userId: user_id,
-		} = opt
+		try {
+			const {
+				productId: product_id,
+				variantId: variant_id,
+				quantity,
+				userId: user_id,
+			} = opt
 
-		await MujiRDB.cartModule.insertCartItem([
-			{ user_id, quantity, variant_id, product_id },
-		])
+			await MujiRDB.cartModule.insertOrUpdateCartItem({
+				user_id,
+				quantity,
+				variant_id,
+				product_id,
+			})
+		} catch (error) {
+			throw error
+		}
 	}
 
-	async deleteItemById(userId: string) {}
+	async deleteItemById(opt: {
+		userId: string
+		variantId: string
+		productId: string
+	}) {
+		try {
+			const { userId, variantId, productId } = opt
+			const data = await MujiRDB.cartModule.deleteItemById({
+				variantId,
+				userId,
+				productId,
+			})
+			console.log(data)
+		} catch (error) {
+			throw error
+		}
+	}
+
+	async updateItemQuantityById(opt: {
+		userId: string
+		variantId: string
+		productId: string
+		quantity: number
+	}) {
+		try {
+			const { userId, variantId, productId, quantity } = opt
+			const data = await MujiRDB.cartModule.updateItemQuantityById({
+				variantId,
+				userId,
+				productId,
+				quantity,
+			})
+		} catch (error) {
+			throw error
+		}
+	}
 }
 
 export = new CartService()

@@ -92,7 +92,7 @@ main {
 	margin: 10px 0;
 }
 
-.infoDetails .count {
+.infoDetails .quantity-count {
 	border-radius: 3px;
 	margin: 15px 0;
 	display: flex;
@@ -106,14 +106,14 @@ main {
 	-o-border-radius: 3px;
 }
 
-.value {
+.quantity-value {
 	display: flex;
 	align-items: center;
 	margin: 0 5px;
 	color: var(--dark-color-a);
 }
 
-.op {
+.quantity-option {
 	margin: 0 5px;
 	cursor: pointer;
 }
@@ -142,7 +142,6 @@ main {
 	margin-bottom: 25px;
 }
 
-/* ------colors */
 .infoDetails {
 	display: flex;
 	align-items: center;
@@ -168,6 +167,3 @@ main {
 	color: #bdbdbd;
 	border: 1px solid #f3f3f3;
 }
-
-
-	document
