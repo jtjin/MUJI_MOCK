@@ -46,24 +46,6 @@ export class ProductDetails {
 	})
 	code!: string
 
-	// @Column({
-	// 	nullable: false,
-	// 	type: 'varchar',
-	// })
-	// size: string
-
-	// @Column({
-	// 	nullable: false,
-	// 	type: 'varchar',
-	// })
-	// name: string
-
-	// @Column({
-	// 	nullable: false,
-	// 	type: 'varchar',
-	// })
-	// color_code: string
-
 	@ManyToOne((type) => Product, (product) => product.variants)
 	@JoinColumn({
 		name: 'product_id',

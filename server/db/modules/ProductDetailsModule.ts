@@ -22,12 +22,12 @@ export class ProductDetailsModule {
 		return await this.Repo.createQueryBuilder().getMany()
 	}
 
-	async getProductDetailsById(id: string) {
-		return this.Repo.createQueryBuilder()
-			.where('variants.id = :id', {
+	async getProductVariantById(id: string) {
+		return await this.Repo.createQueryBuilder()
+			.where('id = :id', {
 				id,
 			})
-			.getMany()
+			.getOne()
 	}
 
 	async createProductDetails(

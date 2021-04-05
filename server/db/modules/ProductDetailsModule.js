@@ -28,13 +28,13 @@ class ProductDetailsModule {
             return yield this.Repo.createQueryBuilder().getMany();
         });
     }
-    getProductDetailsById(id) {
+    getProductVariantById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.Repo.createQueryBuilder()
-                .where('variants.id = :id', {
+            return yield this.Repo.createQueryBuilder()
+                .where('id = :id', {
                 id,
             })
-                .getMany();
+                .getOne();
         });
     }
     createProductDetails(values) {

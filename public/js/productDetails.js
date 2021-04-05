@@ -28,6 +28,9 @@ class ProductDetailManager {
 
 		this.productMainInfo = document.querySelector('.productMainInfo')
 		this.remainStock = document.querySelector('.remainStock > span')
+		this.priceSpan = document.querySelector('.price > span')
+		this.codeSpan = document.querySelector('.code > span')
+
 		document
 			.getElementById('product-add-cart-btn')
 			.addEventListener('click', this.checkout)
@@ -74,7 +77,6 @@ class ProductDetailManager {
 					.classList.remove('itemBlockSelected')
 				e.target.classList.add('itemBlockSelected')
 				this.focusedProductInfo.main_spec = e.target.innerText
-				console.log(this.focusedProductInfo.main_spec)
 				this.fetchVariantStock()
 			})
 			if (index === 0) {
@@ -192,25 +194,24 @@ class ProductDetailManager {
 			(this.totalUserQuantities.innerHTML - 0) * price
 	}
 
-	fetchVariantStock() {
-		// TODO : FETCH Variant info
-		const { price, code, stock, id } = this.focusedProductInfo.variant.find(
-			(variant) => {
-				if (
-					variant.main_spec == this.focusedProductInfo.main_spec &&
-					variant.sub_spec == this.focusedProductInfo.sub_spec
-				) {
-					return variant
-				}
-			},
-		)
-		console.log(price, code, stock)
-			const { data } = (
-			await publicApi.get(config.api.product.variant + `?id=${productId}`)
+	async fetchVariantStock() {
+		this.priceSpan.innerHTML = ''
+		this.codeSpan.innerHTML = ''
+		this.remainStock.innerHTML = ''
+		const { id } = this.focusedProductInfo.variants.find((variant) => {
+			if (
+				variant.main_spec == this.focusedProductInfo.main_spec &&
+				variant.sub_spec == this.focusedProductInfo.sub_spec
+			) {
+				return variant
+			}
+		})
+		const { data } = (
+			await publicApi.get(config.api.product.variant + `?id=${id}`)
 		).data
-		document.querySelector('.price > span').innerHTML = price
-		document.querySelector('.code > span').innerHTML = code
-		this.remainStock.innerHTML = stock
+		this.priceSpan.innerHTML = data.price
+		this.codeSpan.innerHTML = data.code
+		this.remainStock.innerHTML = data.stock
 		this.totalUserQuantities.innerHTML = 0
 	}
 }

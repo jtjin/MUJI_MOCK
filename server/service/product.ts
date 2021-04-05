@@ -36,7 +36,7 @@ class ProductService {
 				redisClient.get(`product:${categoryId}:${tagId}:${titleLike}:${page}`),
 				tag + this.tag + '/getProductsListByTag/redis',
 			)
-			if (resultCache) return JSON.parse(String(resultCache))
+			if (resultCache) return JSON.parse(resultCache)
 
 			const productPO = await StylishRDB.productModule.getProductsByTag({
 				tagId,
@@ -75,20 +75,17 @@ class ProductService {
 	async getProductDetailById(id: string) {
 		try {
 			const [_error, resultCache] = await safeAwait(
-				await redisClient.get(`product:detail:${id}`),
+				redisClient.get(`product:detail:${id}`),
 				tag + this.tag + '/getProductDetailById/redis/get',
 			)
-			if (resultCache) return JSON.parse(String(resultCache))
+			if (resultCache) return JSON.parse(resultCache)
 
 			const productPO = await StylishRDB.productModule.getProductDetailById(id)
 
 			if (!productPO) throw new Error(customErrors.PRODUCT_NOT_FOUND.type)
 
 			await safeAwait(
-				redisClient.set(
-					`product:detail:${id}`,
-					JSON.stringify(JSON.stringify([productPO][0])),
-				),
+				redisClient.set(`product:detail:${id}`, JSON.stringify(productPO)),
 				tag + this.tag + '/getProductDetailById/redis/set',
 			)
 
@@ -97,7 +94,23 @@ class ProductService {
 			throw error
 		}
 	}
-	async getProductVariantById(id: string) {}
+	async getProductVariantById(id: string) {
+		const [_error, resultCache] = await safeAwait(
+			redisClient.get(`product:variant:${id}`),
+			tag + this.tag + '/getProductVariantById/redis/get',
+		)
+		console.log(resultCache)
+		if (resultCache) return JSON.parse(resultCache)
+
+		const productPO = await StylishRDB.productDetailsModule.getProductVariantById(
+			id,
+		)
+		await safeAwait(
+			redisClient.set(`product:variant:${id}`, JSON.stringify(productPO)),
+			tag + this.tag + '/getProductVariantById/redis/set',
+		)
+		return productPO
+	}
 
 	async getPhotosByProductId(productId: string) {
 		try {
