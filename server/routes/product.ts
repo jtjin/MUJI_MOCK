@@ -9,7 +9,7 @@ const router = Router()
 
 router.get('/products/details', Product.getProductDetail)
 router.get('/products/variant', Product.getProductVariant)
-router.get('/products/', Product.getProductsListByTag)
+router.get('/products/category', Product.getProductsListByTag)
 
 // TODO: Move this to admin folder
 router.post('/admin/product', Product.uploadImg, Product.createProduct)

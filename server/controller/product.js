@@ -25,7 +25,7 @@ const Category_1 = require("../infra/enums/Category");
 const tag = 'controller/product';
 class Product {
     constructor() {
-        this.stylishUpload = (req, file, cb) => __awaiter(this, void 0, void 0, function* () {
+        this.mujiUpload = (req, file, cb) => __awaiter(this, void 0, void 0, function* () {
             const nowMillionSeconds = new Date().getTime().toString();
             const fileExtension = file.mimetype.split('/')[1]; // get file extension from original file name
             const customFilesName = nowMillionSeconds.substr(-5, 5) +
@@ -38,7 +38,7 @@ class Product {
                     throw new errorHandler_1.ErrorHandler(500, errorType_1.ErrorType.ClientError, 'No Images provided...');
                 const result = yield product_1.default.createProduct(req.body, req.files);
                 if (!result)
-                    throw new errorHandler_1.ErrorHandler(500, errorType_1.ErrorType.DatabaseError, 'Fail to create new product ...');
+                    throw new errorHandler_1.ErrorHandler(500, errorType_1.ErrorType.DatabaseError, 'Fail to create new product');
                 const { productId } = result;
                 if (productId)
                     yield this.renameProductImages({ productId });
@@ -77,13 +77,14 @@ class Product {
         this.getProductsListByTag = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             const query = req.query;
             const { paging = '1', tag = 'all', category = 'all', keyword } = query;
+            const data = yield product_1.default.getProductsListByTag({
+                titleLike: keyword,
+                tagId: Tags_1.TagsEnum[tag],
+                page: paging,
+                categoryId: Category_1.CategoryEnum[category],
+            });
             try {
-                res.send(yield product_1.default.getProductsListByTag({
-                    titleLike: keyword,
-                    tagId: Tags_1.TagsEnum[tag],
-                    page: paging,
-                    categoryId: Category_1.CategoryEnum[category],
-                }));
+                res.send(Object.assign({ result: 'success' }, data));
             }
             catch (error) {
                 logger_1.default.error({ tag: tag + '/getProductsListByTag', error });
@@ -122,7 +123,7 @@ class Product {
                     .copyObject({
                     Bucket: config_1.default.get('aws.s3.bucket'),
                     CopySource: config_1.default.get('aws.s3.productImagesFolder') + '/' + oldKey,
-                    Key: 'Stylish/products/' + newKey,
+                    Key: 'MUJI/products/' + newKey,
                     ACL: 'public-read',
                 })
                     .promise();
@@ -149,7 +150,7 @@ class Product {
                 s3: this.s3SDK,
                 bucket: config_1.default.get('aws.s3.productImagesFolder'),
                 acl: 'public-read',
-                key: this.stylishUpload,
+                key: this.mujiUpload,
             }),
         });
         this.uploadImg = this.upload.fields([

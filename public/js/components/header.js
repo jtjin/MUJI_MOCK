@@ -1,3 +1,5 @@
+import config from '../infra/config.js'
+import { privateApi } from '../infra/apis.js'
 class Header extends HTMLElement {
 	constructor() {
 		super()
@@ -15,19 +17,19 @@ class Header extends HTMLElement {
             <header>
                 <div class='logo'>
                     <a href="./">
-                        <img src="https://s3-ap-northeast-1.amazonaws.com/white-100.online/Stylish/images/logo.png" alt="logo">
+                        <img src="https://s3-ap-northeast-1.amazonaws.com/white-100.online/MUJI/images/logo.png" alt="logo">
                     </a>
                 </div>
 
                 <nav>
                     <div class="tag tagBorder">
-                        <a href="./?tag=women">女裝</a>
+                        <a href="./?category=clothes">服飾</a>
                     </div>
                     <div class="tag tagBorder">
-                        <a href="./?tag=men">男裝</a>
+                        <a href="./?category=groceries">文具</a>
                     </div>
                     <div class="tag ">
-                        <a href="./?tag=accessories">配件</a>
+                        <a href="./?category=food">食品</a>
                     </div>
                 </nav>
 
@@ -43,7 +45,7 @@ class Header extends HTMLElement {
 
                     <div class="item member">
                         <a href="./profile.html">
-                            <img src="https://s3-ap-northeast-1.amazonaws.com/white-100.online/Stylish/images/member.png">
+                            <img src="https://s3-ap-northeast-1.amazonaws.com/white-100.online/MUJI/images/member.png">
                         </a>
                     </div>
                 </div>
@@ -64,16 +66,28 @@ class Header extends HTMLElement {
 		`
 	}
 
-	renderCartListQuantities() {
-		const nav = document.querySelector('stylish-nav').shadowRoot
+	async renderCartListQuantities() {
+		const nav = document.querySelector('muji-nav').shadowRoot
 		const cartNumber = nav.querySelector('#cart-qty')
-		let cartList = JSON.parse(localStorage.getItem('cart'))
+
+		if (!JSON.parse(localStorage.getItem('muji'))) {
+			return
+		}
+		const { data: cartList } = (
+			await privateApi({
+				url: config.api.user.cart,
+				method: 'GET',
+			})
+		).data
+
+		console.log('cartList--?', cartList)
 		if (cartList) {
-			cartNumber.innerHTML = JSON.parse(localStorage.getItem('cart')).length
+			cartNumber.innerHTML = cartList.length
 		}
 		nav.querySelector('.cart').addEventListener('click', () => {
 			document.querySelector('.paymentForm').style.display = 'flex'
 		})
 	}
 }
-customElements.define('stylish-nav', Header)
+
+customElements.define('muji-nav', Header)

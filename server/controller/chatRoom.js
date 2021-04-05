@@ -18,7 +18,7 @@ class CharRoomController {
     constructor() {
         this.getChatRoomsListById = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const userId = req.params.userId;
+                const userId = req.me.id;
                 const roomList = yield chatRoom_1.default.getChatRoomsListById(userId);
                 console.log(roomList);
                 res.send({ result: 'success', data: roomList });
@@ -41,7 +41,7 @@ class CharRoomController {
         });
         this.getPinMessages = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const adminId = req.params.adminId;
+                const adminId = req.me.id;
                 const messages = yield chatRoom_1.default.getPinMessages({
                     adminId,
                 });
@@ -54,7 +54,7 @@ class CharRoomController {
         });
         this.createPinMessage = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const adminId = req.params.adminId;
+                const adminId = req.me.id;
                 const { message } = req.body;
                 const data = yield chatRoom_1.default.createPinMessage({
                     adminId,
@@ -68,7 +68,7 @@ class CharRoomController {
         });
         this.deletePinMessage = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const adminId = req.params.adminId;
+                const adminId = req.me.id;
                 const { message } = req.body;
                 const data = yield chatRoom_1.default.deletePinMessage({
                     adminId,

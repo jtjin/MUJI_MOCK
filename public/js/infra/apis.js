@@ -12,8 +12,7 @@ const privateApi = axios.create({
 
 privateApi.interceptors.request.use(
 	(config) => {
-		const access_token = JSON.parse(localStorage.getItem('stylish'))
-			.access_token
+		const access_token = JSON.parse(localStorage.getItem('muji')).access_token
 		if (!access_token) {
 			window.location('/profile.html')
 		}
@@ -33,28 +32,10 @@ publicApi.interceptors.response.use(
 		console.log(error)
 		const errResponse = error.response || {}
 		const { status, data } = errResponse
+		if (!data) return
 		const { type } = data.error
-
-		if (status === 403) localStorage.removeItem('stylish')
-
-		switch (type) {
-			case 'FORBIDDEN':
-			case 'USER_NOT_FOUND':
-				alert('Invalid Password or Email...')
-				console.log(errResponse)
-				break
-			case 'AUTH_NO_TOKEN':
-			case 'AUTH_NO_IDENTITY':
-			case 'USER_INVALID_TOKEN':
-				console.log(errResponse)
-				localStorage.removeItem('stylish')
-				alert('Please Log In...')
-				break
-			default:
-				console.log(error)
-				break
-		}
-
+		if (status === 403) localStorage.removeItem('muji')
+		errorHandler(type)
 		return Promise.reject(error)
 	},
 )
@@ -66,31 +47,36 @@ privateApi.interceptors.response.use(
 	(error) => {
 		const errResponse = error.response || {}
 		const { status, data } = errResponse
+		if (!data) return
 		const { type } = data.error
-
 		if (status === 403) {
 			localStorage.removeItem('token')
 		}
 
-		switch (type) {
-			case 'FORBIDDEN':
-			case 'USER_NOT_FOUND':
-				alert('Invalid Password or Email...')
-				localStorage.removeItem('stylish')
-				window.location.reload()
-				break
-			case 'USER_INVALID_TOKEN':
-				console.log(errResponse)
-				localStorage.removeItem('stylish')
-				alert('Please Log In...')
-				break
-			default:
-				console.log(error)
-				break
-		}
+		errorHandler(type)
 
 		return Promise.reject(error)
 	},
 )
+
+function errorHandler(errorType) {
+	switch (errorType) {
+		case 'FORBIDDEN':
+		case 'USER_NOT_FOUND':
+			alert('Invalid Password or Email...')
+			console.log(errResponse)
+			break
+		case 'AUTH_NO_TOKEN':
+		case 'AUTH_NO_IDENTITY':
+		case 'USER_INVALID_TOKEN':
+			console.log(errResponse)
+			localStorage.removeItem('muji')
+			alert('Please Log In...')
+			break
+		default:
+			console.log(error)
+			break
+	}
+}
 
 export { publicApi, privateApi }

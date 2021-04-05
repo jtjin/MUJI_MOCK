@@ -1,4 +1,4 @@
-# STYLiSH
+# MUJI MOCK
 
 ###### E-commerce Website
 

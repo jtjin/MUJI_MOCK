@@ -1,6 +1,6 @@
 const globalVersion = '/api/' + '1.0' + '/'
 const imagesBaseUrl =
-	'https://s3-ap-northeast-1.amazonaws.com/white-100.online/Stylish/'
+	'https://s3-ap-northeast-1.amazonaws.com/white-100.online/MUJI/'
 
 const config = {
 	api: {
@@ -14,10 +14,11 @@ const config = {
 			signIn: globalVersion + 'user/signIn',
 			chatRoomHistory: globalVersion + 'chatRoom/history',
 			profile: globalVersion + 'user/profile',
+			cart: globalVersion + 'user/cart',
 		},
 		globalVersion: globalVersion,
 		product: {
-			list: globalVersion + 'products/',
+			list: globalVersion + 'products/category',
 			details: globalVersion + 'products/details',
 			variant: globalVersion + 'products/variant',
 		},
@@ -29,7 +30,7 @@ const config = {
 	images: {
 		users: {
 			profilePictureBase:
-				'https://s3-ap-northeast-1.amazonaws.com/white-100.online/Stylish/user/',
+				'https://s3-ap-northeast-1.amazonaws.com/white-100.online/MUJI/user/',
 		},
 		product: imagesBaseUrl + 'products',
 		campaigns: imagesBaseUrl + 'campaigns',

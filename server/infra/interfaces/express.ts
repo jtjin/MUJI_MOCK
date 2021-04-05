@@ -3,11 +3,11 @@ import { User } from '../../db/entities/User'
 
 export { Request, Response, NextFunction, RequestHandler }
 
-export interface StylishRouter {
-	(req: StylishRequest, res: Response, next: NextFunction): any
+export interface MujiRouter {
+	(req: MujiRequest, res: Response, next: NextFunction): any
 }
 
-export interface StylishRequest extends Request {
+export interface MujiRequest extends Request {
 	files: any
 	me?: User
 }

@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs'
-import StylishRDB from '../db/index'
+import MujiRDB from '../db/index'
 import config from 'config'
 import * as R from 'ramda'
 import { customErrors } from '../infra/customErrors'
@@ -11,7 +11,7 @@ import { UserRole } from '../infra/enums/UserRole'
 class User {
 	async loginByEmail(reqVo: { email: string; password: string }) {
 		const { email, password } = reqVo
-		const userPO = await StylishRDB.userModule.getUserByEmail(email)
+		const userPO = await MujiRDB.userModule.getUserByEmail(email)
 		if (!userPO) throw new Error(customErrors.USER_NOT_FOUND.type)
 
 		if (this._validatePassword(password, userPO.password)) {
@@ -22,7 +22,7 @@ class User {
 			role: userPO.role.name,
 		})
 
-		await StylishRDB.userModule.updateAccessToken(email, access_token)
+		await MujiRDB.userModule.updateAccessToken(email, access_token)
 		return {
 			result: 'success',
 			data: {
@@ -48,7 +48,7 @@ class User {
 		fileName?: string,
 	) {
 		const { name, email, picture, password, provider } = reqVO
-		const ifUserExist = await StylishRDB.userModule.getUserByEmail(email)
+		const ifUserExist = await MujiRDB.userModule.getUserByEmail(email)
 		if (ifUserExist) {
 			throw new ErrorHandler(
 				403,
@@ -81,7 +81,7 @@ class User {
 	}) {
 		const { email, name, picture, role = UserRole.user } = values
 		const access_token = TokenHelper.generateToken(email, role)
-		const insertedResult = await StylishRDB.userModule.createNewUser({
+		const insertedResult = await MujiRDB.userModule.createNewUser({
 			name,
 			email,
 			access_token,
@@ -113,7 +113,7 @@ class User {
 		const hashPwd = bcrypt.hashSync(password, 8)
 		const access_token = TokenHelper.generateToken(email, role)
 
-		const result = await StylishRDB.userModule.createNewUser({
+		const result = await MujiRDB.userModule.createNewUser({
 			name,
 			email,
 			password: hashPwd,
@@ -137,7 +137,7 @@ class User {
 
 	async loginByFB(token: string) {
 		TokenHelper.verifyToken(token)
-		const userPO = await StylishRDB.userModule.getUserByAccessToken(token)
+		const userPO = await MujiRDB.userModule.getUserByAccessToken(token)
 
 		if (!userPO) throw new Error(customErrors.USER_NOT_FOUND.type)
 
@@ -148,7 +148,7 @@ class User {
 			userPO.role.name,
 		)
 
-		await StylishRDB.userModule.updateAccessToken(userPO.email, access_token)
+		await MujiRDB.userModule.updateAccessToken(userPO.email, access_token)
 
 		return {
 			data: {
@@ -165,9 +165,7 @@ class User {
 
 	async profile(access_token: string) {
 		try {
-			const userPO = await StylishRDB.userModule.getUserByAccessToken(
-				access_token,
-			)
+			const userPO = await MujiRDB.userModule.getUserByAccessToken(access_token)
 			return {
 				data: R.pick(['id', 'provider', 'name', 'email', 'picture'], userPO),
 			}

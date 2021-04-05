@@ -58,7 +58,7 @@ class UserHandler {
                 }
                 else {
                     that.io.to(userInfo.room || userInfo.userId).emit('greetNewUser', {
-                        message: '👋 Hi there, welcome to stylish!',
+                        message: '👋 Hi there, welcome to muji!',
                         time: new Date(),
                     });
                     if (userInfo.userName === 'randomUser') {
@@ -160,7 +160,7 @@ class UserHandler {
     refreshRoomListAndGreetAdmin(userInfo) {
         that.io.to(this.id).emit('greetNewAdmin', {
             userName: 'System',
-            message: 'Hi there, welcome to stylish. ' +
+            message: 'Hi there, welcome to muji. ' +
                 `\n` +
                 ' 👈 To begin chat, please click on the room from right side.',
             time: new Date(),

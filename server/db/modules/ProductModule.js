@@ -48,12 +48,12 @@ class ProductModule {
                 .leftJoinAndSelect('product.images', 'images')
                 .leftJoinAndSelect('product.main_image', 'main_image');
             if (categoryId) {
-                query = query.where('product.category = :category', {
+                query = query.andWhere('product.category = :categoryId', {
                     categoryId,
                 });
             }
             if (tagId) {
-                query = query.where('product.tag_id = :tagId', {
+                query = query.andWhere('product.tag_id = :tagId', {
                     tagId,
                 });
             }

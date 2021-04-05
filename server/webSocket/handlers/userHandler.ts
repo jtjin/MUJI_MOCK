@@ -1,5 +1,5 @@
 import { Socket } from 'socket.io'
-import StylishRDB from '../../db/index'
+import MujiRDB from '../../db/index'
 import { redisClient } from '../../db/redisDb'
 import * as R from 'ramda'
 let that: UserHandler
@@ -105,7 +105,7 @@ class UserHandler {
 		room: string
 		redisData?: any
 	}) {
-		const messagesInfo = await StylishRDB.messagesModule.getMessagesByRoom(
+		const messagesInfo = await MujiRDB.messagesModule.getMessagesByRoom(
 			userInfo.room,
 		)
 
@@ -114,12 +114,12 @@ class UserHandler {
 				JSON.parse(String(messagesInfo.messages)),
 			).concat(Array.from(JSON.parse(userInfo.redisData)))
 
-			await StylishRDB.messagesModule.updateRoomMessages(
+			await MujiRDB.messagesModule.updateRoomMessages(
 				userInfo.room,
 				JSON.stringify(updatedMessages),
 			)
 		} else if (userInfo.redisData) {
-			await StylishRDB.messagesModule.createMessages([
+			await MujiRDB.messagesModule.createMessages([
 				{
 					user_id: userInfo.userId,
 					room: userInfo.room,
@@ -127,7 +127,7 @@ class UserHandler {
 				},
 			])
 		} else if (!messagesInfo && !userInfo.redisData) {
-			await StylishRDB.messagesModule.createMessages([
+			await MujiRDB.messagesModule.createMessages([
 				{
 					user_id: userInfo.userId,
 					room: userInfo.room,
@@ -146,7 +146,7 @@ class UserHandler {
 	) {
 		const socket = this
 
-		const history = await StylishRDB.messagesModule.getMessagesByRoom(
+		const history = await MujiRDB.messagesModule.getMessagesByRoom(
 			userInfo.room,
 		)
 
@@ -154,7 +154,7 @@ class UserHandler {
 			that.io.to(userInfo.room || userInfo.userId).emit('getHistory', history)
 		} else {
 			that.io.to(userInfo.room || userInfo.userId).emit('greetNewUser', {
-				message: '👋 Hi there, welcome to stylish!',
+				message: '👋 Hi there, welcome to muji!',
 				time: new Date(),
 			})
 			if (userInfo.userName === 'randomUser') {
@@ -194,7 +194,7 @@ class UserHandler {
 		that.io.to(this.id).emit('greetNewAdmin', {
 			userName: 'System',
 			message:
-				'Hi there, welcome to stylish. ' +
+				'Hi there, welcome to muji. ' +
 				`\n` +
 				' 👈 To begin chat, please click on the room from right side.',
 			time: new Date(),

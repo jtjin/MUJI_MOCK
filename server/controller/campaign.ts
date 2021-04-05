@@ -1,10 +1,10 @@
-import { StylishRouter } from '../infra/interfaces/express'
+import { MujiRouter } from '../infra/interfaces/express'
 import CampaignService from '../service/campaign'
 import logger from '../utils/logger'
 
 const tag = 'server/controller/campaign'
 class Campaign {
-	getCampaigns: StylishRouter = async (req, res, next) => {
+	getCampaigns: MujiRouter = async (req, res, next) => {
 		try {
 			const result = { data: await CampaignService.getCampaigns() }
 			res.send(result)
@@ -14,7 +14,7 @@ class Campaign {
 		}
 	}
 
-	createCampaign: StylishRouter = async (req, res, next) => {
+	createCampaign: MujiRouter = async (req, res, next) => {
 		const { id, story } = req.body
 		try {
 			await CampaignService.createCampaign({

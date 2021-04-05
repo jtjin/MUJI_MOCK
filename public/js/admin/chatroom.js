@@ -1,5 +1,5 @@
 import config from '../infra/config.js'
-import { privateApi, publicApi } from '../infra/apis.js'
+import { privateApi } from '../infra/apis.js'
 
 class AdminChatroomManager {
 	constructor() {
@@ -77,9 +77,7 @@ class AdminChatroomManager {
 	async _getRoomsList() {
 		try {
 			const { data } = (
-				await privateApi.get(
-					config.api.admin.chatRoomList + `/${this.adminInfo.id}`,
-				)
+				await privateApi.get(config.api.admin.chatRoomList)
 			).data
 
 			this.roomsContainer.innerHTML = ''
@@ -247,11 +245,7 @@ class PinMessageManager {
 	}
 
 	getCanMessages = async () => {
-		const { data } = (
-			await privateApi.get(
-				config.api.admin.canMessage + `/${this.adminInfo.id}`,
-			)
-		).data
+		const { data } = (await privateApi.get(config.api.admin.canMessage)).data
 		if (!data || data.length === 0) {
 			this.appendPinElement(
 				`To create can messages template please click the 'Pin' button`,
@@ -268,12 +262,11 @@ class PinMessageManager {
 		const message = event.target.nextElementSibling.innerText
 		const { result } = (
 			await privateApi({
-				url: config.api.admin.canMessage + `/${this.adminInfo.id}`,
+				url: config.api.admin.canMessage,
 				method: 'delete',
 				data: { message },
 			})
 		).data
-		console.log('result', result)
 	}
 
 	async createNewCanMessage() {
@@ -284,7 +277,7 @@ class PinMessageManager {
 		this.appendPinElement(message)
 		const { result } = (
 			await privateApi({
-				url: config.api.admin.canMessage + `/${this.adminInfo.id}`,
+				url: config.api.admin.canMessage,
 				method: 'POST',
 				data: { message },
 			})

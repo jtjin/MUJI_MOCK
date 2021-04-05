@@ -4,8 +4,8 @@ import { privateApi, publicApi } from '../infra/apis.js'
 class Chatbot extends HTMLElement {
 	constructor() {
 		super()
-		this.userInfo = JSON.parse(localStorage.getItem('stylish')) || {
-			id: Math.floor(Math.random() * 1000),
+		this.userInfo = JSON.parse(localStorage.getItem('muji')) || {
+			id: '0000',
 			name: 'randomUser',
 		}
 		this.shadow = this.attachShadow({ mode: 'open' })
@@ -43,7 +43,7 @@ class Chatbot extends HTMLElement {
 							/>
 						</svg>
 					</div>
-					<h1>Stylish</h1>
+					<h1>MUJI</h1>
 					<h2>Customer service</h2>
 				</div>
 				<div class="chatNavRightPart">
@@ -314,4 +314,4 @@ class Chatbot extends HTMLElement {
 	}
 }
 
-customElements.define('stylish-chatbot', Chatbot)
+customElements.define('muji-chatbot', Chatbot)

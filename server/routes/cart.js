@@ -1,10 +1,13 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+const cart_1 = __importDefault(require("../controller/cart"));
 const express_1 = require("express");
+const authorization_1 = require("../middleWares/authorization");
 const router = express_1.Router();
-// TODO: Add cart function
-// router.use(authorization)
-// router.post('/cart/', Product.uploadImg, Product.createProduct)
-// router.get('/cart', Product.getProductsListByTag)
-// router.delete('/cart', Product.getProductsListByTag)
+router.get('/user/cart/', authorization_1.isAuth, cart_1.default.getItemsByUserId);
+router.post('/user/cart', authorization_1.isAuth, cart_1.default.createItemByUserId);
+router.delete('/user/cart', authorization_1.isAuth, cart_1.default.deleteItemById);
 module.exports = router;

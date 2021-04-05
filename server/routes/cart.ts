@@ -1,15 +1,10 @@
-import Product from '../controller/product'
-import config from 'config'
-import { redisClient } from '../db/redisDb'
-import fs from 'fs'
-import path from 'path'
+import Cart from '../controller/cart'
 import { Router } from 'express'
+import { isAuth } from '../middleWares/authorization'
 const router = Router()
 
-// TODO: Add cart function
-// router.use(authorization)
-// router.post('/cart/', Product.uploadImg, Product.createProduct)
-// router.get('/cart', Product.getProductsListByTag)
-// router.delete('/cart', Product.getProductsListByTag)
+router.get('/user/cart/', isAuth, Cart.getItemsByUserId)
+router.post('/user/cart', isAuth, Cart.createItemByUserId)
+router.delete('/user/cart', isAuth, Cart.deleteItemById)
 
 module.exports = router

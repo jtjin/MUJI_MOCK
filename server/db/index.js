@@ -21,17 +21,18 @@ const UserModule_1 = require("./modules/UserModule");
 const MessagesModules_1 = require("./modules/MessagesModules");
 const PinMessagesModule_1 = require("./modules/PinMessagesModule");
 const RoleModule_1 = require("./modules/RoleModule");
+const CartModule_1 = require("./modules/CartModule");
 const config_1 = __importDefault(require("config"));
 const logger_1 = __importDefault(require("../utils/logger"));
 const tag = '/db/index';
 let dbConnection;
 const Entities = Array.from({ length: 26 }, (v, i) => `${__dirname}/entities/${String.fromCharCode(i + 65)}*.js`);
-class StylishRDB {
+class MujiRDB {
     initDb() {
         return __awaiter(this, void 0, void 0, function* () {
             const connectionConfig = {
                 type: 'mysql',
-                name: 'stylish',
+                name: 'muji',
                 host: String(config_1.default.get('aws.rds.host')),
                 username: String(config_1.default.get('aws.rds.username')),
                 password: String(config_1.default.get('aws.rds.password')),
@@ -42,7 +43,7 @@ class StylishRDB {
             };
             this.client = yield typeorm_1.createConnection(connectionConfig);
             if (this.client) {
-                console.log(`--- Stylish DB Connected ---`);
+                console.log(`--- MUJI DB Connected ---`);
             }
             this.productModule = new ProductModule_1.ProductModule({ client: this.client });
             this.userModule = new UserModule_1.UserModule({ client: this.client });
@@ -55,6 +56,7 @@ class StylishRDB {
             this.messagesModule = new MessagesModules_1.MessagesModule({ client: this.client });
             this.pinMessagesModule = new PinMessagesModule_1.PinMessagesModule({ client: this.client });
             this.roleModule = new RoleModule_1.RoleModule({ client: this.client });
+            this.cartModule = new CartModule_1.CartModule({ client: this.client });
             dbConnection = this.client;
             return this.client;
         });
@@ -62,7 +64,7 @@ class StylishRDB {
     disconnectDb() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                logger_1.default.info({ tag, msg: '--- Disconnect Stylish Database --' });
+                logger_1.default.info({ tag, msg: '--- Disconnect MUJI Database --' });
                 if (this.client)
                     yield this.client.close();
             }
@@ -74,4 +76,4 @@ class StylishRDB {
     }
 }
 exports.connection = dbConnection;
-module.exports = new StylishRDB();
+module.exports = new MujiRDB();

@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>STYLiSH</title>
+		<title>MUJI</title>
 		<link rel="stylesheet" type="text/css" href="./css/product.css" />
 		<link rel="stylesheet" type="text/css" href="./css/main.css" />
 		<link rel="stylesheet" type="text/css" href="/css/tapPay.css" />
@@ -123,14 +123,21 @@
 			defer
 		></script>
 
-		<script src="./js/components/header.js" defer></script>
+		<script src="./js/components/header.js" type="module" defer></script>
 		<script src="./js/components/footer.js" defer></script>
+		<script
+			src="./js/components/registerSystem.js"
+			type="module"
+			defer
+		></script>
 
-		<script src="./js/productDetails.js" type="module" defer></script>
+		<script src="./js/product.js" type="module" defer></script>
 	</head>
 
 	<body>
-		<stylish-nav></stylish-nav>
+		<muji-nav></muji-nav>
+
+		<sign-form></sign-form>
 
 		<main>
 			<div class="view">
@@ -150,7 +157,7 @@
 
 						<div class="infoDetails">
 							<div class="itemContainer subSpecVariantContainer">
-								<div class="itemTitle subSpecName">規格</div>
+								<div class="itemTitle subSpecName"></div>
 							</div>
 						</div>
 
@@ -236,6 +243,6 @@
 			</div>
 		</div>
 
-		<stylish-footer></stylish-footer>
+		<muji-footer></muji-footer>
 	</body>
 </html>

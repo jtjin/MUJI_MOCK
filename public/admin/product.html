@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>STYLiSH</title>
+		<title>MUJI</title>
 		<link rel="stylesheet" href="../css/admin/product.css" />
 
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
@@ -19,16 +19,13 @@
 				<form class="productCreateFrom" enctype="multipart/form-data">
 					<div class="formColumn">
 						<span class="columnTitle">Title</span>
-						<input type="text" name="title" class="title" />
+						<input type="text" name="title" class="title" required="required" />
 					</div>
 					<div class="formColumn">
 						<span class="columnTitle">Description</span>
 						<input type="text" name="description" class="description" />
 					</div>
-					<!-- <div class="formColumn">
-						<span class="columnTitle">Price</span>
-						<input type="text" name="price" class="price" />
-					</div> -->
+					required="required"
 					<div class="formColumn">
 						<span class="columnTitle">Texture</span>
 						<input type="text" name="texture" class="texture" />
@@ -51,9 +48,9 @@
 						<div class="formColumn">
 							<span class="columnTitle">Product Category</span>
 							<select name="category" class="category">
-								<option value="Groceries">Groceries</option>
-								<option value="Clothes">Clothes</option>
-								<option value="Food">Food</option>
+								<option value="groceries">Groceries</option>
+								<option value="clothes">Clothes</option>
+								<option value="food">Food</option>
 							</select>
 						</div>
 					</fieldset>
@@ -79,6 +76,7 @@
 							<div class="specContainer">
 								<span class="columnTitle" index="0">規格名稱</span>
 								<input
+									required="required"
 									type="text"
 									name="spec"
 									class="specNameInput"
@@ -105,6 +103,7 @@
 										type="text"
 										name="mainSpecVariantName"
 										class="specVariantNameInput"
+										required="required"
 									/>
 								</div>
 							</div>
@@ -130,45 +129,20 @@
 						<template class="subClassVariantTemplate">
 							<tr class="subClassVariantContainer">
 								<td style="display: none">
-									<input class="subSpecName" type="text" />
-									<!-- <input class="subSpecName" type="text" name="subSpecName" /> -->
+									<input class="subSpecName" type="text" required="required" />
 								</td>
-								<td><input type="number" class="price" /></td>
-								<td><input type="number" class="stock" /></td>
-								<td><input type="text" class="code" /></td>
+								<td>
+									<input type="number" class="price" required="required" />
+								</td>
+								<td>
+									<input type="number" class="stock" required="required" />
+								</td>
+								<td><input type="text" class="code" required="required" /></td>
 							</tr>
 						</template>
-
-						<!-- <div class="formColumn">
-							<span class="columnTitle">Colors</span>
-							<input
-								type="text"
-								name="colors"
-								placeholder="58166846, FFFdfe, SERHTH..."
-								class="colors"
-							/>
-						</div>
-						<div class="formColumn">
-							<span class="columnTitle">Colors Name</span>
-							<input
-								type="text"
-								name="colorsName"
-								placeholder="Red, Blue, Green..."
-								class="colorsName"
-							/>
-						</div>
-						<div class="formColumn">
-							<span class="columnTitle">Sizes</span>
-							<input
-								type="text"
-								name="sizes"
-								placeholder="S,M,L,XL,XXL,..."
-								class="sizes"
-							/>
-						</div> -->
 					</fieldset>
 
-					<!-- <fieldset>
+					<fieldset>
 						<legend>Images</legend>
 						<div class="formColumn">
 							<span class="columnTitle">Main image</span>
@@ -189,7 +163,8 @@
 								required="required"
 							/>
 						</div>
-					</fieldset> -->
+					</fieldset>
+
 					<button type="submit" class="submitButton">Create</button>
 				</form>
 				<button class="fillTestDataOfProductVariant">Fill test data</button>

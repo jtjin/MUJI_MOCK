@@ -22,7 +22,7 @@
 // });
 //  */
 // routerCheckout.get("/total_value", cache, async (req, res) => {
-//     let sql = "SELECT SUM(total) AS total FROM stylish.orders";
+//     let sql = "SELECT SUM(total) AS total FROM muji.orders";
 //     let ans = await pool.query(sql);
 //     res.send(ans[0]);
 //     client.setex(`/total_value`, 5000, JSON.stringify(ans[0]))
@@ -39,7 +39,7 @@
 //     client.setex(`/total_color`, 5000, JSON.stringify(f))
 // });
 // routerCheckout.get("/total_price", cache, async (req, res) => {
-//     let sql = 'SELECT price,qty FROM stylish.order_details';
+//     let sql = 'SELECT price,qty FROM muji.order_details';
 //     let ans = await pool.query(sql);
 //     let price = _.map(ans, 'price');
 //     let qty = _.map(ans, "qty");
@@ -49,7 +49,7 @@
 //     client.setex(`/total_price`, 5000, JSON.stringify(f))
 // });
 // routerCheckout.get("/total_size", cache, async (req, res) => {
-//     let sql = 'SELECT id,size, SUM(qty) AS total FROM stylish.order_details group by id, size';
+//     let sql = 'SELECT id,size, SUM(qty) AS total FROM muji.order_details group by id, size';
 //     let ans = await pool.query(sql);
 //     let f = _.groupBy(ans, function (ans) { return ans.size; });
 //     let ans2 = Object.values(f).map(e => {

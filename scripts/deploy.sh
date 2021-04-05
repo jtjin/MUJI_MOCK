@@ -1,4 +1,4 @@
 // TODO: Add deployment
-cd ~/STYLiSH;
+cd ~/MUJI;
 git pull;
 pm2 restart 

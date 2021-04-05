@@ -1,4 +1,4 @@
-import { StylishRouter } from '../infra/interfaces/express'
+import { MujiRouter } from '../infra/interfaces/express'
 import ChatRoomService from '../service/admin/chatRoom'
 import { ErrorType } from '../infra/enums/errorType'
 import { ErrorHandler } from '../middleWares/errorHandler'
@@ -10,9 +10,9 @@ const tag = 'controller/admin/chatRoom'
 class CharRoomController {
 	constructor() {}
 
-	getChatRoomsListById: StylishRouter = async (req, res, next) => {
+	getChatRoomsListById: MujiRouter = async (req, res, next) => {
 		try {
-			const userId = req.params.userId
+			const userId = req.me!.id
 			const roomList = await ChatRoomService.getChatRoomsListById(userId)
 			console.log(roomList)
 
@@ -23,7 +23,7 @@ class CharRoomController {
 		}
 	}
 
-	getChatRoomHistory: StylishRouter = async (req, res, next) => {
+	getChatRoomHistory: MujiRouter = async (req, res, next) => {
 		try {
 			const room = req.params.room
 			const history = await ChatRoomService.getChatRoomHistory(room)
@@ -34,9 +34,9 @@ class CharRoomController {
 		}
 	}
 
-	getPinMessages: StylishRouter = async (req, res, next) => {
+	getPinMessages: MujiRouter = async (req, res, next) => {
 		try {
-			const adminId = req.params.adminId
+			const adminId = req.me!.id
 			const messages = await ChatRoomService.getPinMessages({
 				adminId,
 			})
@@ -47,9 +47,9 @@ class CharRoomController {
 		}
 	}
 
-	createPinMessage: StylishRouter = async (req, res, next) => {
+	createPinMessage: MujiRouter = async (req, res, next) => {
 		try {
-			const adminId = req.params.adminId
+			const adminId = req.me!.id
 			const { message } = req.body
 			const data = await ChatRoomService.createPinMessage({
 				adminId,
@@ -61,9 +61,9 @@ class CharRoomController {
 		}
 	}
 
-	deletePinMessage: StylishRouter = async (req, res, next) => {
+	deletePinMessage: MujiRouter = async (req, res, next) => {
 		try {
-			const adminId = req.params.adminId
+			const adminId = req.me!.id
 			const { message } = req.body
 			const data = await ChatRoomService.deletePinMessage({
 				adminId,

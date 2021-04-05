@@ -6,27 +6,43 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Hot = void 0;
+exports.Cart = void 0;
 const typeorm_1 = require("typeorm");
+const ProductDetails_1 = require("./ProductDetails");
 const Product_1 = require("./Product");
-let Hot = class Hot {
+const User_1 = require("./User");
+let Cart = class Cart {
 };
 __decorate([
     typeorm_1.PrimaryGeneratedColumn({
         type: 'bigint',
     })
-], Hot.prototype, "id", void 0);
+], Cart.prototype, "id", void 0);
+__decorate([
+    typeorm_1.ManyToOne((type) => ProductDetails_1.ProductDetails),
+    typeorm_1.JoinColumn({
+        name: 'product_detail_id',
+    })
+], Cart.prototype, "variant_id", void 0);
+__decorate([
+    typeorm_1.ManyToOne((type) => Product_1.Product),
+    typeorm_1.JoinColumn({
+        name: 'product_id',
+    })
+], Cart.prototype, "product_id", void 0);
+__decorate([
+    typeorm_1.ManyToOne((type) => User_1.User, (user) => user.cart),
+    typeorm_1.JoinColumn({
+        name: 'user_id',
+    })
+], Cart.prototype, "user_id", void 0);
 __decorate([
     typeorm_1.Column({
-        length: 80,
         nullable: false,
-        type: 'varchar',
+        type: 'int',
     })
-], Hot.prototype, "title", void 0);
-__decorate([
-    typeorm_1.OneToMany((type) => Product_1.Product, (product) => product.hot_id)
-], Hot.prototype, "product", void 0);
-Hot = __decorate([
-    typeorm_1.Entity({ name: 'hot' })
-], Hot);
-exports.Hot = Hot;
+], Cart.prototype, "quantity", void 0);
+Cart = __decorate([
+    typeorm_1.Entity({ name: 'cart' })
+], Cart);
+exports.Cart = Cart;

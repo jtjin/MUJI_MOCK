@@ -1,5 +1,5 @@
 import config from '../infra/config.js'
-import { privateApi, publicApi } from '../infra/apis.js'
+import { privateApi } from '../infra/apis.js'
 
 let that
 class CreateProductFrom {
@@ -197,6 +197,7 @@ class CreateProductFrom {
 	}
 	createNewSpecVariantInputBtn(index, className) {
 		const input = document.createElement('input')
+		input.setAttribute('required', 'required')
 		input.setAttribute('index', index)
 		input.name =
 			className === 'mainSpecName'

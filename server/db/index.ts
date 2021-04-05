@@ -8,6 +8,7 @@ import { UserModule } from './modules/UserModule'
 import { MessagesModule } from './modules/MessagesModules'
 import { PinMessagesModule } from './modules/PinMessagesModule'
 import { RoleModule } from './modules/RoleModule'
+import { CartModule } from './modules/CartModule'
 import config from 'config'
 import logger from '../utils/logger'
 
@@ -18,7 +19,7 @@ const Entities = Array.from(
 	{ length: 26 },
 	(v, i) => `${__dirname}/entities/${String.fromCharCode(i + 65)}*.js`,
 )
-class StylishRDB {
+class MujiRDB {
 	client: Connection
 	productModule: ProductModule
 	campaignModule: CampaignModule
@@ -29,11 +30,12 @@ class StylishRDB {
 	messagesModule: MessagesModule
 	pinMessagesModule: PinMessagesModule
 	roleModule: RoleModule
+	cartModule: CartModule
 
 	async initDb() {
 		const connectionConfig: ConnectionOptions = {
 			type: 'mysql',
-			name: 'stylish',
+			name: 'muji',
 			host: String(config.get('aws.rds.host')),
 			username: String(config.get('aws.rds.username')),
 			password: String(config.get('aws.rds.password')),
@@ -46,7 +48,7 @@ class StylishRDB {
 		this.client = await createConnection(connectionConfig)
 
 		if (this.client) {
-			console.log(`--- Stylish DB Connected ---`)
+			console.log(`--- MUJI DB Connected ---`)
 		}
 
 		this.productModule = new ProductModule({ client: this.client })
@@ -60,13 +62,14 @@ class StylishRDB {
 		this.messagesModule = new MessagesModule({ client: this.client })
 		this.pinMessagesModule = new PinMessagesModule({ client: this.client })
 		this.roleModule = new RoleModule({ client: this.client })
+		this.cartModule = new CartModule({ client: this.client })
 		dbConnection = this.client
 		return this.client
 	}
 
 	async disconnectDb() {
 		try {
-			logger.info({ tag, msg: '--- Disconnect Stylish Database --' })
+			logger.info({ tag, msg: '--- Disconnect MUJI Database --' })
 			if (this.client) await this.client.close()
 		} catch (error) {
 			logger.error({ tag, error })
@@ -75,5 +78,5 @@ class StylishRDB {
 	}
 }
 
-export = new StylishRDB()
+export = new MujiRDB()
 exports.connection = dbConnection

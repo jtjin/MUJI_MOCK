@@ -1,18 +1,6 @@
 import { publicApi } from './infra/apis.js'
 import config from './infra/config.js'
-function getQueryStringValue(key) {
-	return decodeURIComponent(
-		window.location.search.replace(
-			new RegExp(
-				'^(?:.*[&\\?]' +
-					encodeURIComponent(key).replace(/[\.\+\*]/g, '\\$&') +
-					'(?:\\=([^&]*))?)?.*$',
-				'i',
-			),
-			'$1',
-		),
-	)
-}
+
 class ProductListManager {
 	productCategory
 	paging = 1
@@ -24,7 +12,6 @@ class ProductListManager {
 		if (requestLocation[2]) {
 			this.paging = requestLocation[2].split('=')[1]
 		}
-		let searchParams = new URLSearchParams(window.location.search)
 
 		this.tag = getQueryStringValue('tag')
 		this.category = getQueryStringValue('category')
@@ -40,8 +27,9 @@ class ProductListManager {
 		if (this.keyword) requestUrl = requestUrl + '&keyword=' + this.keyword
 		if (this.category) requestUrl = requestUrl + '&category=' + this.category
 
-		const { data, next_paging } = (await publicApi.get(requestUrl)).data
+		const result = (await publicApi.get(requestUrl)).data
 
+		const { data, next_paging } = result
 		if (next_paging) {
 			this.next_paging = next_paging
 			this.createPaging(this.next_paging)
@@ -49,6 +37,7 @@ class ProductListManager {
 			this.next_paging = undefined
 			this.createPaging(this.paging)
 		}
+
 		this.createProductElements(data)
 	}
 
@@ -85,6 +74,7 @@ class ProductListManager {
 	}
 
 	createProductElements(productsInfo) {
+		console.log('productsInfo-->', productsInfo)
 		const productsContainer = document.querySelector('.products')
 		productsContainer.innerHTML = ''
 		productsInfo.forEach((productInfo) => {
@@ -97,18 +87,11 @@ class ProductListManager {
 			productTempClone.querySelector('img').src =
 				config.images.product + productInfo.main_image
 
-			// const productDivColors = productTempClone.querySelector('.colors')
-			// productInfo.colors.forEach((color) => {
-			// 	const productDicColor = document.createElement('div')
-			// 	productDicColor.setAttribute('class', 'color')
-			// 	productDicColor.setAttribute('style', `background-color:#${color.code}`)
-			// 	productDivColors.appendChild(productDicColor)
-			// })
-
 			productTempClone.querySelector('.name').innerHTML = productInfo.title
-			productTempClone.querySelector(
-				'.price',
-			).innerHTML = `TWD.${productInfo.lowestPrice} - ${productInfo.highestPrice}`
+			productTempClone.querySelector('.price').innerHTML =
+				productInfo.lowestPrice === productInfo.highestPrice
+					? `TWD.${productInfo.lowestPrice}`
+					: `TWD.${productInfo.lowestPrice} - ${productInfo.highestPrice}`
 			productsContainer.appendChild(productTempClone)
 		})
 	}
@@ -183,6 +166,20 @@ class SliderManager {
 			}
 		}, 5000)
 	}
+}
+
+function getQueryStringValue(key) {
+	return decodeURIComponent(
+		window.location.search.replace(
+			new RegExp(
+				'^(?:.*[&\\?]' +
+					encodeURIComponent(key).replace(/[\.\+\*]/g, '\\$&') +
+					'(?:\\=([^&]*))?)?.*$',
+				'i',
+			),
+			'$1',
+		),
+	)
 }
 
 const productListManager = new ProductListManager()

@@ -17,6 +17,7 @@ class RegisterFrom extends HTMLElement {
 		this._initElements()
 		this._initElementEventsListeners()
 		this._fillTestAccount()
+		if (window.location.pathname === '/product.html') return
 		await this.checkLoginStatus()
 	}
 
@@ -82,16 +83,11 @@ class RegisterFrom extends HTMLElement {
 		const formData = new FormData(this.signUpForm)
 		formData.set('provider', 'native')
 
-		try {
-			await publicApi({
-				url: config.api.user.signUp,
-				method: 'POST',
-				data: formData,
-			})
-		} catch (err) {
-			console.log(err.response)
-			console.log(err)
-		}
+		await publicApi({
+			url: config.api.user.signUp,
+			method: 'POST',
+			data: formData,
+		})
 	}
 
 	async _postSignInForm() {
@@ -111,7 +107,7 @@ class RegisterFrom extends HTMLElement {
 				})
 			).data
 
-			localStorage.setItem('stylish', JSON.stringify(data))
+			localStorage.setItem('muji', JSON.stringify(data))
 
 			await this._hideLoginBox()
 		} catch (error) {
@@ -156,7 +152,7 @@ class RegisterFrom extends HTMLElement {
 	}
 
 	async checkLoginStatus() {
-		const localUserInfo = JSON.parse(localStorage.getItem('stylish'))
+		const localUserInfo = JSON.parse(localStorage.getItem('muji'))
 
 		if (!localUserInfo || !localUserInfo.access_token) {
 			this._showLoginBox()

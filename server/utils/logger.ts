@@ -23,7 +23,7 @@ function createLoggerTransports() {
 	// Save logs file to folders
 	transports.push(
 		new DailyRotateFile({
-			filename: './logs/STYLiSH-%DATE%.log',
+			filename: './logs/MUJI-%DATE%.log',
 			datePattern: 'YYYY-MM-DD-HH',
 			zippedArchive: true,
 			maxSize: '20m',

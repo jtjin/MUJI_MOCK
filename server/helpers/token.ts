@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken'
 import config from 'config'
 import { customErrors } from '../infra/customErrors'
-import StylishRDB from '../db/index'
+import MujiRDB from '../db/index'
 
 class TokenHelper {
 	async verifyToken(token: string) {
@@ -10,7 +10,7 @@ class TokenHelper {
 			if (!identity) throw new Error(customErrors.AUTH_NO_IDENTITY.type)
 			// @ts-ignore
 			const { email } = jwt.verify(access_token, config.get('jwt.secret'))
-			const userPO = await StylishRDB.userModule.getUserByEmail(email)
+			const userPO = await MujiRDB.userModule.getUserByEmail(email)
 			return userPO
 		} catch (err) {
 			throw err

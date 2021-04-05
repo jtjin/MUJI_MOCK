@@ -12,10 +12,10 @@ import {
 	Index,
 	OneToOne,
 } from 'typeorm'
-import { Hot } from './Hot'
 import { ProductDetails } from './ProductDetails'
 import { Images } from './Images'
 import { MainImages } from './MainImages'
+import { Cart } from './Cart'
 
 @Entity({ name: 'product' })
 export class Product {
@@ -36,12 +36,6 @@ export class Product {
 		type: 'varchar',
 	})
 	description?: string
-
-	// @Column({
-	// 	type: 'int',
-	// 	nullable: false,
-	// })
-	// price!: number
 
 	@Column({ type: 'varchar' })
 	texture?: string
@@ -84,12 +78,6 @@ export class Product {
 		name: 'tag_id',
 	})
 	tag_id: Tag | string
-
-	@ManyToOne((type) => Hot)
-	@JoinColumn({
-		name: 'hot_id',
-	})
-	hot_id: Hot | string
 
 	@OneToMany(
 		(type) => ProductDetails,

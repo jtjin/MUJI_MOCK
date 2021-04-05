@@ -32,7 +32,7 @@ const initServer = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const server = app.listen(config_1.default.get('port'));
         console.log(`--- [ ENV : ${env}]  ---`);
-        console.log(`--- Stylish server running on port ${config_1.default.get('port')} ---`);
+        console.log(`--- MUJI server running on port ${config_1.default.get('port')} ---`);
         yield index_1.socketIoInit(server);
         exports.dbConnection = db_1.default.initDb();
         const _exitHandler = terminate(server, {
@@ -66,6 +66,7 @@ const initServer = () => __awaiter(void 0, void 0, void 0, function* () {
                 tokens['response-time'](req, res),
                 'ms',
                 '\nrequest: ' + JSON.stringify(req.body),
+                '\nresponse: ' + res.__body_response,
             ].join(' ');
         });
         // @ts-ignore
@@ -84,6 +85,7 @@ const initServer = () => __awaiter(void 0, void 0, void 0, function* () {
             require('./routes/product'),
             require('./routes/chatRoom'),
             require('./routes/campaign'),
+            require('./routes/cart'),
         ]);
         app.set('view engine', 'html');
         app.set('views', utils_1.rootPath + '/../public/');

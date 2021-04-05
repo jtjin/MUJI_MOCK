@@ -10,7 +10,7 @@
 
 // min.get('/mid', (req, res) => {
 // 	axios
-// 		.get('http://arthurstylish.com:1234/api/1.0/order/data')
+// 		.get('http://arthurmuji.com:1234/api/1.0/order/data')
 // 		.then((response) => {
 // 			response.data
 // 				.forEach(async function (element, index) {

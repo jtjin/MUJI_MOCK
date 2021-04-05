@@ -9,6 +9,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
 const typeorm_1 = require("typeorm");
 const Role_1 = require("./Role");
+const Cart_1 = require("./Cart");
 let User = class User {
 };
 __decorate([
@@ -58,6 +59,9 @@ __decorate([
         name: 'role_id',
     })
 ], User.prototype, "role", void 0);
+__decorate([
+    typeorm_1.OneToMany((type) => Cart_1.Cart, (cart) => cart.variant_id)
+], User.prototype, "cart", void 0);
 User = __decorate([
     typeorm_1.Entity({ name: 'user' })
 ], User);

@@ -1,4 +1,4 @@
-import StylishRDB from '../db/index'
+import MujiRDB from '../db/index'
 import { ProductModule } from '../db/modules/ProductModule'
 import { ProductDetailsModule } from '../db/modules/ProductDetailsModule'
 import { ImagesModule } from '../db/modules/ImagesModule'
@@ -38,7 +38,7 @@ class ProductService {
 			)
 			if (resultCache) return JSON.parse(resultCache)
 
-			const productPO = await StylishRDB.productModule.getProductsByTag({
+			const productPO = await MujiRDB.productModule.getProductsByTag({
 				tagId,
 				titleLike,
 				categoryId,
@@ -69,7 +69,10 @@ class ProductService {
 				tag + this.tag + '/getProductsListByTag/redis',
 			)
 			return result
-		} catch (error) {}
+		} catch (error) {
+			console.log(error)
+			throw error
+		}
 	}
 
 	async getProductDetailById(id: string) {
@@ -80,7 +83,7 @@ class ProductService {
 			)
 			if (resultCache) return JSON.parse(resultCache)
 
-			const productPO = await StylishRDB.productModule.getProductDetailById(id)
+			const productPO = await MujiRDB.productModule.getProductDetailById(id)
 
 			if (!productPO) throw new Error(customErrors.PRODUCT_NOT_FOUND.type)
 
@@ -102,7 +105,7 @@ class ProductService {
 		console.log(resultCache)
 		if (resultCache) return JSON.parse(resultCache)
 
-		const productPO = await StylishRDB.productDetailsModule.getProductVariantById(
+		const productPO = await MujiRDB.productDetailsModule.getProductVariantById(
 			id,
 		)
 		await safeAwait(
@@ -115,10 +118,8 @@ class ProductService {
 	async getPhotosByProductId(productId: string) {
 		try {
 			return {
-				images: await StylishRDB.imagesModule.getImagesById(productId),
-				main_image: await StylishRDB.mainImagesModule.getMainImagesById(
-					productId,
-				),
+				images: await MujiRDB.imagesModule.getImagesById(productId),
+				main_image: await MujiRDB.mainImagesModule.getMainImagesById(productId),
 			}
 		} catch (error) {
 			throw error
@@ -140,20 +141,24 @@ class ProductService {
 			colors: string
 			colorsName: string
 			sizes: string
-			spec: string[]
+			spec: string[] | string
 			variants: stringValue
-			mainSpecVariantName: string[]
-			subSpecVariantName: string[]
+			mainSpecVariantName: string[] | string
+			subSpecVariantName: string[] | string
 		},
 		files: any,
 	): Promise<{ productId: string } | undefined> {
 		const productVO = {
 			tag_id: TagsEnum[reqVO.tag],
-			spec: reqVO.spec.join(','),
+			spec: Array.isArray(reqVO.spec) ? reqVO.spec.join(',') : reqVO.spec,
 			category: CategoryEnum[reqVO.category],
 			variants: JSON.parse(reqVO.variants),
-			main_specs: reqVO.mainSpecVariantName.join(','),
-			sub_specs: reqVO.subSpecVariantName.join(','),
+			main_specs: Array.isArray(reqVO.mainSpecVariantName)
+				? reqVO.mainSpecVariantName.join(',')
+				: reqVO.mainSpecVariantName,
+			sub_specs: Array.isArray(reqVO.subSpecVariantName)
+				? reqVO.subSpecVariantName.join(',')
+				: reqVO.subSpecVariantName,
 			...R.pick(
 				['title', 'description', 'texture', 'wash', 'place', 'note', 'story'],
 				reqVO,
@@ -161,7 +166,7 @@ class ProductService {
 		}
 		let productId: string | undefined, productDetailId: string | undefined
 		try {
-			await getConnection('stylish').transaction(async (trans) => {
+			await getConnection('muji').transaction(async (trans) => {
 				const productModule = new ProductModule({ transaction: trans })
 				const insertedResult = await productModule.createProduct(productVO)
 				productId = insertedResult.raw.insertId as string
@@ -204,6 +209,7 @@ class ProductService {
 				category: CategoryEnum[reqVO.category],
 				tag: TagsEnum[reqVO.tag],
 			})
+
 			if (!productId || !productDetailId) return
 			return { productId }
 		} catch (error) {
@@ -275,7 +281,19 @@ class ProductService {
 				tag + this.tag + '/_delProductCacheByTag',
 			)
 
+			const [_errorAll, productAllCacheKeys] = await safeAwait(
+				redisClient.keys(`product:${CategoryEnum.all}}:${tag}:*`),
+				tag + this.tag + '/_delProductCacheByTag',
+			)
+
 			productCacheKeys.forEach(async (key: string) => {
+				await safeAwait(
+					redisClient.del(key),
+					tag + this.tag + '/_delProductCacheByTag/productCacheKeys-forEach',
+				)
+			})
+
+			productAllCacheKeys.forEach(async (key: string) => {
 				await safeAwait(
 					redisClient.del(key),
 					tag + this.tag + '/_delProductCacheByTag/productCacheKeys-forEach',
@@ -288,7 +306,7 @@ class ProductService {
 
 	async updateMainImageById(opt: { id: string; url: string }) {
 		try {
-			await StylishRDB.mainImagesModule.updateMainImageById(opt)
+			await MujiRDB.mainImagesModule.updateMainImageById(opt)
 		} catch (error) {
 			throw error
 		}
@@ -296,7 +314,7 @@ class ProductService {
 
 	async updateImageById(opt: { id: string; url: string }) {
 		try {
-			await StylishRDB.imagesModule.updateImageById(opt)
+			await MujiRDB.imagesModule.updateImageById(opt)
 		} catch (error) {
 			throw error
 		}

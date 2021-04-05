@@ -1,9 +1,9 @@
-import StylishRDB from '../db/index'
+import MujiRDB from '../db/index'
 
 class CampaignService {
 	async getCampaigns() {
 		try {
-			return await StylishRDB.campaignModule.getCampaigns()
+			return await MujiRDB.campaignModule.getCampaigns()
 		} catch (error) {
 			throw error
 		}
@@ -12,7 +12,7 @@ class CampaignService {
 	async createCampaign(opt: { id: string; story: string; url: string }) {
 		const { id, story, url } = opt
 		try {
-			return await StylishRDB.campaignModule.createCampaign(id, story, url)
+			return await MujiRDB.campaignModule.createCampaign(id, story, url)
 		} catch (error) {
 			throw error
 		}

@@ -10,7 +10,6 @@ exports.Product = void 0;
 const Tag_1 = require("./Tag");
 const Category_1 = require("./Category");
 const typeorm_1 = require("typeorm");
-const Hot_1 = require("./Hot");
 const ProductDetails_1 = require("./ProductDetails");
 const Images_1 = require("./Images");
 const MainImages_1 = require("./MainImages");
@@ -76,12 +75,6 @@ __decorate([
         name: 'tag_id',
     })
 ], Product.prototype, "tag_id", void 0);
-__decorate([
-    typeorm_1.ManyToOne((type) => Hot_1.Hot),
-    typeorm_1.JoinColumn({
-        name: 'hot_id',
-    })
-], Product.prototype, "hot_id", void 0);
 __decorate([
     typeorm_1.OneToMany((type) => ProductDetails_1.ProductDetails, (product_details) => product_details.product_id)
 ], Product.prototype, "variants", void 0);

@@ -2,7 +2,7 @@ import config from 'config'
 import logger from './utils/logger'
 import express from 'express'
 import bodyParser from 'body-parser'
-import StylishRDB from './db'
+import MujiRDB from './db'
 import { handleError } from './middleWares/errorHandler'
 import { Server } from 'http'
 import cookieParser from 'cookie-parser'
@@ -22,9 +22,9 @@ const initServer = async () => {
 	try {
 		const server = app.listen(config.get('port'))
 		console.log(`--- [ ENV : ${env}]  ---`)
-		console.log(`--- Stylish server running on port ${config.get('port')} ---`)
+		console.log(`--- MUJI server running on port ${config.get('port')} ---`)
 		await socketIoInit(server)
-		dbConnection = StylishRDB.initDb()
+		dbConnection = MujiRDB.initDb()
 
 		const _exitHandler = terminate(server, {
 			coredump: false,
@@ -62,7 +62,7 @@ const initServer = async () => {
 				tokens['response-time'](req, res),
 				'ms',
 				'\nrequest: ' + JSON.stringify(req.body),
-				// '\nresponse: ' + res.__body_response,
+				'\nresponse: ' + res.__body_response,
 			].join(' ')
 		})
 		// @ts-ignore
@@ -86,6 +86,7 @@ const initServer = async () => {
 			require('./routes/product'),
 			require('./routes/chatRoom'),
 			require('./routes/campaign'),
+			require('./routes/cart'),
 			// require('./routes/checkout'),
 			// require('./routes/store_order_dta'),
 		])
@@ -122,7 +123,7 @@ function terminate(
 			logger.error({ tag, error: err })
 		}
 		server.close(_exit)
-		await StylishRDB.disconnectDb()
+		await MujiRDB.disconnectDb()
 		disconnectRedis()
 		setTimeout(_exit, options.timeout).unref()
 	}

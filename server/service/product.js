@@ -76,7 +76,10 @@ class ProductService {
                 yield safeAsync_1.safeAwait(redisDb_1.redisClient.set(`product:${categoryId}:${tagId}:${titleLike}:${page}`, JSON.stringify(result)), tag + this.tag + '/getProductsListByTag/redis');
                 return result;
             }
-            catch (error) { }
+            catch (error) {
+                console.log(error);
+                throw error;
+            }
         });
     }
     getProductDetailById(id) {
@@ -122,10 +125,14 @@ class ProductService {
     }
     createProduct(reqVO, files) {
         return __awaiter(this, void 0, void 0, function* () {
-            const productVO = Object.assign({ tag_id: Tags_1.TagsEnum[reqVO.tag], spec: reqVO.spec.join(','), category: Category_1.CategoryEnum[reqVO.category], variants: JSON.parse(reqVO.variants), main_specs: reqVO.mainSpecVariantName.join(','), sub_specs: reqVO.subSpecVariantName.join(',') }, R.pick(['title', 'description', 'texture', 'wash', 'place', 'note', 'story'], reqVO));
+            const productVO = Object.assign({ tag_id: Tags_1.TagsEnum[reqVO.tag], spec: Array.isArray(reqVO.spec) ? reqVO.spec.join(',') : reqVO.spec, category: Category_1.CategoryEnum[reqVO.category], variants: JSON.parse(reqVO.variants), main_specs: Array.isArray(reqVO.mainSpecVariantName)
+                    ? reqVO.mainSpecVariantName.join(',')
+                    : reqVO.mainSpecVariantName, sub_specs: Array.isArray(reqVO.subSpecVariantName)
+                    ? reqVO.subSpecVariantName.join(',')
+                    : reqVO.subSpecVariantName }, R.pick(['title', 'description', 'texture', 'wash', 'place', 'note', 'story'], reqVO));
             let productId, productDetailId;
             try {
-                yield typeorm_1.getConnection('stylish').transaction((trans) => __awaiter(this, void 0, void 0, function* () {
+                yield typeorm_1.getConnection('muji').transaction((trans) => __awaiter(this, void 0, void 0, function* () {
                     const productModule = new ProductModule_1.ProductModule({ transaction: trans });
                     const insertedResult = yield productModule.createProduct(productVO);
                     productId = insertedResult.raw.insertId;
@@ -204,7 +211,11 @@ class ProductService {
             const { category, tag } = opt;
             try {
                 const [_error, productCacheKeys] = yield safeAsync_1.safeAwait(redisDb_1.redisClient.keys(`product:${category}:${tag}:*`), tag + this.tag + '/_delProductCacheByTag');
+                const [_errorAll, productAllCacheKeys] = yield safeAsync_1.safeAwait(redisDb_1.redisClient.keys(`product:${Category_1.CategoryEnum.all}}:${tag}:*`), tag + this.tag + '/_delProductCacheByTag');
                 productCacheKeys.forEach((key) => __awaiter(this, void 0, void 0, function* () {
+                    yield safeAsync_1.safeAwait(redisDb_1.redisClient.del(key), tag + this.tag + '/_delProductCacheByTag/productCacheKeys-forEach');
+                }));
+                productAllCacheKeys.forEach((key) => __awaiter(this, void 0, void 0, function* () {
                     yield safeAsync_1.safeAwait(redisDb_1.redisClient.del(key), tag + this.tag + '/_delProductCacheByTag/productCacheKeys-forEach');
                 }));
             }

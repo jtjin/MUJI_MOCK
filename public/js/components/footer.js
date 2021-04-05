@@ -14,7 +14,7 @@ class Footer extends HTMLElement {
 		<footer>
 			<div class="footerView">
 				<div class="link link-0">
-					<div class="item">關於stylish</div>
+					<div class="item">關於muji</div>
 					<div class="item">服務條款</div>
 					<div class="item">隱私政策</div>
 				</div>
@@ -25,15 +25,15 @@ class Footer extends HTMLElement {
 				<div class="social">
 					<a href=""></a>
 					<img
-						src="https://s3-ap-northeast-1.amazonaws.com/white-100.online/Stylish/images/misc_youtube.png"
+						src="https://s3-ap-northeast-1.amazonaws.com/white-100.online/MUJI/images/misc_youtube.png"
 						alt="line"
 					/>
 					<img
-						src="https://s3-ap-northeast-1.amazonaws.com/white-100.online/Stylish/images/misc_instagram.png"
+						src="https://s3-ap-northeast-1.amazonaws.com/white-100.online/MUJI/images/misc_instagram.png"
 						alt="twitter"
 					/>
 					<img
-						src="https://s3-ap-northeast-1.amazonaws.com/white-100.online/Stylish/images/misc_facebook.png"
+						src="https://s3-ap-northeast-1.amazonaws.com/white-100.online/MUJI/images/misc_facebook.png"
 						alt="facebook"
 					/>
 				</div>
@@ -44,4 +44,4 @@ class Footer extends HTMLElement {
 	}
 }
 
-customElements.define('stylish-footer', Footer)
+customElements.define('muji-footer', Footer)

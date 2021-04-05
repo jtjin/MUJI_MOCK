@@ -9,6 +9,7 @@ import {
 	UpdateDateColumn,
 } from 'typeorm'
 import { Product } from './Product'
+import { Cart } from './Cart'
 
 @Entity({ name: 'product_details' })
 export class ProductDetails {
@@ -26,7 +27,7 @@ export class ProductDetails {
 		type: 'int',
 		nullable: false,
 	})
-	price!: number
+	price: number
 
 	@Column({
 		nullable: false,
@@ -51,6 +52,12 @@ export class ProductDetails {
 		name: 'product_id',
 	})
 	product_id: Product | string
+
+	// @ManyToOne((type) => Cart, (cart) => cart.product_id)
+	// @JoinColumn({
+	// 	name: 'cart',
+	// })
+	// cart: Cart | string
 
 	@CreateDateColumn()
 	createdAt!: Date

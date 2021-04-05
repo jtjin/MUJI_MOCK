@@ -4,9 +4,11 @@ import {
 	Column,
 	JoinColumn,
 	ManyToOne,
+	OneToMany,
 } from 'typeorm'
 
 import { Role } from './Role'
+import { Cart } from './Cart'
 
 @Entity({ name: 'user' })
 export class User {
@@ -56,4 +58,7 @@ export class User {
 		name: 'role_id',
 	})
 	role: Role
+
+	@OneToMany((type) => Cart, (cart) => cart.variant_id)
+	cart: Cart[]
 }

@@ -1,19 +1,12 @@
-import { publicApi } from './infra/apis.js'
+import { publicApi, privateApi } from './infra/apis.js'
 import config from './infra/config.js'
 
 let that
 
 class ProductDetailManager {
-	focusedProductInfo = {}
-	totalUserQuantities
-	colorsContainer
-	sizesContainer
-	remainStock
-	productMainInfo
-	cartList = []
-
 	constructor() {
 		that = this
+		this.focusedProductInfo = {}
 		const productId = window.location.search.split('=')[1]
 		this.fetchAndRenderProductDetails(productId)
 		this.mainSpecName = document.querySelector('.mainSpecName')
@@ -33,7 +26,7 @@ class ProductDetailManager {
 
 		document
 			.getElementById('product-add-cart-btn')
-			.addEventListener('click', this.checkout)
+			.addEventListener('click', this.addToCart)
 		document.querySelector('.add').addEventListener('click', () => {
 			this.calc('+')
 		})
@@ -52,10 +45,8 @@ class ProductDetailManager {
 	renderProduct(productInfo) {
 		const {
 			story,
-			colors,
 			images,
 			variants,
-			sizes,
 			specs,
 			main_specs,
 			sub_specs,
@@ -65,8 +56,15 @@ class ProductDetailManager {
 			quantity: 1,
 			stock: variants[0].stock,
 		}
-		this.mainSpecName.innerHTML = specs.split(',')[0].trim()
-		this.subSpecName.innerHTML = specs.split(',')[1].trim()
+
+		const specsArr = specs.split(',')
+
+		if (specsArr.length === 2) {
+			this.mainSpecName.innerHTML = specsArr[0].trim()
+			this.subSpecName.innerHTML = specsArr[1].trim()
+		} else if (specsArr.length === 1) {
+			this.mainSpecName.innerHTML = specsArr[0].trim()
+		}
 
 		main_specs.split(',').forEach((variants, index) => {
 			const variantSpan = document.createElement('span')
@@ -86,26 +84,27 @@ class ProductDetailManager {
 			variantSpan.innerHTML = variants.trim()
 			this.mainSpecVariantContainer.appendChild(variantSpan)
 		})
+		if (sub_specs) {
+			sub_specs.split(',').forEach((variants, index) => {
+				const variantSpan = document.createElement('span')
+				variantSpan.innerHTML = variants.trim()
+				variantSpan.classList.add('itemBlock')
+				variantSpan.addEventListener('click', (e) => {
+					document
+						.querySelector('.subSpecVariantContainer .itemBlockSelected')
+						.classList.remove('itemBlockSelected')
+					e.target.classList.add('itemBlockSelected')
+					this.focusedProductInfo.sub_spec = e.target.innerText
+					this.fetchVariantStock()
+				})
 
-		sub_specs.split(',').forEach((variants, index) => {
-			const variantSpan = document.createElement('span')
-			variantSpan.innerHTML = variants.trim()
-			variantSpan.classList.add('itemBlock')
-			variantSpan.addEventListener('click', (e) => {
-				document
-					.querySelector('.subSpecVariantContainer .itemBlockSelected')
-					.classList.remove('itemBlockSelected')
-				e.target.classList.add('itemBlockSelected')
-				this.focusedProductInfo.sub_spec = e.target.innerText
-				this.fetchVariantStock()
+				if (index === 0) {
+					variantSpan.classList.add('itemBlockSelected')
+					this.focusedProductInfo.sub_spec = variants.trim()
+				}
+				this.subSpecVariantContainer.appendChild(variantSpan)
 			})
-
-			if (index === 0) {
-				variantSpan.classList.add('itemBlockSelected')
-				this.focusedProductInfo.sub_spec = variants.trim()
-			}
-			this.subSpecVariantContainer.appendChild(variantSpan)
-		})
+		}
 
 		this.fetchVariantStock()
 		this.renderBasicProductInfo({ ...productInfo })
@@ -142,37 +141,54 @@ class ProductDetailManager {
 		})
 	}
 
-	checkout() {
-		that.fetchVariantStock()
-		const {
-			id,
-			title,
-			price,
-			main_image,
-			size,
-			color,
-			quantity,
-			stock,
-		} = that.focusedProductInfo
+	async addToCart() {
+		const variantId = await that.fetchVariantStock()
+		const { id: productId, quantity } = that.focusedProductInfo
 
-		that.cartList.push({
-			id,
-			title,
-			price,
-			main_image,
-			size,
-			color,
-			quantity,
-			stock,
+		if (!that.checkLoginStatus()) return
+
+		await privateApi({
+			url: config.api.user.cart,
+			method: 'POST',
+			data: { productId, variantId, quantity },
 		})
 
-		document
-			.querySelector('stylish-nav')
-			.shadowRoot.querySelector('#cart-qty').innerHTML = that.cartList.length
+		that.renderCartListQuantities()
+	}
 
-		localStorage.setItem('cart', JSON.stringify(that.cartList))
-		// TODO: POST CART
-		alert('加入購物車！結帳請點右上角購物車！')
+	async checkLoginStatus() {
+		const localUserInfo = JSON.parse(localStorage.getItem('muji'))
+
+		if (!localUserInfo || !localUserInfo.access_token) {
+			document
+				.querySelector('sign-form')
+				.shadowRoot.querySelector('.registerContainer').style.display = 'block'
+			document
+				.querySelector('sign-form')
+				.shadowRoot.querySelector('.logInFormBackground').style.display =
+				'block'
+			return
+		}
+		return true
+	}
+
+	async renderCartListQuantities() {
+		const nav = document.querySelector('muji-nav').shadowRoot
+		const cartNumber = nav.querySelector('#cart-qty')
+
+		const { data: cartList } = (
+			await privateApi({
+				url: config.api.user.cart,
+				method: 'GET',
+			})
+		).data
+
+		if (cartList) {
+			cartNumber.innerHTML = cartList.length
+		}
+		nav.querySelector('.cart').addEventListener('click', () => {
+			document.querySelector('.paymentForm').style.display = 'flex'
+		})
 	}
 
 	calc(x) {
@@ -213,6 +229,7 @@ class ProductDetailManager {
 		this.codeSpan.innerHTML = data.code
 		this.remainStock.innerHTML = data.stock
 		this.totalUserQuantities.innerHTML = 0
+		return id
 	}
 }
 

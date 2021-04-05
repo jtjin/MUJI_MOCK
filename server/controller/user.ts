@@ -1,4 +1,4 @@
-import { StylishRouter } from '../infra/interfaces/express'
+import { MujiRouter } from '../infra/interfaces/express'
 import config from 'config'
 import UserService from '../service/user'
 import { ErrorType } from '../infra/enums/errorType'
@@ -44,7 +44,7 @@ class User {
 		])
 	}
 
-	register: StylishRouter = async (req, res, next) => {
+	register: MujiRouter = async (req, res, next) => {
 		try {
 			const result = await UserService.register(
 				req.body,
@@ -59,7 +59,7 @@ class User {
 		}
 	}
 
-	logIn: StylishRouter = async (req, res, next) => {
+	logIn: MujiRouter = async (req, res, next) => {
 		try {
 			if (req.body.provider === 'facebook') {
 				const result = await UserService.loginByFB(req.cookies.access_token)
@@ -74,7 +74,7 @@ class User {
 		}
 	}
 
-	profile: StylishRouter = async (req, res, next) => {
+	profile: MujiRouter = async (req, res, next) => {
 		try {
 			if (!req.me) throw new Error(customErrors.USER_NOT_FOUND.type)
 			const result = await UserService.profile(req.me.access_token)

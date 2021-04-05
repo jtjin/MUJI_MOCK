@@ -56,7 +56,7 @@ nav > div > a:hover {
 .feature .cart {
 	width: 44px;
 	height: 44px;
-	background-image: url('https://s3-ap-northeast-1.amazonaws.com/white-100.online/Stylish/images/cart.png');
+	background-image: url('https://s3-ap-northeast-1.amazonaws.com/white-100.online/MUJI/images/cart.png');
 	background-repeat: no-repeat;
 	background-size: 44px 44px;
 	background-position: center center;
@@ -118,7 +118,7 @@ input:-webkit-autofill:active {
 	width: 28px;
 	height: 28px;
 	outline: none;
-	background-image: url('https://s3-ap-northeast-1.amazonaws.com/white-100.online/Stylish/images/search.png');
+	background-image: url('https://s3-ap-northeast-1.amazonaws.com/white-100.online/MUJI/images/search.png');
 	cursor: pointer;
 	background-size: cover;
 	top: 8px;

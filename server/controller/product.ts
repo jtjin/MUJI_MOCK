@@ -1,4 +1,4 @@
-import { StylishRouter } from '../infra/interfaces/express'
+import { MujiRouter } from '../infra/interfaces/express'
 import ProductService from '../service/product'
 import { ErrorType } from '../infra/enums/errorType'
 import { ErrorHandler } from '../middleWares/errorHandler'
@@ -31,7 +31,7 @@ class Product {
 				s3: this.s3SDK,
 				bucket: config.get('aws.s3.productImagesFolder'),
 				acl: 'public-read',
-				key: this.stylishUpload,
+				key: this.mujiUpload,
 			}),
 		})
 
@@ -47,7 +47,7 @@ class Product {
 		])
 	}
 
-	stylishUpload = async (req: any, file: any, cb: any) => {
+	mujiUpload = async (req: any, file: any, cb: any) => {
 		const nowMillionSeconds = new Date().getTime().toString()
 		const fileExtension = file.mimetype.split('/')[1] // get file extension from original file name
 		const customFilesName =
@@ -56,7 +56,7 @@ class Product {
 		cb(null, customFilesName + '.' + fileExtension)
 	}
 
-	createProduct: StylishRouter = async (req, res, next) => {
+	createProduct: MujiRouter = async (req, res, next) => {
 		try {
 			if (!req.files)
 				throw new ErrorHandler(
@@ -69,7 +69,7 @@ class Product {
 				throw new ErrorHandler(
 					500,
 					ErrorType.DatabaseError,
-					'Fail to create new product ...',
+					'Fail to create new product',
 				)
 			const { productId } = result
 			if (productId) await this.renameProductImages({ productId })
@@ -83,7 +83,7 @@ class Product {
 		}
 	}
 
-	getProductDetail: StylishRouter = async (req, res, next) => {
+	getProductDetail: MujiRouter = async (req, res, next) => {
 		try {
 			const { id } = req.query
 			const data = await ProductService.getProductDetailById(id as string)
@@ -95,7 +95,7 @@ class Product {
 		}
 	}
 
-	getProductVariant: StylishRouter = async (req, res, next) => {
+	getProductVariant: MujiRouter = async (req, res, next) => {
 		try {
 			const { id } = req.query
 			const data = await ProductService.getProductVariantById(id as string)
@@ -106,7 +106,7 @@ class Product {
 		}
 	}
 
-	getProductsListByTag: StylishRouter = async (req, res, next) => {
+	getProductsListByTag: MujiRouter = async (req, res, next) => {
 		const query: {
 			category?: CategoryEnum
 			keyword?: string
@@ -116,15 +116,18 @@ class Product {
 
 		const { paging = '1', tag = 'all', category = 'all', keyword } = query
 
+		const data = await ProductService.getProductsListByTag({
+			titleLike: keyword,
+			tagId: TagsEnum[tag] as string,
+			page: paging as string,
+			categoryId: CategoryEnum[category] as string,
+		})
+
 		try {
-			res.send(
-				await ProductService.getProductsListByTag({
-					titleLike: keyword,
-					tagId: TagsEnum[tag] as string,
-					page: paging as string,
-					categoryId: CategoryEnum[category] as string,
-				}),
-			)
+			res.send({
+				result: 'success',
+				...data,
+			})
 		} catch (error) {
 			logger.error({ tag: tag + '/getProductsListByTag', error })
 			next(error)
@@ -171,7 +174,7 @@ class Product {
 				.copyObject({
 					Bucket: config.get('aws.s3.bucket'),
 					CopySource: config.get('aws.s3.productImagesFolder') + '/' + oldKey,
-					Key: 'Stylish/products/' + newKey,
+					Key: 'MUJI/products/' + newKey,
 					ACL: 'public-read',
 				})
 				.promise()
