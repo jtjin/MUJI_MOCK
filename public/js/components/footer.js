@@ -25,19 +25,19 @@ class Footer extends HTMLElement {
 				<div class="social">
 					<a href=""></a>
 					<img
-						src="https://s3-ap-northeast-1.amazonaws.com/white-100.online/Stylish/images/line.png"
+						src="https://s3-ap-northeast-1.amazonaws.com/white-100.online/Stylish/images/misc_youtube.png"
 						alt="line"
 					/>
 					<img
-						src="https://s3-ap-northeast-1.amazonaws.com/white-100.online/Stylish/images/twitter.png"
+						src="https://s3-ap-northeast-1.amazonaws.com/white-100.online/Stylish/images/misc_instagram.png"
 						alt="twitter"
 					/>
 					<img
-						src="https://s3-ap-northeast-1.amazonaws.com/white-100.online/Stylish/images/facebook.png"
+						src="https://s3-ap-northeast-1.amazonaws.com/white-100.online/Stylish/images/misc_facebook.png"
 						alt="facebook"
 					/>
 				</div>
-				<div class="copyright">© 2018. All rights reserved.</div>
+				<div class="copyright">© 2021. All rights reserved.</div>
 			</div>
 		</footer>
 		`

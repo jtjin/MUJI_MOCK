@@ -34,7 +34,7 @@ class Header extends HTMLElement {
                 <div class="feature">
                     <form action="./" class="item">
                         <input type="text" class="search" name="keyword">
-                        <button type="submit" class="keyword" id="keywordBtn"></button>
+                        <button type="submit" class="keyword" id="keywordSearchBtn"></button>
                     </form>
 
                     <a class="item cart">
@@ -47,10 +47,8 @@ class Header extends HTMLElement {
                         </a>
                     </div>
                 </div>
-
             </header>
-
-            <div class="bar"></div>
+             
 
             <nav class="mobileNav">
                 <div class="tag tagBorder">

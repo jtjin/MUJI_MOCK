@@ -95,6 +95,17 @@ class Product {
 		}
 	}
 
+	getProductVariant: StylishRouter = async (req, res, next) => {
+		try {
+			const { id } = req.query
+			const data = await ProductService.getProductVariantById(id as string)
+			res.send({ result: 'success', data })
+		} catch (error) {
+			logger.error({ tag: tag + '/getProductVariant', error })
+			next(error)
+		}
+	}
+
 	getProductsListByTag: StylishRouter = async (req, res, next) => {
 		const query: {
 			category?: CategoryEnum

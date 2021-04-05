@@ -16,12 +16,18 @@ class ProductDetailManager {
 		that = this
 		const productId = window.location.search.split('=')[1]
 		this.fetchAndRenderProductDetails(productId)
-
+		this.mainSpecName = document.querySelector('.mainSpecName')
+		this.subSpecName = document.querySelector('.subSpecName')
+		this.mainSpecVariantContainer = document.querySelector(
+			'.mainSpecVariantContainer',
+		)
+		this.subSpecVariantContainer = document.querySelector(
+			'.subSpecVariantContainer',
+		)
 		this.totalUserQuantities = document.querySelector('.value')
-		this.colorsContainer = document.querySelector('.colors')
-		this.sizesContainer = document.querySelector('.sizes')
+
 		this.productMainInfo = document.querySelector('.productMainInfo')
-		this.remainStock = document.querySelector('.remainStock')
+		this.remainStock = document.querySelector('.remainStock > span')
 		document
 			.getElementById('product-add-cart-btn')
 			.addEventListener('click', this.checkout)
@@ -33,32 +39,74 @@ class ProductDetailManager {
 		})
 	}
 
-	connectedCallback() {}
-
 	async fetchAndRenderProductDetails(productId) {
 		const { data } = (
 			await publicApi.get(config.api.product.details + `?id=${productId}`)
 		).data
-		console.log('data-->', data)
 		this.renderProduct(data)
 	}
 
 	renderProduct(productInfo) {
-		// FIXME:
-		const { story, colors, images, variants, sizes } = productInfo
-
+		const {
+			story,
+			colors,
+			images,
+			variants,
+			sizes,
+			specs,
+			main_specs,
+			sub_specs,
+		} = productInfo
 		this.focusedProductInfo = {
 			...productInfo,
-			size: sizes[0],
-			color: colors[0].code,
 			quantity: 1,
 			stock: variants[0].stock,
 		}
+		this.mainSpecName.innerHTML = specs.split(',')[0].trim()
+		this.subSpecName.innerHTML = specs.split(',')[1].trim()
+
+		main_specs.split(',').forEach((variants, index) => {
+			const variantSpan = document.createElement('span')
+			variantSpan.classList.add('itemBlock')
+			variantSpan.addEventListener('click', (e) => {
+				document
+					.querySelector('.mainSpecVariantContainer .itemBlockSelected')
+					.classList.remove('itemBlockSelected')
+				e.target.classList.add('itemBlockSelected')
+				this.focusedProductInfo.main_spec = e.target.innerText
+				console.log(this.focusedProductInfo.main_spec)
+				this.fetchVariantStock()
+			})
+			if (index === 0) {
+				variantSpan.classList.add('itemBlockSelected')
+				this.focusedProductInfo.main_spec = variants.trim()
+			}
+			variantSpan.innerHTML = variants.trim()
+			this.mainSpecVariantContainer.appendChild(variantSpan)
+		})
+
+		sub_specs.split(',').forEach((variants, index) => {
+			const variantSpan = document.createElement('span')
+			variantSpan.innerHTML = variants.trim()
+			variantSpan.classList.add('itemBlock')
+			variantSpan.addEventListener('click', (e) => {
+				document
+					.querySelector('.subSpecVariantContainer .itemBlockSelected')
+					.classList.remove('itemBlockSelected')
+				e.target.classList.add('itemBlockSelected')
+				this.focusedProductInfo.sub_spec = e.target.innerText
+				this.fetchVariantStock()
+			})
+
+			if (index === 0) {
+				variantSpan.classList.add('itemBlockSelected')
+				this.focusedProductInfo.sub_spec = variants.trim()
+			}
+			this.subSpecVariantContainer.appendChild(variantSpan)
+		})
 
 		this.fetchVariantStock()
 		this.renderBasicProductInfo({ ...productInfo })
-		// this.renderColorVariant(colors)
-		// this.renderSizesVariant(sizes)
 		this.renderAdvertisingProductInfo(story, images)
 	}
 
@@ -67,75 +115,29 @@ class ProductDetailManager {
 			id,
 			title,
 			description,
-			price,
 			texture,
 			wash,
 			place,
 			main_image,
 		} = productInfo
 
-		document.querySelector('.id').innerHTML = id
 		document.querySelector('.name').innerHTML = title
 		document.querySelector('.description').innerHTML = description
-		document.querySelector('.price').innerHTML = 'TWD.' + price
 		document.querySelector('.texture').innerHTML = texture
-		document.querySelector('.wash').innerHTML = '清洗 : ' + wash
+		if (wash) document.querySelector('.wash').innerHTML = '清洗 : ' + wash
 		document.querySelector('.place').innerHTML = '產地 : ' + place
 		document
 			.querySelector('.main_image')
-			.setAttribute('src', config.images.product + main_image)
+			.setAttribute('src', config.images.product + main_image.url)
 	}
 
 	renderAdvertisingProductInfo(story, images) {
 		document.querySelector('.story').innerHTML = story
 		images.forEach((image) => {
 			const productImg = document.createElement('img')
-			productImg.setAttribute('src', config.images.product + image)
+			productImg.setAttribute('src', config.images.product + image.url)
 			this.productMainInfo.appendChild(productImg)
 		})
-	}
-
-	renderColorVariant(colorsVariantsInfo) {
-		colorsVariantsInfo.forEach((colorInfo) => {
-			const colorsTemp = document.getElementsByTagName('template')[0]
-			const colorsTempClone = colorsTemp.content.cloneNode(true)
-			const colorDiv = colorsTempClone.querySelector('.color')
-			colorDiv.setAttribute('style', `background-color:#${colorInfo.code}`)
-			colorDiv.addEventListener('click', this._selectColor)
-			colorDiv.innerHTML = colorInfo.code
-			this.colorsContainer.appendChild(colorsTempClone)
-		})
-		document.querySelector('.color').setAttribute('id', 'chosenColor')
-	}
-
-	_selectColor() {
-		document.querySelectorAll('.color').forEach((color) => {
-			color.setAttribute('id', '')
-		})
-		this.setAttribute('id', 'chosenColor')
-		that.focusedProductInfo.color = this.innerHTML
-		that.fetchVariantStock()
-	}
-
-	renderSizesVariant(sizeVariantsInfo) {
-		sizeVariantsInfo.forEach((size) => {
-			const sizesTemp = document.getElementsByTagName('template')[1]
-			const sizesTempClone = sizesTemp.content.cloneNode(true)
-			const sizeDiv = sizesTempClone.querySelector('.size')
-			sizeDiv.addEventListener('click', this._selectSize)
-			sizeDiv.innerHTML = size
-			this.sizesContainer.appendChild(sizesTempClone)
-		})
-		document.querySelector('.size').setAttribute('id', 'chosenSize')
-	}
-
-	_selectSize() {
-		document.querySelectorAll('.size').forEach((size) => {
-			size.setAttribute('id', '')
-		})
-		this.setAttribute('id', 'chosenSize')
-		that.focusedProductInfo.size = this.innerHTML
-		that.fetchVariantStock()
 	}
 
 	checkout() {
@@ -165,7 +167,9 @@ class ProductDetailManager {
 		document
 			.querySelector('stylish-nav')
 			.shadowRoot.querySelector('#cart-qty').innerHTML = that.cartList.length
+
 		localStorage.setItem('cart', JSON.stringify(that.cartList))
+		// TODO: POST CART
 		alert('加入購物車！結帳請點右上角購物車！')
 	}
 
@@ -189,14 +193,23 @@ class ProductDetailManager {
 	}
 
 	fetchVariantStock() {
-		const { stock } = this.focusedProductInfo.variants.find((variant) => {
-			if (
-				variant.color_code == this.focusedProductInfo.color &&
-				variant.size == this.focusedProductInfo.size
-			) {
-				return variant
-			}
-		})
+		// TODO : FETCH Variant info
+		const { price, code, stock, id } = this.focusedProductInfo.variant.find(
+			(variant) => {
+				if (
+					variant.main_spec == this.focusedProductInfo.main_spec &&
+					variant.sub_spec == this.focusedProductInfo.sub_spec
+				) {
+					return variant
+				}
+			},
+		)
+		console.log(price, code, stock)
+			const { data } = (
+			await publicApi.get(config.api.product.variant + `?id=${productId}`)
+		).data
+		document.querySelector('.price > span').innerHTML = price
+		document.querySelector('.code > span').innerHTML = code
 		this.remainStock.innerHTML = stock
 		this.totalUserQuantities.innerHTML = 0
 	}

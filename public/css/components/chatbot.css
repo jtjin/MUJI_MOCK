@@ -2,17 +2,6 @@
 @import './animations/loadingBouncingBall.css';
 @import './animations/float.css';
 
-:root {
-	--dark-color-a: #6d6c6a;
-	--dark-color-b: rgb(145, 138, 132);
-	--dark-color-c: #3f3a3a;
-	--light-color: #f0f0f0;
-	--success-color: #5cb85c;
-	--error-color: #d9534f;
-	--pop-color: #6aae6a;
-	--transparent-grey: rgba(255, 255, 255, 0.5);
-}
-
 *:focus {
 	outline: none;
 }

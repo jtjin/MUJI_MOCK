@@ -1,20 +1,21 @@
 header {
+	padding: 10px 15px;
+	margin-bottom: 10px;
 	width: 100%;
 	display: flex;
 	height: 80px;
-	background-color: #fff;
 	align-items: center;
 }
 
 .logo {
-	width: 270px;
+	width: 150px;
 	margin-left: 30px;
 	padding: 5px;
 }
 
 .logo img {
 	width: auto;
-	height: 48px;
+	height: 30px;
 }
 
 nav {
@@ -32,12 +33,12 @@ nav > div {
 	line-height: normal;
 	letter-spacing: 30px;
 	text-align: left;
-	color: #3f3a3a;
+	color: var(--dark-color-a);
 }
 
 nav > div > a {
 	text-decoration: none;
-	color: #3f3a3a;
+	color: var(--dark-color-a);
 }
 
 nav > div > a:hover {
@@ -48,12 +49,8 @@ nav > div > a:hover {
 	display: none;
 }
 
-.feature {
-	flex: none;
-	display: flex;
-	align-items: center;
-	padding: 5px;
-	margin-left: auto;
+.member {
+	cursor: pointer;
 }
 
 .feature .cart {
@@ -65,8 +62,16 @@ nav > div > a:hover {
 	background-position: center center;
 }
 
-.member {
-	cursor: pointer;
+.feature {
+	display: flex;
+
+	margin-right: 5px;
+	width: 100%;
+}
+
+.feature form {
+	display: flex;
+	width: 80%;
 }
 
 .feature input.search:focus {
@@ -78,24 +83,21 @@ nav > div > a:hover {
 	background-color: transparent;
 }
 
-#keywordBtn {
-	position: absolute;
+.feature input.search {
+	width: 100%;
+	margin-right: 20px;
+	padding: 10px;
+	border: 1px solid #979797;
+	border-radius: 5px;
+	background-repeat: no-repeat;
+	background-size: 40px 40px;
+	background-position: 98% center;
+	position: relative;
 	z-index: 1;
-	display: inline-block;
-	border: transparent;
-	background-color: transparent;
-	background-position: center;
-	width: 28px;
-	height: 28px;
-	left: 65%;
-	outline: none;
-	background-image: url('https://s3-ap-northeast-1.amazonaws.com/white-100.online/Stylish/images/search.png');
-	cursor: pointer;
-	background-size: cover;
-}
-
-input:-webkit-autofill {
-	background-color: transparent;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	-ms-border-radius: 5px;
+	-o-border-radius: 5px;
 }
 
 input:-webkit-autofill,
@@ -106,29 +108,39 @@ input:-webkit-autofill:active {
 	transition: color 99999s ease-out, background-color 99999s ease-out;
 }
 
+#keywordSearchBtn {
+	position: absolute;
+	z-index: 1;
+	display: inline-block;
+	border: transparent;
+	background-color: transparent;
+	background-position: center;
+	width: 28px;
+	height: 28px;
+	outline: none;
+	background-image: url('https://s3-ap-northeast-1.amazonaws.com/white-100.online/Stylish/images/search.png');
+	cursor: pointer;
+	background-size: cover;
+	top: 8px;
+	right: 30px;
+	border-left: 1px solid var(--dark-color-b);
+}
+
+input:-webkit-autofill {
+	background-color: transparent;
+}
+
 .item {
 	margin-left: 8px;
 	position: relative;
 }
 
 .bar {
-	background-color: #3f3a3a;
+	background-color: var(--dark-color-a);
 	height: 20px;
 	width: 100%;
 }
-.feature input.search {
-	width: 130px;
-	margin-right: 20px;
-	padding: 10px;
-	padding-right: 40px;
-	border: 1px solid #979797;
-	border-radius: 20px;
-	background-repeat: no-repeat;
-	background-size: 40px 40px;
-	background-position: 98% center;
-	position: relative;
-	z-index: 1;
-}
+
 .tagBorder {
 	border-right: #3f3a3a 1px solid;
 }
@@ -136,7 +148,7 @@ input:-webkit-autofill:active {
 .qty {
 	letter-spacing: 1px;
 	text-align: center;
-	background-color: #8b572a;
+	background-color: var(--dark-color-a);
 	font-weight: bold;
 	border-radius: 50%;
 	color: #ffffff;

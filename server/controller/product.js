@@ -63,6 +63,17 @@ class Product {
                 next(error);
             }
         });
+        this.getProductVariant = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { id } = req.query;
+                const data = yield product_1.default.getProductVariantById(id);
+                res.send({ result: 'success', data });
+            }
+            catch (error) {
+                logger_1.default.error({ tag: tag + '/getProductVariant', error });
+                next(error);
+            }
+        });
         this.getProductsListByTag = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             const query = req.query;
             const { paging = '1', tag = 'all', category = 'all', keyword } = query;

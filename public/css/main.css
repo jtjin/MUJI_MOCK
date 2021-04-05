@@ -1,3 +1,12 @@
+:root {
+	--dark-color-a: #333333;
+	--dark-color-b: rgb(145, 138, 132);
+	--light-color: #f0f0f0;
+	--success-color: #5cb85c;
+	--error-color: #d9534f;
+	--pop-color: #6aae6a;
+	--transparent-grey: rgba(255, 255, 255, 0.5);
+}
 body {
 	margin: 0px;
 	font-size: 16px;

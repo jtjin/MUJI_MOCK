@@ -8,6 +8,7 @@ import { Router } from 'express'
 const router = Router()
 
 router.get('/products/details', Product.getProductDetail)
+router.get('/products/variant', Product.getProductVariant)
 router.get('/products/', Product.getProductsListByTag)
 
 // TODO: Move this to admin folder

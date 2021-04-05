@@ -19,6 +19,7 @@ const config = {
 		product: {
 			list: globalVersion + 'products/',
 			details: globalVersion + 'products/details',
+			variant: globalVersion + 'products/variant',
 		},
 
 		marketing: {
