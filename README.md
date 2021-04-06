@@ -72,8 +72,14 @@
 
 ## Architecture
 
-![Architecture.png](https://i.imgur.com/NafYh0Q.png)
+![Architecture.png](https://i.imgur.com/kVIbucv.jpg)
+
 
 ## Contact
 
 Email: t100210022002@gmail.com
+
+
+> ##### 版權聲明
+> ##### 本專案所有圖片素材均來自於無印良品官網，如有侵權敬請告知，將立即刪除
+
