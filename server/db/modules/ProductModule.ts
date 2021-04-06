@@ -28,18 +28,26 @@ export class ProductModule {
 	}
 
 	async getAllProducts() {
-		return await this.Repo.createQueryBuilder().getMany()
+		try {
+			return await this.Repo.createQueryBuilder().getMany()
+		} catch (error) {
+			throw error
+		}
 	}
 
 	async getProductDetailById(id: string) {
-		return this.Repo.createQueryBuilder('product')
-			.leftJoinAndSelect('product.variants', 'variants')
-			.leftJoinAndSelect('product.images', 'images')
-			.leftJoinAndSelect('product.main_image', 'main_image')
-			.where('product.id = :id', {
-				id,
-			})
-			.getOne()
+		try {
+			return this.Repo.createQueryBuilder('product')
+				.leftJoinAndSelect('product.variants', 'variants')
+				.leftJoinAndSelect('product.images', 'images')
+				.leftJoinAndSelect('product.main_image', 'main_image')
+				.where('product.id = :id', {
+					id,
+				})
+				.getOne()
+		} catch (error) {
+			throw error
+		}
 	}
 
 	async getProductsByTag(opt: {
@@ -49,49 +57,52 @@ export class ProductModule {
 		pagination?: { offset?: number; limit?: number }
 		orderBy?: { sort: string; order: 'DESC' | 'ASC' }
 	}) {
-		const { tagId, titleLike, pagination, orderBy, categoryId } = opt
+		try {
+			const { tagId, titleLike, pagination, orderBy, categoryId } = opt
 
-		let query = this.Repo.createQueryBuilder('product')
-			.leftJoinAndSelect('product.variants', 'variants')
-			.leftJoinAndSelect('product.images', 'images')
-			.leftJoinAndSelect('product.main_image', 'main_image')
+			let query = this.Repo.createQueryBuilder('product')
+				.leftJoinAndSelect('product.variants', 'variants')
+				.leftJoinAndSelect('product.images', 'images')
+				.leftJoinAndSelect('product.main_image', 'main_image')
 
-		if (categoryId) {
-			query = query.andWhere('product.category = :categoryId', {
-				categoryId,
-			})
+			if (categoryId) {
+				query = query.andWhere('product.category = :categoryId', {
+					categoryId,
+				})
+			}
+			if (tagId) {
+				query = query.andWhere('product.tag_id = :tagId', {
+					tagId,
+				})
+			}
+
+			if (titleLike) {
+				query = query.andWhere('product.title like :title', {
+					title: `%${titleLike}%`,
+				})
+			}
+
+			if (orderBy) {
+				const { sort = 'id', order = 'DESC' } = orderBy
+				query = query.orderBy(sort, order)
+			}
+
+			if (pagination) {
+				const { limit, offset } = pagination
+				if (limit) query = query.take(limit)
+				if (offset) query = query.take(limit).skip(offset)
+			}
+
+			const result = await query.getMany()
+			return result
+		} catch (error) {
+			throw error
 		}
-		if (tagId) {
-			query = query.andWhere('product.tag_id = :tagId', {
-				tagId,
-			})
-		}
-
-		if (titleLike) {
-			query = query.andWhere('product.title like :title', {
-				title: `%${titleLike}%`,
-			})
-		}
-
-		if (orderBy) {
-			const { sort = 'id', order = 'DESC' } = orderBy
-			query = query.orderBy(sort, order)
-		}
-
-		if (pagination) {
-			const { limit, offset } = pagination
-			if (limit) query = query.take(limit)
-			if (offset) query = query.take(limit).skip(offset)
-		}
-
-		const result = await query.getMany()
-		return result
 	}
 
 	async createProduct(values: {
 		title: string
 		description: string
-		// price: number
 		texture: string
 		wash: string
 		place: string
@@ -101,23 +112,30 @@ export class ProductModule {
 		tag_id: string
 		category: string
 	}): Promise<InsertResult> {
-		console.log('DB--> createProduct ->', values)
-		return await this.Repo.createQueryBuilder()
-			.insert()
-			.into(Product)
-			.values(values)
-			.execute()
+		try {
+			return await this.Repo.createQueryBuilder()
+				.insert()
+				.into(Product)
+				.values(values)
+				.execute()
+		} catch (error) {
+			throw error
+		}
 	}
 
 	async updateProductById(opt: {
 		id: string
 		value: any
 	}): Promise<UpdateResult> {
-		const { id, value } = opt
-		return await this.Repo.createQueryBuilder()
-			.update(Product)
-			.set(value)
-			.where('id = :id', { id })
-			.execute()
+		try {
+			const { id, value } = opt
+			return await this.Repo.createQueryBuilder()
+				.update(Product)
+				.set(value)
+				.where('id = :id', { id })
+				.execute()
+		} catch (error) {
+			throw error
+		}
 	}
 }

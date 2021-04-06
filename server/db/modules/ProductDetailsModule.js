@@ -25,25 +25,40 @@ class ProductDetailsModule {
     }
     getAllProductDetails() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.Repo.createQueryBuilder().getMany();
+            try {
+                return yield this.Repo.createQueryBuilder().getMany();
+            }
+            catch (error) {
+                throw error;
+            }
         });
     }
     getProductVariantById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.Repo.createQueryBuilder()
-                .where('id = :id', {
-                id,
-            })
-                .getOne();
+            try {
+                return yield this.Repo.createQueryBuilder()
+                    .where('id = :id', {
+                    id,
+                })
+                    .getOne();
+            }
+            catch (error) {
+                throw error;
+            }
         });
     }
     createProductDetails(values) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.Repo.createQueryBuilder()
-                .insert()
-                .into(ProductDetails_1.ProductDetails)
-                .values(values)
-                .execute();
+            try {
+                return yield this.Repo.createQueryBuilder()
+                    .insert()
+                    .into(ProductDetails_1.ProductDetails)
+                    .values(values)
+                    .execute();
+            }
+            catch (error) {
+                throw error;
+            }
         });
     }
 }

@@ -25,9 +25,12 @@ export class RoleModule {
 	}
 
 	async getRoleById(id: Role | string): Promise<Role | undefined> {
-		console.log('id=>', id)
-		return await this.Repo.createQueryBuilder('role')
-			.where('role.id = :id', { id })
-			.getOne()
+		try {
+			return await this.Repo.createQueryBuilder('role')
+				.where('role.id = :id', { id })
+				.getOne()
+		} catch (error) {
+			throw error
+		}
 	}
 }

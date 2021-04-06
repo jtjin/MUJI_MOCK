@@ -19,26 +19,37 @@ class ChatRoomService {
 		}
 	}
 	getPinMessages = async (opt: { adminId: string }) => {
-		const { adminId } = opt
-		return await MujiRDB.pinMessagesModule.getPinMessagesByAdminId({
-			adminId,
-		})
+		try {
+			const { adminId } = opt
+			return await MujiRDB.pinMessagesModule.getPinMessagesByAdminId({
+				adminId,
+			})
+		} catch (error) {
+			throw error
+		}
 	}
 
 	createPinMessage = async (opt: { adminId: string; message: string }) => {
-		const { adminId, message } = opt
-		console.log('adminId, message-->', adminId, message)
-		return await MujiRDB.pinMessagesModule.createPinMessages([
-			{ user_id: adminId, message },
-		])
+		try {
+			const { adminId, message } = opt
+			return await MujiRDB.pinMessagesModule.createPinMessages([
+				{ user_id: adminId, message },
+			])
+		} catch (error) {
+			throw error
+		}
 	}
 
 	deletePinMessage = async (opt: { adminId: string; message: string }) => {
-		const { adminId, message } = opt
-		return await MujiRDB.pinMessagesModule.deletePinMessage({
-			adminId,
-			message,
-		})
+		try {
+			const { adminId, message } = opt
+			return await MujiRDB.pinMessagesModule.deletePinMessage({
+				adminId,
+				message,
+			})
+		} catch (error) {
+			throw error
+		}
 	}
 }
 

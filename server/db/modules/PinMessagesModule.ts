@@ -21,43 +21,59 @@ export class PinMessagesModule {
 	async getPinMessagesByAdminId(opt: {
 		adminId: string
 	}): Promise<PinMessages[]> {
-		const { adminId } = opt
-		return await this.Repo.createQueryBuilder('')
-			.where('user_id = :adminId', {
-				adminId,
-			})
-			.getMany()
+		try {
+			const { adminId } = opt
+			return await this.Repo.createQueryBuilder('')
+				.where('user_id = :adminId', {
+					adminId,
+				})
+				.getMany()
+		} catch (error) {
+			throw error
+		}
 	}
 
 	async deletePinMessage(opt: { adminId: string; message: string }) {
-		const { adminId, message } = opt
-		return await this.Repo.createQueryBuilder()
-			.delete()
-			.from(PinMessages)
-			.where('user_id = :adminId', {
-				adminId,
-			})
-			.andWhere('message = :message', {
-				message,
-			})
-			.execute()
+		try {
+			const { adminId, message } = opt
+			return await this.Repo.createQueryBuilder()
+				.delete()
+				.from(PinMessages)
+				.where('user_id = :adminId', {
+					adminId,
+				})
+				.andWhere('message = :message', {
+					message,
+				})
+				.execute()
+		} catch (error) {
+			throw error
+		}
 	}
 
 	async createPinMessages(
 		values: Partial<PinMessages>[],
 	): Promise<InsertResult> {
-		return await this.Repo.createQueryBuilder()
-			.insert()
-			.into(PinMessages)
-			.values(values)
-			.execute()
+		try {
+			return await this.Repo.createQueryBuilder()
+				.insert()
+				.into(PinMessages)
+				.values(values)
+				.execute()
+		} catch (error) {
+			throw error
+		}
 	}
 
 	async updateRoomMessages(room: string, message: string) {
-		return await this.Repo.createQueryBuilder()
-			.update(PinMessages)
-			.set({ message })
-			.where('room = :room', { room })
-			.execute()
+		try {
+			return await this.Repo.createQueryBuilder()
+				.update(PinMessages)
+				.set({ message })
+				.where('room = :room', { room })
+				.execute()
+		} catch (error) {
+			throw error
+		}
 	}
 }

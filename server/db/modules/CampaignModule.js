@@ -25,18 +25,28 @@ class CampaignModule {
     }
     getCampaigns() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.Repo.createQueryBuilder('c')
-                .select('c.id , c.story, c.url AS picture')
-                .getRawMany();
+            try {
+                return yield this.Repo.createQueryBuilder('c')
+                    .select('c.id , c.story, c.url AS picture')
+                    .getRawMany();
+            }
+            catch (error) {
+                throw error;
+            }
         });
     }
     createCampaign(id, story, url) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.Repo.createQueryBuilder()
-                .insert()
-                .into(Campaign_1.Campaign)
-                .values([{ id, story, url }])
-                .execute();
+            try {
+                return yield this.Repo.createQueryBuilder()
+                    .insert()
+                    .into(Campaign_1.Campaign)
+                    .values([{ id, story, url }])
+                    .execute();
+            }
+            catch (error) {
+                throw error;
+            }
         });
     }
 }

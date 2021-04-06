@@ -79,20 +79,24 @@ export class CartModule {
 		productId: string
 		userId: string
 	}): Promise<DeleteResult> {
-		const { variantId, userId, productId } = opt
-		return await this.Repo.createQueryBuilder()
-			.delete()
-			.from(Cart)
-			.where('user_id = :userId', {
-				userId,
-			})
-			.andWhere('variant_id = :variantId', {
-				variantId,
-			})
-			.andWhere('product_id = :productId', {
-				productId,
-			})
-			.execute()
+		try {
+			const { variantId, userId, productId } = opt
+			return await this.Repo.createQueryBuilder()
+				.delete()
+				.from(Cart)
+				.where('user_id = :userId', {
+					userId,
+				})
+				.andWhere('variant_id = :variantId', {
+					variantId,
+				})
+				.andWhere('product_id = :productId', {
+					productId,
+				})
+				.execute()
+		} catch (error) {
+			throw error
+		}
 	}
 
 	async updateItemQuantityById(opt: {
@@ -101,14 +105,18 @@ export class CartModule {
 		userId: string
 		quantity: number
 	}): Promise<UpdateResult> {
-		const { userId, quantity, variantId, productId } = opt
-		console.log(userId, quantity, variantId, productId)
-		return await this.Repo.createQueryBuilder('cart')
-			.update(Cart)
-			.where('user_id = :userId', { userId })
-			.andWhere('product_detail_id = :variantId', { variantId })
-			.andWhere('product_id = :productId', { productId })
-			.set({ quantity: () => `quantity + ${quantity}` })
-			.execute()
+		try {
+			const { userId, quantity, variantId, productId } = opt
+
+			return await this.Repo.createQueryBuilder('cart')
+				.update(Cart)
+				.where('user_id = :userId', { userId })
+				.andWhere('product_detail_id = :variantId', { variantId })
+				.andWhere('product_id = :productId', { productId })
+				.set({ quantity: () => `quantity + ${quantity}` })
+				.execute()
+		} catch (error) {
+			throw error
+		}
 	}
 }

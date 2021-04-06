@@ -25,45 +25,65 @@ class PinMessagesModule {
     }
     getPinMessagesByAdminId(opt) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { adminId } = opt;
-            return yield this.Repo.createQueryBuilder('')
-                .where('user_id = :adminId', {
-                adminId,
-            })
-                .getMany();
+            try {
+                const { adminId } = opt;
+                return yield this.Repo.createQueryBuilder('')
+                    .where('user_id = :adminId', {
+                    adminId,
+                })
+                    .getMany();
+            }
+            catch (error) {
+                throw error;
+            }
         });
     }
     deletePinMessage(opt) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { adminId, message } = opt;
-            return yield this.Repo.createQueryBuilder()
-                .delete()
-                .from(PinMessages_1.PinMessages)
-                .where('user_id = :adminId', {
-                adminId,
-            })
-                .andWhere('message = :message', {
-                message,
-            })
-                .execute();
+            try {
+                const { adminId, message } = opt;
+                return yield this.Repo.createQueryBuilder()
+                    .delete()
+                    .from(PinMessages_1.PinMessages)
+                    .where('user_id = :adminId', {
+                    adminId,
+                })
+                    .andWhere('message = :message', {
+                    message,
+                })
+                    .execute();
+            }
+            catch (error) {
+                throw error;
+            }
         });
     }
     createPinMessages(values) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.Repo.createQueryBuilder()
-                .insert()
-                .into(PinMessages_1.PinMessages)
-                .values(values)
-                .execute();
+            try {
+                return yield this.Repo.createQueryBuilder()
+                    .insert()
+                    .into(PinMessages_1.PinMessages)
+                    .values(values)
+                    .execute();
+            }
+            catch (error) {
+                throw error;
+            }
         });
     }
     updateRoomMessages(room, message) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.Repo.createQueryBuilder()
-                .update(PinMessages_1.PinMessages)
-                .set({ message })
-                .where('room = :room', { room })
-                .execute();
+            try {
+                return yield this.Repo.createQueryBuilder()
+                    .update(PinMessages_1.PinMessages)
+                    .set({ message })
+                    .where('room = :room', { room })
+                    .execute();
+            }
+            catch (error) {
+                throw error;
+            }
         });
     }
 }

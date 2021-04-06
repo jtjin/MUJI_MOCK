@@ -42,124 +42,154 @@ const UserRole_1 = require("../infra/enums/UserRole");
 class User {
     loginByEmail(reqVo) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { email, password } = reqVo;
-            const userPO = yield index_1.default.userModule.getUserByEmail(email);
-            if (!userPO)
-                throw new Error(customErrors_1.customErrors.USER_NOT_FOUND.type);
-            if (this._validatePassword(password, userPO.password)) {
-                throw new Error(customErrors_1.customErrors.FORBIDDEN.type);
+            try {
+                const { email, password } = reqVo;
+                const userPO = yield index_1.default.userModule.getUserByEmail(email);
+                if (!userPO)
+                    throw new Error(customErrors_1.customErrors.USER_NOT_FOUND.type);
+                if (this._validatePassword(password, userPO.password)) {
+                    throw new Error(customErrors_1.customErrors.FORBIDDEN.type);
+                }
+                const access_token = yield this._refreshAccessToken({
+                    email,
+                    role: userPO.role.name,
+                });
+                yield index_1.default.userModule.updateAccessToken(email, access_token);
+                return {
+                    result: 'success',
+                    data: Object.assign(Object.assign({}, R.pick(['id', 'provider', 'name', 'email', 'picture'], userPO)), { access_token, access_expired: config_1.default.get('jwt.expireTime') }),
+                };
             }
-            const access_token = yield this._refreshAccessToken({
-                email,
-                role: userPO.role.name,
-            });
-            yield index_1.default.userModule.updateAccessToken(email, access_token);
-            return {
-                result: 'success',
-                data: Object.assign(Object.assign({}, R.pick(['id', 'provider', 'name', 'email', 'picture'], userPO)), { access_token, access_expired: config_1.default.get('jwt.expireTime') }),
-            };
+            catch (error) {
+                throw error;
+            }
         });
     }
     _validatePassword(enteredPwd, existedPwd) {
-        return !bcryptjs_1.default.compareSync(enteredPwd, existedPwd);
+        try {
+            return !bcryptjs_1.default.compareSync(enteredPwd, existedPwd);
+        }
+        catch (error) {
+            throw error;
+        }
     }
     register(reqVO, fileName) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { name, email, picture, password, provider } = reqVO;
-            const ifUserExist = yield index_1.default.userModule.getUserByEmail(email);
-            if (ifUserExist) {
-                throw new errorHandler_1.ErrorHandler(403, errorType_1.ErrorType.ClientError, 'User Already Exists...');
+            try {
+                const { name, email, picture, password, provider } = reqVO;
+                const ifUserExist = yield index_1.default.userModule.getUserByEmail(email);
+                if (ifUserExist) {
+                    throw new errorHandler_1.ErrorHandler(403, errorType_1.ErrorType.ClientError, 'User Already Exists...');
+                }
+                if (provider === 'facebook') {
+                    return this._registerByFacebook({
+                        email,
+                        name,
+                        picture,
+                        role: UserRole_1.UserRole.user,
+                    });
+                }
+                else if (provider === 'native') {
+                    return this._registerByEmail({ email, name, password, role: UserRole_1.UserRole.user }, fileName);
+                }
+                else {
+                    throw new Error(customErrors_1.customErrors.FORBIDDEN.type);
+                }
             }
-            if (provider === 'facebook') {
-                return this._registerByFacebook({
-                    email,
-                    name,
-                    picture,
-                    role: UserRole_1.UserRole.user,
-                });
-            }
-            else if (provider === 'native') {
-                return this._registerByEmail({ email, name, password, role: UserRole_1.UserRole.user }, fileName);
-            }
-            else {
-                throw new Error(customErrors_1.customErrors.FORBIDDEN.type);
+            catch (error) {
+                throw error;
             }
         });
     }
     _registerByFacebook(values) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { email, name, picture, role = UserRole_1.UserRole.user } = values;
-            const access_token = token_1.default.generateToken(email, role);
-            const insertedResult = yield index_1.default.userModule.createNewUser({
-                name,
-                email,
-                access_token,
-                picture: picture.data.url,
-                provider: 'facebook',
-                role,
-            });
-            return {
-                data: {
-                    access_token,
-                    access_expired: config_1.default.get('jwt.expireTime'),
-                    id: insertedResult.raw.insertId,
-                    provider: 'facebook',
+            try {
+                const { email, name, picture, role = UserRole_1.UserRole.user } = values;
+                const access_token = token_1.default.generateToken(email, role);
+                const insertedResult = yield index_1.default.userModule.createNewUser({
                     name,
                     email,
+                    access_token,
                     picture: picture.data.url,
-                    role: role,
-                },
-            };
+                    provider: 'facebook',
+                    role,
+                });
+                return {
+                    data: {
+                        access_token,
+                        access_expired: config_1.default.get('jwt.expireTime'),
+                        id: insertedResult.raw.insertId,
+                        provider: 'facebook',
+                        name,
+                        email,
+                        picture: picture.data.url,
+                        role: role,
+                    },
+                };
+            }
+            catch (error) {
+                throw error;
+            }
         });
     }
     _registerByEmail(values, fileName) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { name, email, password, role = UserRole_1.UserRole.user } = values;
-            if (!password)
-                throw new Error(customErrors_1.customErrors.FORBIDDEN.type);
-            const hashPwd = bcryptjs_1.default.hashSync(password, 8);
-            const access_token = token_1.default.generateToken(email, role);
-            const result = yield index_1.default.userModule.createNewUser({
-                name,
-                email,
-                password: hashPwd,
-                access_token,
-                picture: fileName,
-                provider: 'native',
-            });
-            return {
-                data: {
-                    id: result.raw.insertId,
-                    provider: 'native',
+            try {
+                const { name, email, password, role = UserRole_1.UserRole.user } = values;
+                if (!password)
+                    throw new Error(customErrors_1.customErrors.FORBIDDEN.type);
+                const hashPwd = bcryptjs_1.default.hashSync(password, 8);
+                const access_token = token_1.default.generateToken(email, role);
+                const result = yield index_1.default.userModule.createNewUser({
                     name,
                     email,
-                    picture: fileName,
+                    password: hashPwd,
                     access_token,
-                    access_expired: Number(config_1.default.get('jwt.expireTime')),
-                },
-            };
+                    picture: fileName,
+                    provider: 'native',
+                });
+                return {
+                    data: {
+                        id: result.raw.insertId,
+                        provider: 'native',
+                        name,
+                        email,
+                        picture: fileName,
+                        access_token,
+                        access_expired: Number(config_1.default.get('jwt.expireTime')),
+                    },
+                };
+            }
+            catch (error) {
+                throw error;
+            }
         });
     }
     loginByFB(token) {
         return __awaiter(this, void 0, void 0, function* () {
-            token_1.default.verifyToken(token);
-            const userPO = yield index_1.default.userModule.getUserByAccessToken(token);
-            if (!userPO)
-                throw new Error(customErrors_1.customErrors.USER_NOT_FOUND.type);
-            const tokenExpireTime = Number(config_1.default.get('jwt.expireTime'));
-            const access_token = token_1.default.generateToken(userPO.email, userPO.role.name);
-            yield index_1.default.userModule.updateAccessToken(userPO.email, access_token);
-            return {
-                data: {
-                    access_token,
-                    access_expired: tokenExpireTime,
-                    id: userPO.id,
-                    provider: 'facebook',
-                    name: userPO.name,
-                    email: `${userPO.email}`,
-                    picture: userPO.picture,
-                },
-            };
+            try {
+                token_1.default.verifyToken(token);
+                const userPO = yield index_1.default.userModule.getUserByAccessToken(token);
+                if (!userPO)
+                    throw new Error(customErrors_1.customErrors.USER_NOT_FOUND.type);
+                const tokenExpireTime = Number(config_1.default.get('jwt.expireTime'));
+                const access_token = token_1.default.generateToken(userPO.email, userPO.role.name);
+                yield index_1.default.userModule.updateAccessToken(userPO.email, access_token);
+                return {
+                    data: {
+                        access_token,
+                        access_expired: tokenExpireTime,
+                        id: userPO.id,
+                        provider: 'facebook',
+                        name: userPO.name,
+                        email: `${userPO.email}`,
+                        picture: userPO.picture,
+                    },
+                };
+            }
+            catch (error) {
+                throw error;
+            }
         });
     }
     profile(access_token) {
@@ -177,8 +207,13 @@ class User {
     }
     _refreshAccessToken(opt) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { email, role = UserRole_1.UserRole.user } = opt;
-            return token_1.default.generateToken(email, role);
+            try {
+                const { email, role = UserRole_1.UserRole.user } = opt;
+                return token_1.default.generateToken(email, role);
+            }
+            catch (error) {
+                throw error;
+            }
         });
     }
 }

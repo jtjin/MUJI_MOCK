@@ -72,33 +72,42 @@ class CartModule {
     }
     deleteItemById(opt) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { variantId, userId, productId } = opt;
-            return yield this.Repo.createQueryBuilder()
-                .delete()
-                .from(Cart_1.Cart)
-                .where('user_id = :userId', {
-                userId,
-            })
-                .andWhere('variant_id = :variantId', {
-                variantId,
-            })
-                .andWhere('product_id = :productId', {
-                productId,
-            })
-                .execute();
+            try {
+                const { variantId, userId, productId } = opt;
+                return yield this.Repo.createQueryBuilder()
+                    .delete()
+                    .from(Cart_1.Cart)
+                    .where('user_id = :userId', {
+                    userId,
+                })
+                    .andWhere('variant_id = :variantId', {
+                    variantId,
+                })
+                    .andWhere('product_id = :productId', {
+                    productId,
+                })
+                    .execute();
+            }
+            catch (error) {
+                throw error;
+            }
         });
     }
     updateItemQuantityById(opt) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { userId, quantity, variantId, productId } = opt;
-            console.log(userId, quantity, variantId, productId);
-            return yield this.Repo.createQueryBuilder('cart')
-                .update(Cart_1.Cart)
-                .where('user_id = :userId', { userId })
-                .andWhere('product_detail_id = :variantId', { variantId })
-                .andWhere('product_id = :productId', { productId })
-                .set({ quantity: () => `quantity + ${quantity}` })
-                .execute();
+            try {
+                const { userId, quantity, variantId, productId } = opt;
+                return yield this.Repo.createQueryBuilder('cart')
+                    .update(Cart_1.Cart)
+                    .where('user_id = :userId', { userId })
+                    .andWhere('product_detail_id = :variantId', { variantId })
+                    .andWhere('product_id = :productId', { productId })
+                    .set({ quantity: () => `quantity + ${quantity}` })
+                    .execute();
+            }
+            catch (error) {
+                throw error;
+            }
         });
     }
 }

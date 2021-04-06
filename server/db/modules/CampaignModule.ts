@@ -19,16 +19,24 @@ export class CampaignModule {
 	}
 
 	async getCampaigns() {
-		return await this.Repo.createQueryBuilder('c')
-			.select('c.id , c.story, c.url AS picture')
-			.getRawMany()
+		try {
+			return await this.Repo.createQueryBuilder('c')
+				.select('c.id , c.story, c.url AS picture')
+				.getRawMany()
+		} catch (error) {
+			throw error
+		}
 	}
 
 	async createCampaign(id: string, story: string, url: string) {
-		return await this.Repo.createQueryBuilder()
-			.insert()
-			.into(Campaign)
-			.values([{ id, story, url }])
-			.execute()
+		try {
+			return await this.Repo.createQueryBuilder()
+				.insert()
+				.into(Campaign)
+				.values([{ id, story, url }])
+				.execute()
+		} catch (error) {
+			throw error
+		}
 	}
 }

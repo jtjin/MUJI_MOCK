@@ -25,76 +25,100 @@ class ProductModule {
     }
     getAllProducts() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.Repo.createQueryBuilder().getMany();
+            try {
+                return yield this.Repo.createQueryBuilder().getMany();
+            }
+            catch (error) {
+                throw error;
+            }
         });
     }
     getProductDetailById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.Repo.createQueryBuilder('product')
-                .leftJoinAndSelect('product.variants', 'variants')
-                .leftJoinAndSelect('product.images', 'images')
-                .leftJoinAndSelect('product.main_image', 'main_image')
-                .where('product.id = :id', {
-                id,
-            })
-                .getOne();
+            try {
+                return this.Repo.createQueryBuilder('product')
+                    .leftJoinAndSelect('product.variants', 'variants')
+                    .leftJoinAndSelect('product.images', 'images')
+                    .leftJoinAndSelect('product.main_image', 'main_image')
+                    .where('product.id = :id', {
+                    id,
+                })
+                    .getOne();
+            }
+            catch (error) {
+                throw error;
+            }
         });
     }
     getProductsByTag(opt) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { tagId, titleLike, pagination, orderBy, categoryId } = opt;
-            let query = this.Repo.createQueryBuilder('product')
-                .leftJoinAndSelect('product.variants', 'variants')
-                .leftJoinAndSelect('product.images', 'images')
-                .leftJoinAndSelect('product.main_image', 'main_image');
-            if (categoryId) {
-                query = query.andWhere('product.category = :categoryId', {
-                    categoryId,
-                });
+            try {
+                const { tagId, titleLike, pagination, orderBy, categoryId } = opt;
+                let query = this.Repo.createQueryBuilder('product')
+                    .leftJoinAndSelect('product.variants', 'variants')
+                    .leftJoinAndSelect('product.images', 'images')
+                    .leftJoinAndSelect('product.main_image', 'main_image');
+                if (categoryId) {
+                    query = query.andWhere('product.category = :categoryId', {
+                        categoryId,
+                    });
+                }
+                if (tagId) {
+                    query = query.andWhere('product.tag_id = :tagId', {
+                        tagId,
+                    });
+                }
+                if (titleLike) {
+                    query = query.andWhere('product.title like :title', {
+                        title: `%${titleLike}%`,
+                    });
+                }
+                if (orderBy) {
+                    const { sort = 'id', order = 'DESC' } = orderBy;
+                    query = query.orderBy(sort, order);
+                }
+                if (pagination) {
+                    const { limit, offset } = pagination;
+                    if (limit)
+                        query = query.take(limit);
+                    if (offset)
+                        query = query.take(limit).skip(offset);
+                }
+                const result = yield query.getMany();
+                return result;
             }
-            if (tagId) {
-                query = query.andWhere('product.tag_id = :tagId', {
-                    tagId,
-                });
+            catch (error) {
+                throw error;
             }
-            if (titleLike) {
-                query = query.andWhere('product.title like :title', {
-                    title: `%${titleLike}%`,
-                });
-            }
-            if (orderBy) {
-                const { sort = 'id', order = 'DESC' } = orderBy;
-                query = query.orderBy(sort, order);
-            }
-            if (pagination) {
-                const { limit, offset } = pagination;
-                if (limit)
-                    query = query.take(limit);
-                if (offset)
-                    query = query.take(limit).skip(offset);
-            }
-            const result = yield query.getMany();
-            return result;
         });
     }
     createProduct(values) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log('DB--> createProduct ->', values);
-            return yield this.Repo.createQueryBuilder()
-                .insert()
-                .into(Product_1.Product)
-                .values(values)
-                .execute();
+            try {
+                return yield this.Repo.createQueryBuilder()
+                    .insert()
+                    .into(Product_1.Product)
+                    .values(values)
+                    .execute();
+            }
+            catch (error) {
+                throw error;
+            }
         });
     }
     updateProductById(opt) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { id, value } = opt;
-            return yield this.Repo.createQueryBuilder()
-                .update(Product_1.Product)
-                .set(value)
-                .where('id = :id', { id })
-                .execute();
+            try {
+                const { id, value } = opt;
+                return yield this.Repo.createQueryBuilder()
+                    .update(Product_1.Product)
+                    .set(value)
+                    .where('id = :id', { id })
+                    .execute();
+            }
+            catch (error) {
+                throw error;
+            }
         });
     }
 }

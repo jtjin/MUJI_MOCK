@@ -26,27 +26,39 @@ export class UserModule {
 	}
 
 	async getUserByEmail(userEmail: string): Promise<User | undefined> {
-		return await this.Repo.createQueryBuilder('user')
-			.where('user.email = :userEmail', { userEmail })
-			.leftJoinAndSelect('user.role', 'role')
-			.getOne()
+		try {
+			return await this.Repo.createQueryBuilder('user')
+				.where('user.email = :userEmail', { userEmail })
+				.leftJoinAndSelect('user.role', 'role')
+				.getOne()
+		} catch (error) {
+			throw error
+		}
 	}
 
 	async getUserByAccessToken(accessToken: string): Promise<User | undefined> {
-		return await this.Repo.createQueryBuilder('user')
-			.where('user.access_token= :accessToken', { accessToken })
-			.getOne()
+		try {
+			return await this.Repo.createQueryBuilder('user')
+				.where('user.access_token= :accessToken', { accessToken })
+				.getOne()
+		} catch (error) {
+			throw error
+		}
 	}
 
 	async updateAccessToken(
 		email: string,
 		accessToken: string,
 	): Promise<UpdateResult> {
-		return await this.Repo.createQueryBuilder()
-			.update(User)
-			.set({ access_token: accessToken })
-			.where('email = :email', { email })
-			.execute()
+		try {
+			return await this.Repo.createQueryBuilder()
+				.update(User)
+				.set({ access_token: accessToken })
+				.where('email = :email', { email })
+				.execute()
+		} catch (error) {
+			throw error
+		}
 	}
 
 	async createNewUser(values: {
@@ -58,11 +70,15 @@ export class UserModule {
 		provider: string
 		role?: string
 	}): Promise<InsertResult> {
-		return await this.Repo.createQueryBuilder()
-			.insert()
-			.into(User)
-			// @ts-ignore
-			.values([values])
-			.execute()
+		try {
+			return await this.Repo.createQueryBuilder()
+				.insert()
+				.into(User)
+				// @ts-ignore
+				.values([values])
+				.execute()
+		} catch (error) {
+			throw error
+		}
 	}
 }

@@ -19,24 +19,36 @@ export class ProductDetailsModule {
 	}
 
 	async getAllProductDetails() {
-		return await this.Repo.createQueryBuilder().getMany()
+		try {
+			return await this.Repo.createQueryBuilder().getMany()
+		} catch (error) {
+			throw error
+		}
 	}
 
 	async getProductVariantById(id: string) {
-		return await this.Repo.createQueryBuilder()
-			.where('id = :id', {
-				id,
-			})
-			.getOne()
+		try {
+			return await this.Repo.createQueryBuilder()
+				.where('id = :id', {
+					id,
+				})
+				.getOne()
+		} catch (error) {
+			throw error
+		}
 	}
 
 	async createProductDetails(
 		values: Partial<ProductDetails>[],
 	): Promise<InsertResult> {
-		return await this.Repo.createQueryBuilder()
-			.insert()
-			.into(ProductDetails)
-			.values(values)
-			.execute()
+		try {
+			return await this.Repo.createQueryBuilder()
+				.insert()
+				.into(ProductDetails)
+				.values(values)
+				.execute()
+		} catch (error) {
+			throw error
+		}
 	}
 }

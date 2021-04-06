@@ -25,36 +25,56 @@ class UserModule {
     }
     getUserByEmail(userEmail) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.Repo.createQueryBuilder('user')
-                .where('user.email = :userEmail', { userEmail })
-                .leftJoinAndSelect('user.role', 'role')
-                .getOne();
+            try {
+                return yield this.Repo.createQueryBuilder('user')
+                    .where('user.email = :userEmail', { userEmail })
+                    .leftJoinAndSelect('user.role', 'role')
+                    .getOne();
+            }
+            catch (error) {
+                throw error;
+            }
         });
     }
     getUserByAccessToken(accessToken) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.Repo.createQueryBuilder('user')
-                .where('user.access_token= :accessToken', { accessToken })
-                .getOne();
+            try {
+                return yield this.Repo.createQueryBuilder('user')
+                    .where('user.access_token= :accessToken', { accessToken })
+                    .getOne();
+            }
+            catch (error) {
+                throw error;
+            }
         });
     }
     updateAccessToken(email, accessToken) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.Repo.createQueryBuilder()
-                .update(User_1.User)
-                .set({ access_token: accessToken })
-                .where('email = :email', { email })
-                .execute();
+            try {
+                return yield this.Repo.createQueryBuilder()
+                    .update(User_1.User)
+                    .set({ access_token: accessToken })
+                    .where('email = :email', { email })
+                    .execute();
+            }
+            catch (error) {
+                throw error;
+            }
         });
     }
     createNewUser(values) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.Repo.createQueryBuilder()
-                .insert()
-                .into(User_1.User)
-                // @ts-ignore
-                .values([values])
-                .execute();
+            try {
+                return yield this.Repo.createQueryBuilder()
+                    .insert()
+                    .into(User_1.User)
+                    // @ts-ignore
+                    .values([values])
+                    .execute();
+            }
+            catch (error) {
+                throw error;
+            }
         });
     }
 }

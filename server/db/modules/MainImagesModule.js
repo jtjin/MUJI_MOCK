@@ -25,35 +25,55 @@ class MainImagesModule {
     }
     getAllMainImages() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.Repo.createQueryBuilder().getMany();
+            try {
+                return yield this.Repo.createQueryBuilder().getMany();
+            }
+            catch (error) {
+                throw error;
+            }
         });
     }
     getMainImagesById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.Repo.createQueryBuilder()
-                .where('product_id = :id', {
-                id,
-            })
-                .getMany();
+            try {
+                return this.Repo.createQueryBuilder()
+                    .where('product_id = :id', {
+                    id,
+                })
+                    .getMany();
+            }
+            catch (error) {
+                throw error;
+            }
         });
     }
     createMainImages(values) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.Repo.createQueryBuilder()
-                .insert()
-                .into(MainImages_1.MainImages)
-                .values(values)
-                .execute();
+            try {
+                return yield this.Repo.createQueryBuilder()
+                    .insert()
+                    .into(MainImages_1.MainImages)
+                    .values(values)
+                    .execute();
+            }
+            catch (error) {
+                throw error;
+            }
         });
     }
     updateMainImageById(opt) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { id, url } = opt;
-            return yield this.Repo.createQueryBuilder()
-                .update(MainImages_1.MainImages)
-                .set({ url: url })
-                .where('id = :id', { id })
-                .execute();
+            try {
+                const { id, url } = opt;
+                return yield this.Repo.createQueryBuilder()
+                    .update(MainImages_1.MainImages)
+                    .set({ url: url })
+                    .where('id = :id', { id })
+                    .execute();
+            }
+            catch (error) {
+                throw error;
+            }
         });
     }
 }

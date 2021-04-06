@@ -25,41 +25,60 @@ class MessagesModule {
     }
     getMessagesByRoom(room) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.Repo.createQueryBuilder()
-                .where('room = :room', {
-                room,
-            })
-                .getOne();
+            try {
+                return this.Repo.createQueryBuilder()
+                    .where('room = :room', {
+                    room,
+                })
+                    .getOne();
+            }
+            catch (error) {
+                throw error;
+            }
         });
     }
     getChatRoomsListById(opt) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { userId, adminId } = opt;
-            let query = this.Repo.createQueryBuilder('m').select('m.room, m.updatedAt, m.admin_id,  m.user_id, m.adminRead');
-            if (userId)
-                query = query.where('user_id = :userId', { userId });
-            if (adminId)
-                query = query.where('admin_id = :adminId', { adminId });
-            return yield query.orderBy('m.updatedAt', 'ASC').getRawMany();
+            try {
+                const { userId, adminId } = opt;
+                let query = this.Repo.createQueryBuilder('m').select('m.room, m.updatedAt, m.admin_id,  m.user_id, m.adminRead');
+                if (userId)
+                    query = query.where('user_id = :userId', { userId });
+                if (adminId)
+                    query = query.where('admin_id = :adminId', { adminId });
+                return yield query.orderBy('m.updatedAt', 'ASC').getRawMany();
+            }
+            catch (error) {
+                throw error;
+            }
         });
     }
     createMessages(values) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log('createMessages=>', values);
-            return yield this.Repo.createQueryBuilder()
-                .insert()
-                .into(Messages_1.Messages)
-                .values(values)
-                .execute();
+            try {
+                return yield this.Repo.createQueryBuilder()
+                    .insert()
+                    .into(Messages_1.Messages)
+                    .values(values)
+                    .execute();
+            }
+            catch (error) {
+                throw error;
+            }
         });
     }
     updateRoomMessages(room, messages) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.Repo.createQueryBuilder()
-                .update(Messages_1.Messages)
-                .set({ messages })
-                .where('room = :room', { room })
-                .execute();
+            try {
+                return yield this.Repo.createQueryBuilder()
+                    .update(Messages_1.Messages)
+                    .set({ messages })
+                    .where('room = :room', { room })
+                    .execute();
+            }
+            catch (error) {
+                throw error;
+            }
         });
     }
 }

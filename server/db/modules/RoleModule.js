@@ -25,10 +25,14 @@ class RoleModule {
     }
     getRoleById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log('id=>', id);
-            return yield this.Repo.createQueryBuilder('role')
-                .where('role.id = :id', { id })
-                .getOne();
+            try {
+                return yield this.Repo.createQueryBuilder('role')
+                    .where('role.id = :id', { id })
+                    .getOne();
+            }
+            catch (error) {
+                throw error;
+            }
         });
     }
 }

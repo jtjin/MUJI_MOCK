@@ -12,7 +12,7 @@ import { EntityManager, getConnection } from 'typeorm'
 import { TagsEnum } from '../infra/enums/Tags'
 import { CategoryEnum } from '../infra/enums/Category'
 import { redisClient } from '../db/redisDb'
-import { safeAwait } from '../utils/safeAsync'
+import { safeAwait } from '../utils/safeAwait'
 import { customErrors } from '../infra/customErrors'
 import { stringValue } from 'aws-sdk/clients/iot'
 import { ErrorType } from '../infra/enums/errorType'
@@ -70,7 +70,6 @@ class ProductService {
 			)
 			return result
 		} catch (error) {
-			console.log(error)
 			throw error
 		}
 	}
@@ -98,21 +97,25 @@ class ProductService {
 		}
 	}
 	async getProductVariantById(id: string) {
-		const [_error, resultCache] = await safeAwait(
-			redisClient.get(`product:variant:${id}`),
-			tag + this.tag + '/getProductVariantById/redis/get',
-		)
-		console.log(resultCache)
-		if (resultCache) return JSON.parse(resultCache)
+		try {
+			const [_error, resultCache] = await safeAwait(
+				redisClient.get(`product:variant:${id}`),
+				tag + this.tag + '/getProductVariantById/redis/get',
+			)
 
-		const productPO = await MujiRDB.productDetailsModule.getProductVariantById(
-			id,
-		)
-		await safeAwait(
-			redisClient.set(`product:variant:${id}`, JSON.stringify(productPO)),
-			tag + this.tag + '/getProductVariantById/redis/set',
-		)
-		return productPO
+			if (resultCache) return JSON.parse(resultCache)
+
+			const productPO = await MujiRDB.productDetailsModule.getProductVariantById(
+				id,
+			)
+			await safeAwait(
+				redisClient.set(`product:variant:${id}`, JSON.stringify(productPO)),
+				tag + this.tag + '/getProductVariantById/redis/set',
+			)
+			return productPO
+		} catch (error) {
+			throw error
+		}
 	}
 
 	async getPhotosByProductId(productId: string) {

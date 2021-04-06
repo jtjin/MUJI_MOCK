@@ -33,38 +33,42 @@ class MujiRDB {
 	cartModule: CartModule
 
 	async initDb() {
-		const connectionConfig: ConnectionOptions = {
-			type: 'mysql',
-			name: 'muji',
-			host: String(config.get('aws.rds.host')),
-			username: String(config.get('aws.rds.username')),
-			password: String(config.get('aws.rds.password')),
-			database: String(config.get('aws.rds.database')),
-			synchronize: false,
-			logging: false,
-			entities: Entities,
+		try {
+			const connectionConfig: ConnectionOptions = {
+				type: 'mysql',
+				name: 'muji',
+				host: String(config.get('aws.rds.host')),
+				username: String(config.get('aws.rds.username')),
+				password: String(config.get('aws.rds.password')),
+				database: String(config.get('aws.rds.database')),
+				synchronize: false,
+				logging: false,
+				entities: Entities,
+			}
+
+			this.client = await createConnection(connectionConfig)
+
+			if (this.client) {
+				console.log(`--- MUJI DB Connected ---`)
+			}
+
+			this.productModule = new ProductModule({ client: this.client })
+			this.userModule = new UserModule({ client: this.client })
+			this.campaignModule = new CampaignModule({ client: this.client })
+			this.productDetailsModule = new ProductDetailsModule({
+				client: this.client,
+			})
+			this.imagesModule = new ImagesModule({ client: this.client })
+			this.mainImagesModule = new MainImagesModule({ client: this.client })
+			this.messagesModule = new MessagesModule({ client: this.client })
+			this.pinMessagesModule = new PinMessagesModule({ client: this.client })
+			this.roleModule = new RoleModule({ client: this.client })
+			this.cartModule = new CartModule({ client: this.client })
+			dbConnection = this.client
+			return this.client
+		} catch (error) {
+			throw error
 		}
-
-		this.client = await createConnection(connectionConfig)
-
-		if (this.client) {
-			console.log(`--- MUJI DB Connected ---`)
-		}
-
-		this.productModule = new ProductModule({ client: this.client })
-		this.userModule = new UserModule({ client: this.client })
-		this.campaignModule = new CampaignModule({ client: this.client })
-		this.productDetailsModule = new ProductDetailsModule({
-			client: this.client,
-		})
-		this.imagesModule = new ImagesModule({ client: this.client })
-		this.mainImagesModule = new MainImagesModule({ client: this.client })
-		this.messagesModule = new MessagesModule({ client: this.client })
-		this.pinMessagesModule = new PinMessagesModule({ client: this.client })
-		this.roleModule = new RoleModule({ client: this.client })
-		this.cartModule = new CartModule({ client: this.client })
-		dbConnection = this.client
-		return this.client
 	}
 
 	async disconnectDb() {

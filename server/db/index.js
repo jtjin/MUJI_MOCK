@@ -30,35 +30,40 @@ const Entities = Array.from({ length: 26 }, (v, i) => `${__dirname}/entities/${S
 class MujiRDB {
     initDb() {
         return __awaiter(this, void 0, void 0, function* () {
-            const connectionConfig = {
-                type: 'mysql',
-                name: 'muji',
-                host: String(config_1.default.get('aws.rds.host')),
-                username: String(config_1.default.get('aws.rds.username')),
-                password: String(config_1.default.get('aws.rds.password')),
-                database: String(config_1.default.get('aws.rds.database')),
-                synchronize: false,
-                logging: false,
-                entities: Entities,
-            };
-            this.client = yield typeorm_1.createConnection(connectionConfig);
-            if (this.client) {
-                console.log(`--- MUJI DB Connected ---`);
+            try {
+                const connectionConfig = {
+                    type: 'mysql',
+                    name: 'muji',
+                    host: String(config_1.default.get('aws.rds.host')),
+                    username: String(config_1.default.get('aws.rds.username')),
+                    password: String(config_1.default.get('aws.rds.password')),
+                    database: String(config_1.default.get('aws.rds.database')),
+                    synchronize: false,
+                    logging: false,
+                    entities: Entities,
+                };
+                this.client = yield typeorm_1.createConnection(connectionConfig);
+                if (this.client) {
+                    console.log(`--- MUJI DB Connected ---`);
+                }
+                this.productModule = new ProductModule_1.ProductModule({ client: this.client });
+                this.userModule = new UserModule_1.UserModule({ client: this.client });
+                this.campaignModule = new CampaignModule_1.CampaignModule({ client: this.client });
+                this.productDetailsModule = new ProductDetailsModule_1.ProductDetailsModule({
+                    client: this.client,
+                });
+                this.imagesModule = new ImagesModule_1.ImagesModule({ client: this.client });
+                this.mainImagesModule = new MainImagesModule_1.MainImagesModule({ client: this.client });
+                this.messagesModule = new MessagesModules_1.MessagesModule({ client: this.client });
+                this.pinMessagesModule = new PinMessagesModule_1.PinMessagesModule({ client: this.client });
+                this.roleModule = new RoleModule_1.RoleModule({ client: this.client });
+                this.cartModule = new CartModule_1.CartModule({ client: this.client });
+                dbConnection = this.client;
+                return this.client;
             }
-            this.productModule = new ProductModule_1.ProductModule({ client: this.client });
-            this.userModule = new UserModule_1.UserModule({ client: this.client });
-            this.campaignModule = new CampaignModule_1.CampaignModule({ client: this.client });
-            this.productDetailsModule = new ProductDetailsModule_1.ProductDetailsModule({
-                client: this.client,
-            });
-            this.imagesModule = new ImagesModule_1.ImagesModule({ client: this.client });
-            this.mainImagesModule = new MainImagesModule_1.MainImagesModule({ client: this.client });
-            this.messagesModule = new MessagesModules_1.MessagesModule({ client: this.client });
-            this.pinMessagesModule = new PinMessagesModule_1.PinMessagesModule({ client: this.client });
-            this.roleModule = new RoleModule_1.RoleModule({ client: this.client });
-            this.cartModule = new CartModule_1.CartModule({ client: this.client });
-            dbConnection = this.client;
-            return this.client;
+            catch (error) {
+                throw error;
+            }
         });
     }
     disconnectDb() {

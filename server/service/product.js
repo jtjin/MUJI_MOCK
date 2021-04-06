@@ -40,7 +40,7 @@ const typeorm_1 = require("typeorm");
 const Tags_1 = require("../infra/enums/Tags");
 const Category_1 = require("../infra/enums/Category");
 const redisDb_1 = require("../db/redisDb");
-const safeAsync_1 = require("../utils/safeAsync");
+const safeAwait_1 = require("../utils/safeAwait");
 const customErrors_1 = require("../infra/customErrors");
 const errorType_1 = require("../infra/enums/errorType");
 const errorHandler_1 = require("../middleWares/errorHandler");
@@ -53,7 +53,7 @@ class ProductService {
         return __awaiter(this, void 0, void 0, function* () {
             const { tagId, titleLike, categoryId, page = 1 } = opt;
             try {
-                const [_error, resultCache] = yield safeAsync_1.safeAwait(redisDb_1.redisClient.get(`product:${categoryId}:${tagId}:${titleLike}:${page}`), tag + this.tag + '/getProductsListByTag/redis');
+                const [_error, resultCache] = yield safeAwait_1.safeAwait(redisDb_1.redisClient.get(`product:${categoryId}:${tagId}:${titleLike}:${page}`), tag + this.tag + '/getProductsListByTag/redis');
                 if (resultCache)
                     return JSON.parse(resultCache);
                 const productPO = yield index_1.default.productModule.getProductsByTag({
@@ -73,11 +73,10 @@ class ProductService {
                 result.data = this._formatProductList(productPO);
                 if (!result.data)
                     return;
-                yield safeAsync_1.safeAwait(redisDb_1.redisClient.set(`product:${categoryId}:${tagId}:${titleLike}:${page}`, JSON.stringify(result)), tag + this.tag + '/getProductsListByTag/redis');
+                yield safeAwait_1.safeAwait(redisDb_1.redisClient.set(`product:${categoryId}:${tagId}:${titleLike}:${page}`, JSON.stringify(result)), tag + this.tag + '/getProductsListByTag/redis');
                 return result;
             }
             catch (error) {
-                console.log(error);
                 throw error;
             }
         });
@@ -85,13 +84,13 @@ class ProductService {
     getProductDetailById(id) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const [_error, resultCache] = yield safeAsync_1.safeAwait(redisDb_1.redisClient.get(`product:detail:${id}`), tag + this.tag + '/getProductDetailById/redis/get');
+                const [_error, resultCache] = yield safeAwait_1.safeAwait(redisDb_1.redisClient.get(`product:detail:${id}`), tag + this.tag + '/getProductDetailById/redis/get');
                 if (resultCache)
                     return JSON.parse(resultCache);
                 const productPO = yield index_1.default.productModule.getProductDetailById(id);
                 if (!productPO)
                     throw new Error(customErrors_1.customErrors.PRODUCT_NOT_FOUND.type);
-                yield safeAsync_1.safeAwait(redisDb_1.redisClient.set(`product:detail:${id}`, JSON.stringify(productPO)), tag + this.tag + '/getProductDetailById/redis/set');
+                yield safeAwait_1.safeAwait(redisDb_1.redisClient.set(`product:detail:${id}`, JSON.stringify(productPO)), tag + this.tag + '/getProductDetailById/redis/set');
                 return productPO;
             }
             catch (error) {
@@ -101,13 +100,17 @@ class ProductService {
     }
     getProductVariantById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const [_error, resultCache] = yield safeAsync_1.safeAwait(redisDb_1.redisClient.get(`product:variant:${id}`), tag + this.tag + '/getProductVariantById/redis/get');
-            console.log(resultCache);
-            if (resultCache)
-                return JSON.parse(resultCache);
-            const productPO = yield index_1.default.productDetailsModule.getProductVariantById(id);
-            yield safeAsync_1.safeAwait(redisDb_1.redisClient.set(`product:variant:${id}`, JSON.stringify(productPO)), tag + this.tag + '/getProductVariantById/redis/set');
-            return productPO;
+            try {
+                const [_error, resultCache] = yield safeAwait_1.safeAwait(redisDb_1.redisClient.get(`product:variant:${id}`), tag + this.tag + '/getProductVariantById/redis/get');
+                if (resultCache)
+                    return JSON.parse(resultCache);
+                const productPO = yield index_1.default.productDetailsModule.getProductVariantById(id);
+                yield safeAwait_1.safeAwait(redisDb_1.redisClient.set(`product:variant:${id}`, JSON.stringify(productPO)), tag + this.tag + '/getProductVariantById/redis/set');
+                return productPO;
+            }
+            catch (error) {
+                throw error;
+            }
         });
     }
     getPhotosByProductId(productId) {
@@ -210,13 +213,13 @@ class ProductService {
         return __awaiter(this, void 0, void 0, function* () {
             const { category, tag } = opt;
             try {
-                const [_error, productCacheKeys] = yield safeAsync_1.safeAwait(redisDb_1.redisClient.keys(`product:${category}:${tag}:*`), tag + this.tag + '/_delProductCacheByTag');
-                const [_errorAll, productAllCacheKeys] = yield safeAsync_1.safeAwait(redisDb_1.redisClient.keys(`product:${Category_1.CategoryEnum.all}}:${tag}:*`), tag + this.tag + '/_delProductCacheByTag');
+                const [_error, productCacheKeys] = yield safeAwait_1.safeAwait(redisDb_1.redisClient.keys(`product:${category}:${tag}:*`), tag + this.tag + '/_delProductCacheByTag');
+                const [_errorAll, productAllCacheKeys] = yield safeAwait_1.safeAwait(redisDb_1.redisClient.keys(`product:${Category_1.CategoryEnum.all}}:${tag}:*`), tag + this.tag + '/_delProductCacheByTag');
                 productCacheKeys.forEach((key) => __awaiter(this, void 0, void 0, function* () {
-                    yield safeAsync_1.safeAwait(redisDb_1.redisClient.del(key), tag + this.tag + '/_delProductCacheByTag/productCacheKeys-forEach');
+                    yield safeAwait_1.safeAwait(redisDb_1.redisClient.del(key), tag + this.tag + '/_delProductCacheByTag/productCacheKeys-forEach');
                 }));
                 productAllCacheKeys.forEach((key) => __awaiter(this, void 0, void 0, function* () {
-                    yield safeAsync_1.safeAwait(redisDb_1.redisClient.del(key), tag + this.tag + '/_delProductCacheByTag/productCacheKeys-forEach');
+                    yield safeAwait_1.safeAwait(redisDb_1.redisClient.del(key), tag + this.tag + '/_delProductCacheByTag/productCacheKeys-forEach');
                 }));
             }
             catch (error) {

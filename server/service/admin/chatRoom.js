@@ -15,24 +15,38 @@ const index_1 = __importDefault(require("../../db/index"));
 class ChatRoomService {
     constructor() {
         this.getPinMessages = (opt) => __awaiter(this, void 0, void 0, function* () {
-            const { adminId } = opt;
-            return yield index_1.default.pinMessagesModule.getPinMessagesByAdminId({
-                adminId,
-            });
+            try {
+                const { adminId } = opt;
+                return yield index_1.default.pinMessagesModule.getPinMessagesByAdminId({
+                    adminId,
+                });
+            }
+            catch (error) {
+                throw error;
+            }
         });
         this.createPinMessage = (opt) => __awaiter(this, void 0, void 0, function* () {
-            const { adminId, message } = opt;
-            console.log('adminId, message-->', adminId, message);
-            return yield index_1.default.pinMessagesModule.createPinMessages([
-                { user_id: adminId, message },
-            ]);
+            try {
+                const { adminId, message } = opt;
+                return yield index_1.default.pinMessagesModule.createPinMessages([
+                    { user_id: adminId, message },
+                ]);
+            }
+            catch (error) {
+                throw error;
+            }
         });
         this.deletePinMessage = (opt) => __awaiter(this, void 0, void 0, function* () {
-            const { adminId, message } = opt;
-            return yield index_1.default.pinMessagesModule.deletePinMessage({
-                adminId,
-                message,
-            });
+            try {
+                const { adminId, message } = opt;
+                return yield index_1.default.pinMessagesModule.deletePinMessage({
+                    adminId,
+                    message,
+                });
+            }
+            catch (error) {
+                throw error;
+            }
         });
     }
     getChatRoomsListById(userId) {

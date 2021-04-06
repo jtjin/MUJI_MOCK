@@ -27,34 +27,50 @@ export class MainImagesModule {
 	}
 
 	async getAllMainImages() {
-		return await this.Repo.createQueryBuilder().getMany()
+		try {
+			return await this.Repo.createQueryBuilder().getMany()
+		} catch (error) {
+			throw error
+		}
 	}
 
 	async getMainImagesById(id: string) {
-		return this.Repo.createQueryBuilder()
-			.where('product_id = :id', {
-				id,
-			})
-			.getMany()
+		try {
+			return this.Repo.createQueryBuilder()
+				.where('product_id = :id', {
+					id,
+				})
+				.getMany()
+		} catch (error) {
+			throw error
+		}
 	}
 
 	async createMainImages(values: Partial<MainImages>[]): Promise<InsertResult> {
-		return await this.Repo.createQueryBuilder()
-			.insert()
-			.into(MainImages)
-			.values(values)
-			.execute()
+		try {
+			return await this.Repo.createQueryBuilder()
+				.insert()
+				.into(MainImages)
+				.values(values)
+				.execute()
+		} catch (error) {
+			throw error
+		}
 	}
 
 	async updateMainImageById(opt: {
 		id: string
 		url: string
 	}): Promise<UpdateResult> {
-		const { id, url } = opt
-		return await this.Repo.createQueryBuilder()
-			.update(MainImages)
-			.set({ url: url })
-			.where('id = :id', { id })
-			.execute()
+		try {
+			const { id, url } = opt
+			return await this.Repo.createQueryBuilder()
+				.update(MainImages)
+				.set({ url: url })
+				.where('id = :id', { id })
+				.execute()
+		} catch (error) {
+			throw error
+		}
 	}
 }

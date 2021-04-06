@@ -19,38 +19,52 @@ export class MessagesModule {
 	}
 
 	async getMessagesByRoom(room: string) {
-		return this.Repo.createQueryBuilder()
-			.where('room = :room', {
-				room,
-			})
-			.getOne()
+		try {
+			return this.Repo.createQueryBuilder()
+				.where('room = :room', {
+					room,
+				})
+				.getOne()
+		} catch (error) {
+			throw error
+		}
 	}
 
 	async getChatRoomsListById(opt: { userId?: string; adminId?: string }) {
-		const { userId, adminId } = opt
-		let query = this.Repo.createQueryBuilder('m').select(
-			'm.room, m.updatedAt, m.admin_id,  m.user_id, m.adminRead',
-		)
-		if (userId) query = query.where('user_id = :userId', { userId })
-		if (adminId) query = query.where('admin_id = :adminId', { adminId })
-		return await query.orderBy('m.updatedAt', 'ASC').getRawMany()
+		try {
+			const { userId, adminId } = opt
+			let query = this.Repo.createQueryBuilder('m').select(
+				'm.room, m.updatedAt, m.admin_id,  m.user_id, m.adminRead',
+			)
+			if (userId) query = query.where('user_id = :userId', { userId })
+			if (adminId) query = query.where('admin_id = :adminId', { adminId })
+			return await query.orderBy('m.updatedAt', 'ASC').getRawMany()
+		} catch (error) {
+			throw error
+		}
 	}
 
 	async createMessages(values: Partial<Messages>[]): Promise<InsertResult> {
-		console.log('createMessages=>', values)
-
-		return await this.Repo.createQueryBuilder()
-			.insert()
-			.into(Messages)
-			.values(values)
-			.execute()
+		try {
+			return await this.Repo.createQueryBuilder()
+				.insert()
+				.into(Messages)
+				.values(values)
+				.execute()
+		} catch (error) {
+			throw error
+		}
 	}
 
 	async updateRoomMessages(room: string, messages: string) {
-		return await this.Repo.createQueryBuilder()
-			.update(Messages)
-			.set({ messages })
-			.where('room = :room', { room })
-			.execute()
+		try {
+			return await this.Repo.createQueryBuilder()
+				.update(Messages)
+				.set({ messages })
+				.where('room = :room', { room })
+				.execute()
+		} catch (error) {
+			throw error
+		}
 	}
 }
