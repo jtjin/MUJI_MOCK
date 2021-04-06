@@ -45,6 +45,7 @@
 }
 
 .chatBoxOuterMessageBox {
+	z-index: 1;
 	background-color: var(--transparent-grey);
 	position: fixed;
 	color: black;
@@ -255,7 +256,7 @@ Messages
 	right: 0;
 	border-right: none;
 	border-left: 5px solid transparent;
-	border-top: 4px solid #876825;
+	border-top: 4px solid var(--transparent-grey);
 	bottom: -4px;
 }
 

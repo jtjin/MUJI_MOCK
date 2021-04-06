@@ -1,5 +1,5 @@
-const baseUrl = 'https://white-100.online/'
-// const baseUrl = 'http://localhost:5000/'
+// const baseUrl = 'https://white-100.online/'
+const baseUrl = 'http://localhost:5000/'
 const publicApi = axios.create({
 	baseURL: baseUrl,
 	headers: { 'Content-Type': 'application/json' },
@@ -50,20 +50,20 @@ privateApi.interceptors.response.use(
 		if (!data) return
 		const { type } = data.error
 		if (status === 403) {
-			localStorage.removeItem('token')
+			localStorage.removeItem('muji')
 		}
 
-		errorHandler(type)
+		errorHandler(type, error, errResponse)
 
 		return Promise.reject(error)
 	},
 )
 
-function errorHandler(errorType) {
+function errorHandler(errorType, error, errResponse) {
 	switch (errorType) {
 		case 'FORBIDDEN':
 		case 'USER_NOT_FOUND':
-			alert('Invalid Password or Email...')
+			localStorage.removeItem('muji')
 			console.log(errResponse)
 			break
 		case 'AUTH_NO_TOKEN':

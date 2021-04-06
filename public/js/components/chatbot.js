@@ -1,15 +1,12 @@
-import config from '../infra/config.js'
-import { privateApi, publicApi } from '../infra/apis.js'
-
 class Chatbot extends HTMLElement {
 	constructor() {
 		super()
+		this.socket = io()
 		this.userInfo = JSON.parse(localStorage.getItem('muji')) || {
 			id: '0000',
 			name: 'randomUser',
 		}
 		this.shadow = this.attachShadow({ mode: 'open' })
-		this.socket = io()
 		this.adminId = 0
 		this.room
 	}
@@ -258,9 +255,25 @@ class Chatbot extends HTMLElement {
 	}
 
 	showChatWindow() {
+		if (!this.checkLoginStatus()) return
 		this.chatbotContainer.style.display = 'flex'
 		this.showChatWindowBtn.style.display = 'none'
 		this.messagesWrap.lastElementChild.scrollIntoView({ behavior: 'smooth' })
+	}
+
+	async checkLoginStatus() {
+		const localUserInfo = JSON.parse(localStorage.getItem('muji'))
+		if (!localUserInfo || !localUserInfo.access_token) {
+			document
+				.querySelector('sign-form')
+				.shadowRoot.querySelector('.registerContainer').style.display = 'block'
+			document
+				.querySelector('sign-form')
+				.shadowRoot.querySelector('.logInFormBackground').style.display =
+				'block'
+			return
+		}
+		return true
 	}
 
 	socketInit() {
@@ -271,11 +284,13 @@ class Chatbot extends HTMLElement {
 			userId: id,
 			username: name,
 			room: this.room,
+			admin_id: 0,
 		})
 		this.socket.emit('userJoinRoom', {
 			userId: id,
 			username: name,
 			room: this.room,
+			admin_id: 0,
 		})
 		this.socket.on('greetNewUser', (data) => {
 			this.appendMessageFromCms(data)
@@ -302,15 +317,17 @@ class Chatbot extends HTMLElement {
 	}
 
 	getHistory = async (history) => {
+		if (!history.messages) return
 		const parsedHistory = Array.from(JSON.parse(history.messages))
-
-		parsedHistory.forEach((info) => {
-			if (info.userId === this.userInfo.id) {
-				this.appendMessageFromUser(info)
-			} else {
-				this.appendMessageFromCms(info)
-			}
-		})
+		if (Array.isArray(parsedHistory)) {
+			parsedHistory.forEach((info) => {
+				if (info.userId === this.userInfo.id) {
+					this.appendMessageFromUser(info)
+				} else {
+					this.appendMessageFromCms(info)
+				}
+			})
+		}
 	}
 }
 

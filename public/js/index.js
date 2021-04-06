@@ -12,7 +12,6 @@ class ProductListManager {
 		if (requestLocation[2]) {
 			this.paging = requestLocation[2].split('=')[1]
 		}
-
 		this.tag = getQueryStringValue('tag')
 		this.category = getQueryStringValue('category')
 		this.keyword = getQueryStringValue('keyword')
@@ -56,7 +55,6 @@ class ProductListManager {
 			if (pageCount === 0) {
 				a.addEventListener('click', () => this.renderProducts(this.paging - 1))
 			} else if (pageCount - 1 === paging) {
-				console.log('this.next_paging==>', this.next_paging)
 				if (this.next_paging) {
 					a.addEventListener('click', () =>
 						this.renderProducts(this.paging + 1),
@@ -68,13 +66,11 @@ class ProductListManager {
 			if (pageCount === this.paging) a.classList.add('currentPaging')
 			li.appendChild(a)
 			paginationList.appendChild(li)
-			console.log(paging, pageCount)
 			pageCount++
 		}
 	}
 
 	createProductElements(productsInfo) {
-		console.log('productsInfo-->', productsInfo)
 		const productsContainer = document.querySelector('.products')
 		productsContainer.innerHTML = ''
 		productsInfo.forEach((productInfo) => {

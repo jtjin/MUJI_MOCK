@@ -17,7 +17,11 @@ class RegisterFrom extends HTMLElement {
 		this._initElements()
 		this._initElementEventsListeners()
 		this._fillTestAccount()
-		if (window.location.pathname === '/product.html') return
+		if (
+			window.location.pathname === '/product.html' ||
+			window.location.pathname === '/'
+		)
+			return
 		await this.checkLoginStatus()
 	}
 
@@ -153,7 +157,6 @@ class RegisterFrom extends HTMLElement {
 
 	async checkLoginStatus() {
 		const localUserInfo = JSON.parse(localStorage.getItem('muji'))
-
 		if (!localUserInfo || !localUserInfo.access_token) {
 			this._showLoginBox()
 			return
@@ -184,7 +187,7 @@ class RegisterFrom extends HTMLElement {
 
 	async render() {
 		this.shadow.innerHTML = `
-	    <link rel="stylesheet" type="text/css" href="./css/components/registerSystem.css" />
+	    <link rel="stylesheet" type="text/css" href="../css/components/registerSystem.css" />
 
         <meta name="google-signin-client_id" content="9667045798-hqlk9m2i4dtuqpimohdtmlnibm35p1i9.apps.googleusercontent.com.apps.googleusercontent.com">
 

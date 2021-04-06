@@ -4,13 +4,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const product_1 = __importDefault(require("../controller/product"));
+const authorization_1 = require("../middleWares/authorization");
 const express_1 = require("express");
 const router = express_1.Router();
 router.get('/products/details', product_1.default.getProductDetail);
 router.get('/products/variant', product_1.default.getProductVariant);
 router.get('/products/category', product_1.default.getProductsListByTag);
 // TODO: Move this to admin folder
-router.post('/admin/product', product_1.default.uploadImg, product_1.default.createProduct);
+router.post('/admin/product', authorization_1.isAuth, product_1.default.uploadImg, product_1.default.createProduct);
 // TODO: Add edit product function
 // router.put('/admin/product', Product.uploadImg, Product.createProduct)
 // TODO: Add delete product function

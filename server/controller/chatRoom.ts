@@ -12,7 +12,7 @@ class CharRoomController {
 
 	getChatRoomsListById: MujiRouter = async (req, res, next) => {
 		try {
-			const userId = req.me!.id
+			const userId = req.query.userId as string
 			const roomList = await ChatRoomService.getChatRoomsListById(userId)
 			console.log(roomList)
 

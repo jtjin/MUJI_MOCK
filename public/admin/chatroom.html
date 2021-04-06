@@ -3,14 +3,21 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"
+			defer
+		></script>
+		<script src="../js/components/registerSystem.js" type="module"></script>
+
 		<link rel="stylesheet" href="../css/admin/chatroom.css" />
-		<script src="/socket.io/socket.io.js"></script>
+		<link rel="stylesheet" href="../css/main.css" />
+		<script src="/socket.io/socket.io.js" defer></script>
 		<script src="../js/admin/chatroom.js" type="module" defer></script>
 		<title>MUJI</title>
 	</head>
 
 	<body>
+		<sign-form></sign-form>
 		<div class="chatContainer">
 			<header class="chatHeader">
 				<h1>MUJI</h1>

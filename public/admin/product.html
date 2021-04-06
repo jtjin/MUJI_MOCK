@@ -5,14 +5,18 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>MUJI</title>
 		<link rel="stylesheet" href="../css/admin/product.css" />
-
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"
+			defer
+		></script>
+		<script src="../js/components/registerSystem.js" type="module"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
-
 		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 		<script src="../js/admin/product.js" type="module" defer></script>
 	</head>
 
 	<body>
+		<sign-form></sign-form>
 		<main>
 			<h1>Product management</h1>
 			<div class="formContainer">

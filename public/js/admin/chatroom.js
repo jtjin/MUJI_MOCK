@@ -5,7 +5,7 @@ class AdminChatroomManager {
 	constructor() {
 		this.socket = io()
 		this.adminInfo = {
-			id: 0,
+			id: '0',
 			name: 'admin',
 			role: 'admin',
 			room: this.room,
@@ -54,6 +54,14 @@ class AdminChatroomManager {
 		const { data } = (
 			await privateApi.get(config.api.user.chatRoomHistory + `/${this.room}`)
 		).data
+		if (!JSON.parse(data.messages)) {
+			this.MessageSender.appendMessage({
+				userName: 'system',
+				message: 'There is no message yet',
+				time: new Date(),
+			})
+			return
+		}
 		const parsedHistory = Array.from(JSON.parse(data.messages))
 		parsedHistory.forEach((info) => {
 			if (info.userId === this.adminInfo.id) {
@@ -77,7 +85,9 @@ class AdminChatroomManager {
 	async _getRoomsList() {
 		try {
 			const { data } = (
-				await privateApi.get(config.api.admin.chatRoomList)
+				await privateApi.get(
+					config.api.admin.chatRoomList + `?userId=${this.adminInfo.id}`,
+				)
 			).data
 
 			this.roomsContainer.innerHTML = ''
@@ -181,11 +191,14 @@ class MessageSender {
 
 	appendMessage = ({ userName, message, time }) => {
 		const cloneUserMessageDiv = this.userMessageTemplate.content.cloneNode(true)
-		if (userName)
-			cloneUserMessageDiv.querySelector('.userName').innerText = userName
-
+		if (userName) {
+			if (userName === 'User-0') {
+				cloneUserMessageDiv.querySelector('.userName').innerText = 'admin'
+			} else {
+				cloneUserMessageDiv.querySelector('.userName').innerText = userName
+			}
+		}
 		let formattedTime
-
 		if (new Date(time).toDateString() !== new Date().toDateString()) {
 			const d = new Date(time).toLocaleString('en-IN', {
 				timeZone: 'Asia/Taipei',
@@ -245,7 +258,11 @@ class PinMessageManager {
 	}
 
 	getCanMessages = async () => {
-		const { data } = (await privateApi.get(config.api.admin.canMessage)).data
+		const { data } = (
+			await privateApi.get(
+				config.api.admin.canMessage + `?userId=${this.adminInfo.id}`,
+			)
+		).data
 		if (!data || data.length === 0) {
 			this.appendPinElement(
 				`To create can messages template please click the 'Pin' button`,

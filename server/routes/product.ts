@@ -12,7 +12,7 @@ router.get('/products/variant', Product.getProductVariant)
 router.get('/products/category', Product.getProductsListByTag)
 
 // TODO: Move this to admin folder
-router.post('/admin/product', Product.uploadImg, Product.createProduct)
+router.post('/admin/product', isAuth, Product.uploadImg, Product.createProduct)
 
 // TODO: Add edit product function
 // router.put('/admin/product', Product.uploadImg, Product.createProduct)

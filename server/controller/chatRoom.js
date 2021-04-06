@@ -18,7 +18,7 @@ class CharRoomController {
     constructor() {
         this.getChatRoomsListById = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const userId = req.me.id;
+                const userId = req.query.userId;
                 const roomList = yield chatRoom_1.default.getChatRoomsListById(userId);
                 console.log(roomList);
                 res.send({ result: 'success', data: roomList });

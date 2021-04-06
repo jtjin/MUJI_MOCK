@@ -46,14 +46,14 @@ class UserHandler {
             const data = yield redisDb_1.redisClient.get(userInfo.room);
             if (!data && !userInfo.isFirstTime)
                 return;
-            this.createOrUpdateChatRoom(Object.assign({ redisData: data }, userInfo));
+            yield this.createOrUpdateChatRoom(Object.assign({ redisData: data, admin_id: '0' }, userInfo));
             yield redisDb_1.redisClient.del(userInfo.room);
         });
         this.refreshRoomListAndGreetUser = function (userInfo) {
             return __awaiter(this, void 0, void 0, function* () {
                 const socket = this;
                 const history = yield index_1.default.messagesModule.getMessagesByRoom(userInfo.room);
-                if (history) {
+                if (history && history.messages !== null) {
                     that.io.to(userInfo.room || userInfo.userId).emit('getHistory', history);
                 }
                 else {
@@ -73,8 +73,8 @@ class UserHandler {
         };
         this.joinUserToChatRoom = function (userInfo) {
             return __awaiter(this, void 0, void 0, function* () {
-                yield that._createOrUpdateUserMessagesDataInRedisAndDB(Object.assign({ isFirstTime: true }, userInfo));
                 this.join(userInfo.room || userInfo.userId);
+                yield that._createOrUpdateUserMessagesDataInRedisAndDB(Object.assign({ isFirstTime: true }, userInfo));
             });
         };
         that = this;
@@ -88,7 +88,6 @@ class UserHandler {
     }
     sendChatMessage(userInfo) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log('=userInfo==>', userInfo);
             userInfo.time = new Date(userInfo.time);
             const lockKey = `lock:${userInfo.room}`;
             const lock = yield redisDb_1.redisClient.get(lockKey);
@@ -134,7 +133,7 @@ class UserHandler {
     createOrUpdateChatRoom(userInfo) {
         return __awaiter(this, void 0, void 0, function* () {
             const messagesInfo = yield index_1.default.messagesModule.getMessagesByRoom(userInfo.room);
-            if (messagesInfo && userInfo.redisData) {
+            if (messagesInfo && userInfo.redisData && messagesInfo.messages) {
                 const updatedMessages = Array.from(JSON.parse(String(messagesInfo.messages))).concat(Array.from(JSON.parse(userInfo.redisData)));
                 yield index_1.default.messagesModule.updateRoomMessages(userInfo.room, JSON.stringify(updatedMessages));
             }
@@ -144,6 +143,7 @@ class UserHandler {
                         user_id: userInfo.userId,
                         room: userInfo.room,
                         messages: userInfo.redisData,
+                        admin_id: '0',
                     },
                 ]);
             }
@@ -152,6 +152,7 @@ class UserHandler {
                     {
                         user_id: userInfo.userId,
                         room: userInfo.room,
+                        admin_id: '0',
                     },
                 ]);
             }

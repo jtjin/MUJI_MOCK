@@ -4,7 +4,7 @@ const router = Router()
 import { isAuth } from '../middleWares/authorization'
 
 router.get(
-	'/admin/chatRoomList/:userId',
+	'/admin/chatRoomList',
 	isAuth,
 	CharRoomController.getChatRoomsListById,
 )
@@ -15,20 +15,12 @@ router.get(
 	CharRoomController.getChatRoomHistory,
 )
 
-router.get(
-	'/admin/chatRoom/pin/:adminId',
-	isAuth,
-	CharRoomController.getPinMessages,
-)
+router.get('/admin/chatRoom/pin', isAuth, CharRoomController.getPinMessages)
 
-router.post(
-	'/admin/chatRoom/pin/:adminId',
-	isAuth,
-	CharRoomController.createPinMessage,
-)
+router.post('/admin/chatRoom/pin', isAuth, CharRoomController.createPinMessage)
 
 router.delete(
-	'/admin/chatRoom/pin/:adminId',
+	'/admin/chatRoom/pin',
 	isAuth,
 	CharRoomController.deletePinMessage,
 )

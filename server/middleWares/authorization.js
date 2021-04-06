@@ -16,13 +16,18 @@ exports.isAuth = void 0;
 const customErrors_1 = require("../infra/customErrors");
 const token_1 = __importDefault(require("../helpers/token"));
 const isAuth = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const access_token = req.get('Authorization');
-    if (!access_token)
-        throw new Error(customErrors_1.customErrors.AUTH_NO_TOKEN.type);
-    const userPO = yield token_1.default.verifyToken(access_token);
-    if (!userPO)
-        throw new Error(customErrors_1.customErrors.USER_NOT_FOUND.type);
-    req.me = userPO;
-    next();
+    try {
+        const access_token = req.get('Authorization');
+        if (!access_token)
+            throw new Error(customErrors_1.customErrors.AUTH_NO_TOKEN.type);
+        const userPO = yield token_1.default.verifyToken(access_token);
+        if (!userPO)
+            throw new Error(customErrors_1.customErrors.USER_NOT_FOUND.type);
+        req.me = userPO;
+        next();
+    }
+    catch (err) {
+        next(err);
+    }
 });
 exports.isAuth = isAuth;

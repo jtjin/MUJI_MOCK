@@ -24,21 +24,28 @@ class TokenHelper {
                     throw new Error(customErrors_1.customErrors.AUTH_NO_IDENTITY.type);
                 // @ts-ignore
                 const { email } = jsonwebtoken_1.default.verify(access_token, config_1.default.get('jwt.secret'));
+                if (!email)
+                    throw new Error(customErrors_1.customErrors.USER_NOT_FOUND.type);
                 const userPO = yield index_1.default.userModule.getUserByEmail(email);
                 return userPO;
             }
             catch (err) {
-                throw err;
+                throw new Error(customErrors_1.customErrors.AUTH_NO_TOKEN.type);
             }
         });
     }
     generateToken(email, role) {
-        const jwtExpireTime = Number(config_1.default.get('jwt.expireTime'));
-        return (role +
-            ' ' +
-            jsonwebtoken_1.default.sign({ email }, config_1.default.get('jwt.secret'), {
-                expiresIn: jwtExpireTime,
-            }));
+        try {
+            const jwtExpireTime = Number(config_1.default.get('jwt.expireTime'));
+            return (role +
+                ' ' +
+                jsonwebtoken_1.default.sign({ email }, config_1.default.get('jwt.secret'), {
+                    expiresIn: jwtExpireTime,
+                }));
+        }
+        catch (error) {
+            throw error;
+        }
     }
 }
 module.exports = new TokenHelper();

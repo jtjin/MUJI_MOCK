@@ -41,8 +41,6 @@ class UserHandler {
 			role: string
 		},
 	) {
-		console.log('=userInfo==>', userInfo)
-
 		userInfo.time = new Date(userInfo.time)
 
 		const lockKey = `lock:${userInfo.room}`
@@ -96,7 +94,11 @@ class UserHandler {
 		const data = await redisClient.get(userInfo.room)
 		if (!data && !userInfo.isFirstTime) return
 
-		this.createOrUpdateChatRoom({ redisData: data, ...userInfo })
+		await this.createOrUpdateChatRoom({
+			redisData: data,
+			admin_id: '0',
+			...userInfo,
+		})
 		await redisClient.del(userInfo.room)
 	}
 
@@ -104,16 +106,15 @@ class UserHandler {
 		userId: string
 		room: string
 		redisData?: any
+		admin_id: string
 	}) {
 		const messagesInfo = await MujiRDB.messagesModule.getMessagesByRoom(
 			userInfo.room,
 		)
-
-		if (messagesInfo && userInfo.redisData) {
+		if (messagesInfo && userInfo.redisData && messagesInfo.messages) {
 			const updatedMessages = Array.from(
 				JSON.parse(String(messagesInfo.messages)),
 			).concat(Array.from(JSON.parse(userInfo.redisData)))
-
 			await MujiRDB.messagesModule.updateRoomMessages(
 				userInfo.room,
 				JSON.stringify(updatedMessages),
@@ -124,6 +125,7 @@ class UserHandler {
 					user_id: userInfo.userId,
 					room: userInfo.room,
 					messages: userInfo.redisData,
+					admin_id: '0',
 				},
 			])
 		} else if (!messagesInfo && !userInfo.redisData) {
@@ -131,6 +133,7 @@ class UserHandler {
 				{
 					user_id: userInfo.userId,
 					room: userInfo.room,
+					admin_id: '0',
 				},
 			])
 		}
@@ -150,7 +153,7 @@ class UserHandler {
 			userInfo.room,
 		)
 
-		if (history) {
+		if (history && history.messages !== null) {
 			that.io.to(userInfo.room || userInfo.userId).emit('getHistory', history)
 		} else {
 			that.io.to(userInfo.room || userInfo.userId).emit('greetNewUser', {
@@ -176,11 +179,11 @@ class UserHandler {
 			userName?: string
 		},
 	) {
+		this.join(userInfo.room || userInfo.userId)
 		await that._createOrUpdateUserMessagesDataInRedisAndDB({
 			isFirstTime: true,
 			...userInfo,
 		})
-		this.join(userInfo.room || userInfo.userId)
 	}
 
 	refreshRoomListAndGreetAdmin(

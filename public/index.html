@@ -15,14 +15,18 @@
 		<script src="../js/index.js" defer type="module"></script>
 		<script src="./js/components/header.js" defer type="module"></script>
 		<script src="./js/components/footer.js" defer></script>
-
+		<script
+			src="./js/components/registerSystem.js"
+			type="module"
+			defer
+		></script>
+		<script src="/socket.io/socket.io.js" defer></script>
 		<script src="./js/components/chatbot.js" defer type="module"></script>
-		<script src="/socket.io/socket.io.js"></script>
 	</head>
 
 	<body>
 		<muji-nav></muji-nav>
-
+		<sign-form></sign-form>
 		<template>
 			<div class="mainSliders">
 				<a class="visual" href="/product.html?id=1">
@@ -41,9 +45,6 @@
 		<template>
 			<a class="product" href="/product.html?id=">
 				<img src="" />
-				<!--  <div class="colors">
-					<div class="color" style="background-color: #cccccc;"></div>
-				</div> -->
 				<div class="name"></div>
 				<div class="price"></div>
 			</a>

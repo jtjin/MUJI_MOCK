@@ -20,18 +20,4 @@ body {
 a {
 	text-decoration: none;
 	color: #3f3a3a;
-	letter-spacing: 4px;
-	line-height: 32px;
-	font-size: 18px;
-}
-
-.view {
-	margin: 40px 0;
-	display: flex;
-	flex-direction: column;
-	align-items: stretch;
-	width: 100%;
-}
-.member {
-	margin-top: 10px;
 }

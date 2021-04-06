@@ -4,10 +4,18 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>MUJI</title>
+
 		<link rel="stylesheet" type="text/css" href="./css/product.css" />
 		<link rel="stylesheet" type="text/css" href="./css/main.css" />
 		<link rel="stylesheet" type="text/css" href="/css/tapPay.css" />
-		<script src="/socket.io/socket.io.js"></script>
+
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"
+			defer
+		></script>
+
+		<script src="/socket.io/socket.io.js" defer></script>
+		<script src="./js/components/chatbot.js" defer type="module"></script>
 		<style>
 			.paymentForm {
 				display: none;
@@ -136,7 +144,7 @@
 
 	<body>
 		<muji-nav></muji-nav>
-
+		<muji-chatbot></muji-chatbot>
 		<sign-form></sign-form>
 
 		<main>

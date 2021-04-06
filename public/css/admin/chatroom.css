@@ -1,23 +1,7 @@
-:root {
-	--dark-color-a: #6d6c6a;
-	--dark-color-b: rgb(145, 138, 132);
-	--light-color: #f0f0f0;
-	--success-color: #5cb85c;
-	--error-color: #d9534f;
-	--pop-color: #6aae6a;
-}
-
 * {
 	box-sizing: border-box;
 	margin: 0;
 	padding: 0;
-}
-
-body {
-	font-family: 'Roboto', sans-serif;
-	font-size: 16px;
-	background: var(--light-color);
-	margin: 20px;
 }
 
 h1 {
@@ -116,6 +100,7 @@ h3 {
 }
 
 .messagesContainer {
+	background-color: var(--light-color);
 	padding: 30px;
 	border-bottom: 1px solid var(--dark-color-b);
 	overflow-y: scroll;
@@ -125,7 +110,7 @@ h3 {
 .message {
 	padding: 10px;
 	margin-bottom: 15px;
-	background-color: var(--light-color);
+	background-color: white;
 	border-radius: 5px;
 }
 
@@ -174,6 +159,7 @@ a {
 }
 
 .canMessageContainer {
+	background-color: var(--light-color);
 	overflow-y: scroll;
 }
 
