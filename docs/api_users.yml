@@ -1,6 +1,50 @@
 openapi: '3.0.2'
 info:
-  title: MUJI - User API DOCs
+  title: MUJI MOCK - User API DOCs
   version: '1.0'
 servers:
+  # - url: https://white-100.online/api/1.0
   - url: http://localhost:5000/api/1.0
+
+paths:
+  /user/signIn:
+    post:
+      tags:
+        - products
+      description: 獲取產品詳細資訊
+      responses:
+        '200':
+          description: OK
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                native:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+            example:
+              provider: native
+              email: test@gmail.com
+              password: '123'
+        required: true
+
+  /user/signUp:
+    post:
+      tags:
+        - products
+      description: 獲取產品詳細資訊
+      responses:
+        '200':
+          description: OK
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+        required: true

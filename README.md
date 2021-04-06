@@ -7,6 +7,7 @@
 ## Table of Contents
 
 - [Main Features](#Main-Features)
+  -- [Page](#Page)
 - [Technologies](#Technologies)
 - [Architecture](#Architecture)
 - [Contact](#Contact)
@@ -15,6 +16,7 @@
 
 - An E-commerce shopping website including catalog, shopping cart module, and third-party payment
 - Built login / logout / register authentication functions
+- Product upload function with 2 customized specifications
 - Designed RDBMS & Normalization database structure by adding indexes.
 - Connected to backend APIs using AJAX
 - Built campaigns and product categorization features
@@ -24,6 +26,19 @@
 - Created load balancer, AMI for auto scaling
   Auto-Refresh dashBoard with interactive charts
 - Logs system
+
+### Page
+
+- Public Page
+
+  - [Product list main](https://white-100.online/)
+  - [Product detail](https://white-100.online/product.html?id=201807242211)
+
+- Need Authentication
+  - [Product Create](https://white-100.online/admin/product.html)
+  - [Cart](https://white-100.online/cart.html)
+  - [Profile](https://white-100.online/profile.html)
+  - [Admin chatroom system](https://white-100.online/admin/chatroom.html)
 
 ## Technologies
 
@@ -74,12 +89,10 @@
 
 ![Architecture.png](https://i.imgur.com/kVIbucv.jpg)
 
-
 ## Contact
 
 Email: t100210022002@gmail.com
 
-
 > ##### 版權聲明
+>
 > ##### 本專案所有圖片素材均來自於無印良品官網，如有侵權敬請告知，將立即刪除
-

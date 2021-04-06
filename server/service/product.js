@@ -71,8 +71,9 @@ class ProductService {
                     result.next_paging = Number(page) + 1;
                 }
                 result.data = this._formatProductList(productPO);
-                if (!result.data)
-                    return;
+                if (!result.data) {
+                    throw new Error(customErrors_1.customErrors.PRODUCT_NOT_FOUND.type);
+                }
                 yield safeAwait_1.safeAwait(redisDb_1.redisClient.set(`product:${categoryId}:${tagId}:${titleLike}:${page}`, JSON.stringify(result)), tag + this.tag + '/getProductsListByTag/redis');
                 return result;
             }
@@ -105,6 +106,8 @@ class ProductService {
                 if (resultCache)
                     return JSON.parse(resultCache);
                 const productPO = yield index_1.default.productDetailsModule.getProductVariantById(id);
+                if (!productPO)
+                    throw new Error(customErrors_1.customErrors.PRODUCT_NOT_FOUND.type);
                 yield safeAwait_1.safeAwait(redisDb_1.redisClient.set(`product:variant:${id}`, JSON.stringify(productPO)), tag + this.tag + '/getProductVariantById/redis/set');
                 return productPO;
             }

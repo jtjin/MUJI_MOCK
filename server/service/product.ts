@@ -60,7 +60,9 @@ class ProductService {
 
 			result.data = this._formatProductList(productPO)
 
-			if (!result.data) return
+			if (!result.data) {
+				throw new Error(customErrors.PRODUCT_NOT_FOUND.type)
+			}
 			await safeAwait(
 				redisClient.set(
 					`product:${categoryId}:${tagId}:${titleLike}:${page}`,
@@ -108,10 +110,13 @@ class ProductService {
 			const productPO = await MujiRDB.productDetailsModule.getProductVariantById(
 				id,
 			)
+			if (!productPO) throw new Error(customErrors.PRODUCT_NOT_FOUND.type)
+
 			await safeAwait(
 				redisClient.set(`product:variant:${id}`, JSON.stringify(productPO)),
 				tag + this.tag + '/getProductVariantById/redis/set',
 			)
+
 			return productPO
 		} catch (error) {
 			throw error

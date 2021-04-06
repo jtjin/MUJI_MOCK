@@ -3,61 +3,63 @@ info:
   title: MUJI MOCK - Products API DOCs
   version: '1.0'
 servers:
+  # - url: https://white-100.online/api/1.0
   - url: http://localhost:5000/api/1.0
 paths:
-  /products/all:
+  /products/details:
     get:
       tags:
         - products
-      description: products
+      description: 獲取產品詳細資訊
       responses:
         '200':
           description: OK
 
       parameters:
-        - name: paging
+        - name: id
           in: query
           schema:
             type: integer
-  /products/women:
+            default: 201807202140
+          required: true
+
+  /products/variant:
     get:
       tags:
         - products
-      description: products
+      description: 獲取特定產品規格的資訊
       responses:
         '200':
           description: OK
       parameters:
-        - name: paging
+        - name: id
           in: query
           schema:
             type: integer
-  /products/men:
+            default: 1
+          required: true
+
+  /products/category:
     get:
       tags:
         - products
-      description: products
-      responses:
-        '200':
-          description: OK
-  /products/accessories:
-    get:
-      tags:
-        - products
-      description: products
+      description: 獲取不同類別的產品列表
       responses:
         '200':
           description: OK
       parameters:
-        - name: paging
+        - name: category
           in: query
           schema:
-            type: integer
+            type: string
+            default: 'clothes'
+          required: true
+
   /admin/product:
     post:
       tags:
         - admin
-      description: products
+      description: 創建產品，自由創建兩種規格
       responses:
         '200':
           description: OK
