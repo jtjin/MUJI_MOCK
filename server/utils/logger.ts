@@ -21,23 +21,25 @@ function createLoggerTransports() {
 	const transports = []
 
 	// Save logs file to folders
-	transports.push(
-		new DailyRotateFile({
-			filename: './logs/MUJI-%DATE%.log',
-			datePattern: 'YYYY-MM-DD-HH',
-			zippedArchive: true,
-			maxSize: '20m',
-			maxFiles: '14d',
-			format: format.combine(
-				format((info) => {
-					const formatInfo = info
-					formatInfo.message = formatMsgByType(info.message)
-					return formatInfo
-				})(),
-				format.json(),
-			),
-		}),
-	)
+	if (process.env.NODE_ENV === 'development') {
+		transports.push(
+			new DailyRotateFile({
+				filename: './logs/MUJI-%DATE%.log',
+				datePattern: 'YYYY-MM-DD-HH',
+				zippedArchive: true,
+				maxSize: '20m',
+				maxFiles: '14d',
+				format: format.combine(
+					format((info) => {
+						const formatInfo = info
+						formatInfo.message = formatMsgByType(info.message)
+						return formatInfo
+					})(),
+					format.json(),
+				),
+			}),
+		)
+	}
 
 	// Create console logs
 	transports.push(

@@ -33,18 +33,20 @@ exports.logger = winston_1.createLogger({
 function createLoggerTransports() {
     const transports = [];
     // Save logs file to folders
-    transports.push(new DailyRotateFile({
-        filename: './logs/MUJI-%DATE%.log',
-        datePattern: 'YYYY-MM-DD-HH',
-        zippedArchive: true,
-        maxSize: '20m',
-        maxFiles: '14d',
-        format: winston_1.format.combine(winston_1.format((info) => {
-            const formatInfo = info;
-            formatInfo.message = formatMsgByType(info.message);
-            return formatInfo;
-        })(), winston_1.format.json()),
-    }));
+    if (process.env.NODE_ENV === 'development') {
+        transports.push(new DailyRotateFile({
+            filename: './logs/MUJI-%DATE%.log',
+            datePattern: 'YYYY-MM-DD-HH',
+            zippedArchive: true,
+            maxSize: '20m',
+            maxFiles: '14d',
+            format: winston_1.format.combine(winston_1.format((info) => {
+                const formatInfo = info;
+                formatInfo.message = formatMsgByType(info.message);
+                return formatInfo;
+            })(), winston_1.format.json()),
+        }));
+    }
     // Create console logs
     transports.push(new winston_2.default.transports.Console({
         level: 'debug',
