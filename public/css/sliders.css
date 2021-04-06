@@ -71,7 +71,7 @@
 }
 
 #topDot {
-	background-color: rgb(30, 30, 30);
+	background-color: var(--dark-color-a);
 	transition: all 1s linear;
 	-webkit-transition: all 1s linear;
 	-moz-transition: all 1s linear;

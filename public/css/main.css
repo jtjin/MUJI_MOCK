@@ -2,6 +2,7 @@
 	--dark-color-a: #333333;
 	--dark-color-b: rgb(145, 138, 132);
 	--light-color: #f0f0f0;
+	--grey: #c2c2c2;
 	--success-color: #5cb85c;
 	--error-color: #d9534f;
 	--pop-color: #6aae6a;
@@ -11,7 +12,7 @@ body {
 	margin: 0px;
 	font-size: 16px;
 	font-family: 'Noto Sans TC', '微軟正黑體', '新細明體', arial, sans-serif;
-	color: #3f3a3a;
+	color: var(--dark-color-a);
 	display: flex;
 	flex-direction: column;
 	align-items: stretch;
@@ -19,5 +20,5 @@ body {
 
 a {
 	text-decoration: none;
-	color: #3f3a3a;
+	color: var(--dark-color-a);
 }

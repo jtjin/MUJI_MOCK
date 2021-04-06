@@ -1,5 +1,5 @@
 main {
-	background-color: rgb(245, 245, 245);
+	background-color: var(--light-color);
 	width: 100vw;
 	height: 100vh;
 	display: flex;
@@ -68,7 +68,7 @@ main {
 
 .count button,
 .count input {
-	border: rgb(230, 230, 230) 1px solid;
+	border: var(--light-color) 1px solid;
 	background-color: #fff;
 	color: black;
 }

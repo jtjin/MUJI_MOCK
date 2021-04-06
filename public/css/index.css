@@ -1,14 +1,14 @@
 @import './sliders.css';
 
 a.visual {
-	color: #3f3a3a;
+	color: var(--dark-color-a);
 	letter-spacing: 4px;
 	line-height: 32px;
 	font-size: 18px;
 }
 
 a {
-	color: #3f3a3a;
+	color: var(--dark-color-a);
 	letter-spacing: 2px;
 	line-height: 24px;
 	font-size: 12px;
@@ -83,7 +83,7 @@ a {
 }
 
 .pagination ul li a:hover {
-	background-color: #3f3a3a;
+	background-color: var(--dark-color-a);
 	color: white;
 }
 
@@ -101,6 +101,6 @@ a {
 }
 
 .pagination a.currentPaging {
-	background-color: #3f3a3a;
+	background-color: var(--dark-color-a);
 	color: white;
 }
