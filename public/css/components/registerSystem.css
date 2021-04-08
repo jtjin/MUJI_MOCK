@@ -37,7 +37,7 @@ select:focus {
 }
 
 .login {
-	border-right: #3f3a3a 1px solid;
+	border-right: var(--dark-color-a) 1px solid;
 }
 
 .signUp form {
@@ -68,7 +68,7 @@ h2 {
 	right: 0;
 	z-index: 10;
 	position: fixed;
-	background-color: #fff;
+	background-color: var(--white-color);
 	padding: 10px;
 	border-radius: 3px;
 	-webkit-box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.33);
@@ -90,7 +90,7 @@ h2 {
 	height: 50px;
 	justify-content: center;
 	text-decoration: none;
-	color: #fff;
+	color: var(--white-color);
 	font-size: 12px;
 	text-align: center;
 	display: flex;
@@ -155,7 +155,7 @@ h2 {
 	width: 150%;
 	height: 110%;
 	padding-top: 80px;
-	color: #fff;
+	color: var(--white-color);
 	background-color: rgba(172, 172, 172, 0.865);
 	z-index: 9;
 }
@@ -186,12 +186,12 @@ h2 {
 }
 
 .postFormHeader .active {
-	color: #3f3a3a;
+	color: var(--dark-color-a);
 	font-size: 18px;
 }
 
 .postFormHeader > h6 {
-	color: #3f3a3a;
+	color: var(--dark-color-a);
 	font-size: 36px;
 	margin: 0;
 	text-align: center;

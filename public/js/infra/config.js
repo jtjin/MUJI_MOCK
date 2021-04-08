@@ -15,6 +15,7 @@ const config = {
 			chatRoomHistory: globalVersion + 'chatRoom/history',
 			profile: globalVersion + 'user/profile',
 			cart: globalVersion + 'user/cart',
+			order: globalVersion + 'user/order',
 		},
 		globalVersion: globalVersion,
 		product: {

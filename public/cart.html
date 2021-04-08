@@ -1,32 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
+
 	<head>
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Document</title>
 		<link rel="stylesheet" type="text/css" href="./css/main.css" />
-		<script
-			src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"
-			defer
-		></script>
-		<script
-			src="./js/components/registerSystem.js"
-			type="module"
-			defer
-		></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js" defer></script>
+		<script src="./js/components/registerSystem.js" type="module" defer></script>
 		<script src="./js/components/header.js" type="module" defer></script>
 		<script src="./js/cart.js" type="module" defer></script>
+		<script src="./js/TPD.js" type="module" defer></script>
 		<script src="./js/components/footer.js" defer></script>
+		<link rel="stylesheet" type="text/css" href="/css/tapPay.css" />
+		<script src="https://code.jquery.com/jquery-3.2.1.min.js"
+			integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+		<script src="https://js.tappaysdk.com/tpdirect/v5.1.0"></script>
 		<link rel="stylesheet" href="./css/cart.css" />
 	</head>
+
 	<body>
+
+		<!-- 結帳 -->
+		<div class="paymentForm">
+			<div class="container">
+				<form class="TapPayFrom">
+					<h1>結帳資訊</h1>
+					<div class="form-group">
+						<label for="exampleInputEmail1">Email address</label>
+						<input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email" />
+					</div>
+					<div class="form-group card-number-group">
+						<label for="card-number" class="control-label"><span id="cardtype"></span>卡號</label>
+						<div class="form-control card-number"></div>
+					</div>
+					<div class="form-group expiration-date-group">
+						<label for="expiration-date" class="control-label">卡片到期日</label>
+						<div class="form-control expiration-date" id="tappay-expiration-date"></div>
+					</div>
+					<div class="form-group cvc-group">
+						<label for="cvc" class="control-label">卡片後三碼</label>
+						<div class="form-control cvc"></div>
+					</div>
+					<button type="submit" class="btn btn-default" value="">Pay</button>
+					<div class="testInfo">
+						<div>測試帳號</div>
+						<div>卡號：4242424242424242</div>
+						<div>到期日: 1234</div>
+						<div>後三碼：123</div>
+					</div>
+				</form>
+				<br />
+				<pre class="jumbotron text-left" id="curl"></pre>
+			</div>
+		</div>
+
+
 		<muji-nav></muji-nav>
 		<sign-form></sign-form>
 		<main>
 			<div class="cartItemContainer">
 				<div class="cartItem">
-					<div><input type="checkbox" name="" id="" /></div>
+					<div><input type="checkbox" class="selectAllCheckbox" /></div>
 					<div class="title">商品</div>
 					<div class="imageContainer">圖片</div>
 					<div class="mainSpec">規格一</div>
@@ -36,29 +72,32 @@
 					<div class="totalPrice">總計</div>
 					<div class="delete">操作</div>
 				</div>
-			
 
-				<template class ="cartItemTemplate"">
-					<div class="cartItem">
-						<div><input type="checkbox" name="" id="" /></div>
-						<div class="imageContainer">
-							<img src="" alt="" />
-						</div>
-						<div class="title">男有機棉混縱橫彈性綾織合身褲</div>
-						<div class="mainSpec">黑色</div>
-						<div class="subSpec">L</div>
-						<div class="price">599</div>
-						<div class="count">
-							<button class="quantity-minus">-</button>
-							<input class="quantity-value" type="text" value="1" />
-							<button class="quantity-add">+</button>
-						</div>
-						<div class="totalPrice">$<span>1600</span></div>
-						<button class="delete">刪除</button>
+				<template class="cartItemTemplate"">
+					<div class=" cartItem">
+					<div class="checkboxContainer"><input type="checkbox" name="" id="" /></div>
+					<div class="imageContainer">
+						<img src="" alt="" />
 					</div>
-				</template>
+					<div class="title">男有機棉混縱橫彈性綾織合身褲</div>
+					<div class="mainSpec">黑色</div>
+					<div class="subSpec">L</div>
+					<div class="price">599</div>
+					<div class="count">
+						<button class="quantity-minus">-</button>
+						<input class="quantity-value" type="text" value="1" />
+						<button class="quantity-add">+</button>
+					</div>
+					<div class="totalPrice">$<span>1600</span></div>
+					<button class="delete">刪除</button>
+			</div>
+			</template>
+			</div>
+			<div class="checkoutContainer">
+				<button class="checkoutBtn">結帳</button>
 			</div>
 		</main>
 		<muji-footer></muji-footer>
 	</body>
+
 </html>

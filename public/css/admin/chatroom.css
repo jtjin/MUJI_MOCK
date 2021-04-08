@@ -37,14 +37,14 @@ ul:first-child a {
 
 .chatContainer {
 	max-width: 1100px;
-	background: #fff;
+	background: var(--white-color);
 	margin: 30px auto;
 	overflow: hidden;
 }
 
 .chatHeader {
 	background: var(--dark-color-a);
-	color: #fff;
+	color: var(--white-color);
 	border-top-left-radius: 5px;
 	border-top-right-radius: 5px;
 	padding: 15px;
@@ -69,8 +69,8 @@ h3 {
 
 .chatSidebar {
 	background: var(--dark-color-b);
-	color: #fff;
 	padding: 20px 20px 60px;
+	color: var(--white-color);
 }
 
 .chatSidebar h2 {
@@ -110,7 +110,7 @@ h3 {
 .message {
 	padding: 10px;
 	margin-bottom: 15px;
-	background-color: white;
+	background-color: var(--white-color);
 	border-radius: 5px;
 }
 
@@ -155,7 +155,7 @@ h3 {
 
 a {
 	text-decoration: none;
-	color: white;
+	color: var(--white-color);
 }
 
 .canMessageContainer {
@@ -168,7 +168,7 @@ a {
 	margin: 20px;
 	display: flex;
 	flex-wrap: wrap;
-	color: white;
+	color: var(--white-color);
 }
 
 .canMessageContainer ul li {
@@ -192,7 +192,7 @@ a {
 	background-color: var(--pop-color);
 	padding: 10px;
 	margin-left: 10px;
-	color: white;
+	color: var(--white-color);
 	border-radius: 20px;
 	-webkit-border-radius: 20px;
 	-moz-border-radius: 20px;

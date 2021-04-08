@@ -142,7 +142,7 @@ input:-webkit-autofill {
 }
 
 .tagBorder {
-	border-right: #3f3a3a 1px solid;
+	border-right: var(--dark-color-a) 1px solid;
 }
 
 .qty {
@@ -151,7 +151,7 @@ input:-webkit-autofill {
 	background-color: var(--dark-color-a);
 	font-weight: bold;
 	border-radius: 50%;
-	color: #ffffff;
+	color: var(--white-color);fff;
 	opacity: 0.8;
 	font-size: 0.8em;
 	width: 24px;

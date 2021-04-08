@@ -132,7 +132,7 @@ main {
 	width: 100px;
 	height: 40px;
 	background-color: var(--dark-color-a);
-	color: #fff;
+	color: var(--white-color);
 	font-size: 12px;
 	margin: 15px 0 35px 0;
 	cursor: pointer;

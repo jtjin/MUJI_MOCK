@@ -33,7 +33,7 @@
 
 .imgBtn:hover {
 	background-color: #e98c34;
-	color: #ffffff;
+	color: var(--white-color);fff;
 }
 
 #userImage {

@@ -71,7 +71,7 @@ function errorHandler(errorType, error, errResponse) {
 		case 'USER_INVALID_TOKEN':
 			console.log(errResponse)
 			localStorage.removeItem('muji')
-			alert('Please Log In...')
+			console.log('Please Log In...')
 			break
 		default:
 			console.log(error)

@@ -1,7 +1,7 @@
 .paymentForm {
 	display: none;
 	background-color: rgba(255, 255, 255, 0.9);
-	z-index: 1;
+	z-index: 2;
 	height: 100%;
 	width: 100%;
 	position: fixed;
@@ -22,7 +22,7 @@
 	margin-right: 15px;
 	width: 130px;
 	height: 10px;
-	border-right: var(--dark-color-a) 1px solid;
+	border-right: black 1px solid;
 }
 
 #exampleInputEmail1 {
@@ -39,8 +39,12 @@
 	position: relative;
 	top: 150px;
 	box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
-	height: 500px;
+	height: 600px;
 	padding-bottom: 30px;
+}
+
+.testInfo {
+	color: #707070;
 }
 
 h1 {

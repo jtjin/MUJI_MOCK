@@ -79,6 +79,8 @@ class RegisterFrom extends HTMLElement {
 		})
 		this.facebookLogInBtn.addEventListener('click', async (event) => {
 			event.preventDefault()
+			alert('目前FB不開放非企業的個人用戶使用第三方認證登入！')
+			return
 			await this.FB.logIn()
 		})
 	}
@@ -175,6 +177,9 @@ class RegisterFrom extends HTMLElement {
 	}
 
 	googleSignIn(googleUser) {
+		event.preventDefault()
+		alert('此功能開發中！')
+		return
 		console.log('googleUser->', googleUser)
 		var profile = googleUser.getBasicProfile()
 		console.log('ID: ' + profile.getId())
@@ -214,8 +219,8 @@ class RegisterFrom extends HTMLElement {
 						<button name='provider' value="native" type="submit" class="submit">Log in</button>
                     </div>
 
-                <button name='provider' value="facebook" type="submit" class="facebookLogInBtn">Facebook</button>
-                <button name='provider' value="google"   class="googleLogInBtn" >Google</button>
+                <button name='provider' value="facebook"  class="facebookLogInBtn">Facebook</button>
+                <button name='provider' value="google"  class="googleLogInBtn" >Google</button>
 
 				<div id="messageSignIn"></div>
 
@@ -237,7 +242,6 @@ class RegisterFrom extends HTMLElement {
 							required="required" autocomplete />
 					</div>
 					<div id="messageSignUp"></div>
-
 
 					<div class="form-column imgBtn-info">
 						<label class="imgBtn" >

@@ -220,7 +220,7 @@ class MessageSender {
 		})
 	}
 	submitBroadcastMessage() {
-		// TODO:
+		// TODO: 傳送廣播訊息
 		if (!this.messageInput.value) return
 		// let message = messageInput.value
 		// if (!message) true

@@ -3,7 +3,8 @@ main {
 	width: 100vw;
 	height: 100vh;
 	display: flex;
-	justify-content: center;
+	flex-direction: column;
+	align-items: center;
 }
 
 .title {
@@ -32,7 +33,7 @@ main {
 }
 .delete {
 	border: none;
-	background-color: #fff;
+	background-color: var(--white-color);
 	text-align: center;
 	width: 50px;
 }
@@ -43,13 +44,60 @@ main {
 	flex-direction: column;
 }
 
+.checkoutContainer {
+	width: 80%;
+}
+
+.checkoutBtn {
+	margin-left: auto;
+	color: white;
+	display: flex;
+	border: none;
+	padding: 10px 15px;
+	border-radius: 2px;
+	background-color: var(--dark-color-a);
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+	-ms-border-radius: 2px;
+	-o-border-radius: 2px;
+}
+.checkoutBtn:focus {
+	outline: none;
+}
+k .checkoutBtn:hover {
+	transform: scale(1.1);
+	transition: all 0.2s ease-in-out;
+	background-color: var(--pop-color);
+	-webkit-transform: scale(1.1);
+	-moz-transform: scale(1.1);
+	-ms-transform: scale(1.1);
+	-o-transform: scale(1.1);
+}
+
 .cartItem {
+	border-radius: 2px;
 	font-size: 14px;
 	display: flex;
 	align-items: center;
-	background-color: #fff;
+	background-color: var(--white-color);
 	padding: 5px 30px 5px 5px;
 	margin: 5px 0;
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+	-ms-border-radius: 2px;
+	-o-border-radius: 2px;
+}
+
+.checkboxContainer {
+	font-style: italic;
+	text-transform: uppercase;
+	font-weight: 900;
+	color: red;
+}
+
+.soldOut {
+	background-color: rgb(255, 224, 229);
+	border: 1px solid rgb(255, 135, 135);
 }
 
 .cartItem div {
@@ -69,7 +117,7 @@ main {
 .count button,
 .count input {
 	border: var(--light-color) 1px solid;
-	background-color: #fff;
+	background-color: var(--white-color);
 	color: black;
 }
 

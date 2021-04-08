@@ -11,15 +11,15 @@ button {
 	background-color: #524c4c;
 	border: none;
 	outline: none;
-	color: #fff;
+	color: var(--white-color);;
 	font-size: 14px;
 }
 
 button:hover {
 	animation: flicker2 0.1s infinite alternate;
-	color: #fff;
+	color: var(--white-color);;
 	background: #2c2929;
-	border: 0.01px #ffffff solid;
+	border: 0.01px var(--white-color);fff solid;
 	box-sizing: border-box;
 	transition: width 0.1s;
 	-webkit-transition: width 0.1s;
@@ -61,6 +61,6 @@ button:active {
 }
 
 .googleLogInBtn:hover {
-	color: #ffffff;
+	color: var(--white-color);fff;
 	background-color: #e98c34;
 }

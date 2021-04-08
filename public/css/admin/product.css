@@ -1,6 +1,6 @@
 * {
 	font-family: 'Noto Sans TC', '微軟正黑體', '新細明體', arial, sans-serif;
-	color: #3f3a3a;
+	color: var(--dark-color-a);
 }
 
 body {
@@ -56,7 +56,7 @@ div.mainSpecName {
 	align-items: center;
 	padding: 5px;
 	width: auto;
-	background-color: #fff;
+	background-color: var(--white-color);
 }
 
 .specsField .formColumn input {
@@ -78,7 +78,7 @@ div.mainSpecName {
 	box-sizing: border-box;
 	text-align: center;
 	background-color: #524c4c;
-	color: #fff;
+	color: var(--white-color);
 	float: right;
 	-webkit-border-radius: 2px;
 	-moz-border-radius: 2px;
@@ -105,7 +105,7 @@ select,
 input[type='text'],
 input[type='number'],
 textarea {
-	color: #3f3a3a;
+	color: var(--dark-color-a);
 	width: 70%;
 	height: 30px;
 	outline: none;
@@ -149,7 +149,7 @@ textarea {
 	background-color: #524c4c;
 	border: none;
 	outline: none;
-	color: #fff;
+	color: var(--white-color);
 }
 
 fieldset {

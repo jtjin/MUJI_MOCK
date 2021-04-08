@@ -93,7 +93,7 @@ Chat Title
 	position: relative;
 	z-index: 2;
 	background: var(--dark-color-b);
-	color: #fff;
+	color: var(--white-color);
 	text-transform: uppercase;
 	text-align: left;
 	padding: 10px 10px 10px 60px;
@@ -216,7 +216,7 @@ Messages
 
 .messageFromUserClass {
 	align-self: flex-end;
-	color: #fff;
+	color: var(--white-color);
 	background: var(--pop-color);
 	border-radius: 10px 10px 0 10px;
 }
@@ -326,7 +326,7 @@ Message Box
 	top: 12px;
 	position: absolute;
 	z-index: 1;
-	color: #fff;
+	color: var(--white-color);
 	border: none;
 	background: #76756d;
 	font-size: 10px;
