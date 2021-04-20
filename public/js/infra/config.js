@@ -1,3 +1,4 @@
+'use strict'
 const globalVersion = '/api/' + '1.0' + '/'
 const imagesBaseUrl =
 	'https://s3-ap-northeast-1.amazonaws.com/white-100.online/MUJI/'

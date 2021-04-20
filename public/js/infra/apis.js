@@ -1,3 +1,4 @@
+'use strict'
 const baseUrl = 'https://white-100.online/'
 // const baseUrl = 'http://localhost:5000/'
 const publicApi = axios.create({

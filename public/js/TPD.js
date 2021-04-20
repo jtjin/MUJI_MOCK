@@ -1,3 +1,4 @@
+'use strict'
 TPDirect.setupSDK(
 	11327,
 	'app_whdEWBH8e8Lzy4N6BysVRRMILYORF6UxXbiOFsICkz0J9j1C0JUlCHv1tVJC',

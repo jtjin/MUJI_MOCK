@@ -1,3 +1,4 @@
+'use strict'
 export function fade(element) {
 	var op = 1 // initial opacity
 	var timer = setInterval(function () {

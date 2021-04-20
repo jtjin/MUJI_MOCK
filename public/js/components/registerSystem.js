@@ -1,3 +1,4 @@
+'use strict'
 import config from '../infra/config.js'
 import { unFade } from '../utils/fade.js'
 import { sleep } from '../utils/sleep.js'

@@ -1,3 +1,4 @@
+'use strict'
 class Footer extends HTMLElement {
 	constructor() {
 		super()

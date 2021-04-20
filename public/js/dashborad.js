@@ -1,3 +1,4 @@
+'use strict'
 const axiosInstance = axios.create({
 	baseURL: 'https://white-100.online/',
 	// baseURL: "http://localhost:3000/",

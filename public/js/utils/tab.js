@@ -1,3 +1,4 @@
+'use strict'
 function addTabToggleListener(howManyTag) {
 	for (let ti = 1; ti <= howManyTag; ti++) {
 		let nowTab = document.querySelector(`#tab${ti}`)

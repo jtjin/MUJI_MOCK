@@ -1,3 +1,4 @@
+'use strict'
 import config from '../infra/config.js'
 import { privateApi } from '../infra/apis.js'
 

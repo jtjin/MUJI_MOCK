@@ -1,3 +1,4 @@
+'use strict'
 class Chatbot extends HTMLElement {
 	constructor() {
 		super()
